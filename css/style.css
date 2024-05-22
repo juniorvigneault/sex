@@ -1,0 +1,17 @@
+*,
+html{
+    margin:0;
+    padding: 0;
+}
+
+
+#resizeMe{
+     position: absolute;
+    top: 50%;
+    left: 40%;
+    margin-top: -50px;
+    margin-left: -50px;    
+}
+h1{
+    text-align: center;
+}

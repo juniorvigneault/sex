@@ -55,3 +55,38 @@ Where do I start. I feel like I need to experiment for the week with a bunch of 
 
 So. First experiment. Make a page that opens up a pop up and the player has to open it fast or slow according to the color changes of the background color. Ok makes sense. Yes. Lets go. do this. 
 
+## May 15 2024 - AFTERNOON
+
+Todo be4 stopping work -
+- Have 3 levels implemented
+- A gauge instead of numbers
+- A start button that opens the window and starts game 
+- a signal faster, slower, good...
+- "Resize me" in the window 
+
+## May 21 2024 - AFTERNOON
+
+ATM I have a system where the user has to resize the window at a specific speed, depending on the level, and it feels linear in a way that is a bit boring, from slow to fast. Feels correct to start slowly, but maybe there could be more randomness. Like start slow and probably end fast, but in between, alternate between fast and slow?
+
+Other thing that is boring as of now:
+- The communication system of speed is just words printed and changing erratically between slow, good and fast, and there is just a simple gauge going up and down. Its not super interesting and dynamic imo. I have this idea of communicating with popups...... Dunno what could be fun.
+- Also, there is no physics at this point, which doesn't really respect the whole idea of using matter.js .................
+- Theres no sound........... 
+- I hate it here
+  
+  What to work on :
+  - How to communicate the speed the player should resize in an interesting way
+  - How to communcate progress or bigger changes in speed bracket
+  - Incorporating physics
+  - Incorporating sound
+
+I guess at this point I could also maybe take a step back and think about what this IS in a sense. I feel like its lacking a direction and narrative which is fine because for the most part at this point I just wanted to test the mechanics of resizing at a specific speed and see what that could do, but now I think I need a bit more meat around that to make it funny. I think the funny would come in as how the pleasure is expressed by the page to the user.  
+
+Ok so I just went to play "It is as if you were making love" and it is literally the same thing that I did except for me it is about resizing. UHHHUHUHUHSUAHDIJNASJKFNDJKSNFJKNSAJKFNJ. 
+OK.
+
+OK. 
+
+ok I need to start something else because I am feeling not good about all of this. Ok. 
+
+I need to rebrainstorm. And read more about the relief theory and start working directly with matter.js.
