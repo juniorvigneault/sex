@@ -90,3 +90,29 @@ OK.
 ok I need to start something else because I am feeling not good about all of this. Ok. 
 
 I need to rebrainstorm. And read more about the relief theory and start working directly with matter.js.
+
+
+## May 27 2024 - MORNING
+I decided to actually take a step back in terms of I wanna say originality or innovation? I felt like I needed to go back to something more contained in terms of starting board. So here we are, with a 800x800 p5js canvas in the middle of the screen with a matter.js engine running. It made me feel safe to feel in control of what was happeing, not having random popups and weird mechanics that are hard to make safe or working for users. Ultimately I want to try to get away from being constrained to a simple canvas but I think for the sake of this project (making something that will work as research about humour and matter js, as well as work for Club Sexu), I need to scale back in terms of weirdness of mechanics and stuff. And also, there is now a bigger focus on matter.js as a library.
+
+The first thing I wanted to do was to make anal beads. Hahaha. when visiting the matter.js website I kept seeing this:
+
+![matter js chain image](journal_assets/matterjs_chain.png)
+And I've really been thinking about making a chain as anal beads coming out of a butt, where the user has to pull it out basically, or even putting it back in? Altough this seems more complex. 
+Anyways, so I did this thing and it sort of *works*.
+
+![Anal Beads 1](journal_assets/anal_beads_1.png)
+
+ I like it but the mechanics are not perfect obviously. Right now its too simple to pull it all out at the same time. I think my goal right now is to add some sort of realism to it, reactions and sounds but keep the visuals really minimalistic. I think it would maybe be nice to have to again adjust the speed, or maybe even rubbing the butt before popping one out. Something. Like it is stuck in there and you have to do something to get it out?
+
+I want to implement a small simple game mechanic and focus on making the whole thing really sexy. I want like ASMR sex sounds haha. 
+
+Alssooooo. I got this idea of like MAYBE playing on the porn website aesthetics... like there's always CRAZY taglines and phrases and ads and stuff. I think it could be funny to play into that. Things like:
+ 
+https://www.youtube.com/watch?v=lYPS_r8773o
+
+Ok I need to start a list of taglines of ads on pornsites :
+- "Hey you, do you want to masturbate but don't have a partner? 
+- "This is so much better than watching a porn video...If you tap, you will cum!"
+
+I'm thinking about having a couple different small experiments like this one, that combined would make a small game, or maybe just building off of this one and making it more complex? We shall see. Club Sexu would also play a role in deciding the sort of final form of the project, even though I could branch out of that at some point if it prevents me of making something that would feel benificial to my research. As of now I feel the freedom to explore everything I would do if this was not part of a contract.
