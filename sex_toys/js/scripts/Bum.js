@@ -1,12 +1,12 @@
 class Bum {
-  constructor(x, y) {
+  constructor(x, y, bumSize) {
     this.x = x;
     this.y = y;
 
     this.cheeks = [];
-    this.cheekSize = 500;
+    this.cheekSize = bumSize;
     this.rightCheek = new CircleParticle(
-      this.x - this.cheekSize / 2.2,
+      this.x - this.cheekSize / 2.5,
       this.y,
       this.cheekSize,
       true,
@@ -14,7 +14,7 @@ class Bum {
     );
 
     this.leftCheek = new CircleParticle(
-      this.x + this.cheekSize / 2.2,
+      this.x + this.cheekSize / 2.5,
       this.y,
       this.cheekSize,
       true,
@@ -27,7 +27,7 @@ class Bum {
 
   display() {
     for (let cheek of this.cheeks) {
-      cheek.display();
+      cheek.display({ r: 0, g: 0, b: 200, a: 0 });
     }
   }
 }
