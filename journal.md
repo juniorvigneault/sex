@@ -135,3 +135,8 @@ Next is color, sounds and slap on the cheeks when clicking.
 
 ![anal beads 2 gif](journal_assets/gifs/anal_beads_3.gif)
 Erotic vs Comedy?
+
+Ideas for next experiment based on matter.js demos
+- Cloth as a skirt to reveal something
+- Dick as a chain 
+- 
