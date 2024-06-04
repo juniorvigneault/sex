@@ -8,7 +8,7 @@ class AnalBeads {
     this.constraintLength = 250;
     this.toyLength = 300;
     this.beadSize = beadSize;
-    this.spaceBetweenBeads = this.beadSize + 50;
+    this.spaceBetweenBeads = this.beadSize + 10;
     this.makeChain();
   } //constructor
 
@@ -34,19 +34,20 @@ class AnalBeads {
     let fixed = false;
     let prev = null;
     let counter = 0;
+    let x = this.startX;
+
     for (
       let y = this.startY;
       y < this.startY + this.toyLength;
       y += this.spaceBetweenBeads
     ) {
-      0;
       if (prev === null) {
         fixed = true;
       } else {
         fixed = false;
       }
 
-      let p = new CircleParticle(this.startX, y, this.beadSize, fixed, world);
+      let p = new CircleParticle(x, y, this.beadSize, fixed, world);
       this.beads.push(p);
       if (prev !== null) {
         let options = {

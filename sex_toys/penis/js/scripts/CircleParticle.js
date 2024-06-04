@@ -9,17 +9,25 @@ class CircleParticle {
       restitution: 1,
       isStatic: isStatic,
       density: 0.001,
+      frictionAir: 0.1,
+      mass: 10000,
       collisionFilter: {
         category: CATEGORY_CIRCLE_PARTICLE,
         mask:
           CATEGORY_BRIDGE |
           CATEGORY_RECTANGLE |
-          CATEGORY_CIRCLE_PARTICLE |
-          CATEGORY_MOUSE, // Collide with bridge and rectangle
+          CATEGORY_MOUSE |
+          CATEGORY_CIRCLE_PARTICLE, // Collide with bridge and rectangle
       },
     };
 
     this.body = Bodies.circle(this.x, this.y, this.r / 2, options);
+    console.log(this.body);
+    // hack to make the balls separated at the beginning without mouse interaction...
+    setTimeout(() => {
+      this.body.collisionFilter.mask =
+        CATEGORY_BRIDGE | CATEGORY_RECTANGLE | CATEGORY_MOUSE;
+    }, 100);
 
     Composite.add(composite, this.body);
   }

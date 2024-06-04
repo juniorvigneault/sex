@@ -42,7 +42,7 @@ function setup() {
     mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
       constraint: {
-        stiffness: 0.08,
+        stiffness: 0.03,
       },
       collisionFilter: { category: CATEGORY_MOUSE },
     });
@@ -58,13 +58,12 @@ function setup() {
   analBeads.push(new AnalBeads(width / 2, height / 2 - 180, 200));
   analBeads.push(new AnalBeads(width / 2, height / 2 - 180, 200));
 
-  let options = {
+  let ballConstraint = Constraint.create({
     bodyA: analBeads[0].beads[1].body,
     bodyB: analBeads[1].beads[1].body,
-    length: 200,
-    stiffness: 0.08,
-  };
-  let ballConstraint = Constraint.create(options);
+    length: 130,
+    stiffness: 0.8,
+  });
   World.add(world, ballConstraint);
 
   // Add cloth to the world
@@ -87,6 +86,13 @@ function draw() {
   for (let nuts of analBeads) {
     nuts.display();
   }
+
+  push();
+  strokeWeight(30);
+  stroke(100, 100, 200);
+  fill(0, 200, 0);
+  ellipse(width / 2, 210, 200);
+  pop();
   //bum.display();
   // for (let enclosure of enclosures) {
   //   enclosure.display({ r: 200, g: 200, b: 200, a: 20 });
@@ -176,7 +182,7 @@ function addBeads() {
 }
 
 function addCloth() {
-  cloth = createCloth(200, 100, 20, 14, 10, 10, false, 10);
+  cloth = createCloth(200, 100, 20, 14, 20, 10, false, 10);
 
   // Make the first row of particles static to anchor the cloth
   for (let i = 0; i < 20; i++) {
@@ -203,9 +209,10 @@ function createCloth(
     {
       inertia: Infinity,
       friction: 0.00001,
+      restitution: 1,
       collisionFilter: {
         group: group,
-        mask: CATEGORY_MOUSE, // Collide with bridge and rectangle
+        mask: CATEGORY_MOUSE | CATEGORY_BRIDGE, // Collide with bridge and rectangle
       },
       render: { visible: false },
     },
@@ -270,13 +277,13 @@ function addBridge() {
     return Bodies.circle(width / 2, height / 2, 100, {
       collisionFilter: {
         group: group,
-        mask: CATEGORY_MOUSE, // Collide with mouse
+        mask: CATEGORY_MOUSE | 1, // Collide with mouse
       },
-      airFriction: 1,
+      frictionAir: 0.08,
       resititution: 0,
       friction: 0,
       density: 1,
-      mass: 0,
+      mass: 10000,
     });
   });
   bridge.bodies[54].circleRadius = 102;
