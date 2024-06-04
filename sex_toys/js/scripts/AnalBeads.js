@@ -39,6 +39,7 @@ class AnalBeads {
       y < this.startY + this.toyLength;
       y += this.spaceBetweenBeads
     ) {
+      0;
       if (prev === null) {
         fixed = true;
       } else {
@@ -48,7 +49,6 @@ class AnalBeads {
       let p = new CircleParticle(this.startX, y, this.beadSize, false, world);
       this.beads.push(p);
       if (prev !== null) {
-        counter += 1;
         let options = {
           bodyA: prev.body,
           bodyB: p.body,
@@ -57,7 +57,7 @@ class AnalBeads {
             y: 0,
           },
           length: this.constraintLength,
-          stiffness: 0.15,
+          stiffness: 0.17,
         };
         //see doc
         let constraint = Constraint.create(options);

@@ -1,5 +1,5 @@
 class CircleParticle {
-  constructor(x, y, r, isStatic, world) {
+  constructor(x, y, r, isStatic, composite) {
     this.x = x;
     this.y = y;
     this.r = r;
@@ -9,11 +9,15 @@ class CircleParticle {
       restitution: 0,
       isStatic: isStatic,
       density: 1,
+      collisionFilter: {
+        category: CATEGORY_CIRCLE_PARTICLE,
+        mask: CATEGORY_BRIDGE | CATEGORY_RECTANGLE | CATEGORY_CIRCLE_PARTICLE, // Collide with bridge and rectangle
+      },
     };
 
     this.body = Bodies.circle(this.x, this.y, this.r / 2, options);
-    World.add(world, this.body);
-    console.log(this.body);
+
+    Composite.add(composite, this.body);
   }
 
   display(color) {
@@ -25,12 +29,8 @@ class CircleParticle {
     ellipseMode(CENTER);
     translate(pos.x, pos.y);
     rotate(angle);
-    // noStroke();
-    // fillHsluv(321, 49, 50);
     fill(r, g, b, a);
     ellipse(0, 0, this.r);
-    // fill(255);
-    // ellipse(0, 0, 12);
     pop();
   }
 }

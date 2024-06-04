@@ -101,7 +101,7 @@ The first thing I wanted to do was to make anal beads. Hahaha. when visiting the
 And I've really been thinking about making a chain as anal beads coming out of a butt, where the user has to pull it out basically, or even putting it back in? Altough this seems more complex. 
 Anyways, so I did this thing and it sort of *works*.
 
-![Anal Beads 1](journal_assets/anal_beads_1.png)
+![Anal Beads 1](journal_assets/gifs/anal_beads_1.gif)
 
  I like it but the mechanics are not perfect obviously. Right now its too simple to pull it all out at the same time. I think my goal right now is to add some sort of realism to it, reactions and sounds but keep the visuals really minimalistic. I think it would maybe be nice to have to again adjust the speed, or maybe even rubbing the butt before popping one out. Something. Like it is stuck in there and you have to do something to get it out?
 
@@ -116,3 +116,22 @@ Ok I need to start a list of taglines of ads on pornsites :
 - "This is so much better than watching a porn video...If you tap, you will cum!"
 
 I'm thinking about having a couple different small experiments like this one, that combined would make a small game, or maybe just building off of this one and making it more complex? We shall see. Club Sexu would also play a role in deciding the sort of final form of the project, even though I could branch out of that at some point if it prevents me of making something that would feel benificial to my research. As of now I feel the freedom to explore everything I would do if this was not part of a contract.
+
+## May 28 2024 - MORNING
+
+Added bounce to the bum to make it more realistic. At first I thought I was going to just make them vibrate of some sorts... but then uppon stumbling again on the matter.js home page, i saw a demo of a chain as a bridge. As I was playing with it, I tought: OH!! I should take advantage of this bouncing in matter.js for the bum!!! 
+
+![anal beads 2 gif](journal_assets/gifs/other_gifs/matter_bridge.gif)
+
+So I made a chain like this one but with only two circle particles instead of a series of rectangles like in the example. Both ends are then tied with invisible static constraints. I then had to adjust the stiffness and length of each constraint. I also adjusted the density of the beads and the bum so that the bum would have the perfect bounce when going out. I also wanted the beads to not completely separate the bum, so I needed to test a lot to make the perfect sensitivity when colliding. TADAM :
+
+![anal beads 2 gif](journal_assets/gifs/anal_beads_2.gif)
+
+## June 3rd 2024 - MORNING
+
+I added collision filters to all my bodies, because at the player could click on the bum and pull it, and the cheeks would then separate and reveal that its just two circles. I needed to deactivate the mouse on the bum. I also added started running into a problem, where the player could slide the balls on the side making the entire toy slide sideways and come disappear entirely. I decided to try to build a sort of tunnel with two static rectangles, and adjust the masks of the collision filters to deactivate collision once the bead goes past a certain point in the canvas. I also switched to a longer canvas to make it easier to pull down. 
+
+Next is color, sounds and slap on the cheeks when clicking.
+
+![anal beads 2 gif](journal_assets/gifs/anal_beads_3.gif)
+Erotic vs Comedy?

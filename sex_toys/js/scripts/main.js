@@ -17,9 +17,20 @@ let particles = [];
 let enclosures = [];
 let analBeads;
 let bum;
+let beads = [];
+let numBeads = 6;
+
+let gameX = 0;
+let gameY = -50;
+
+const CATEGORY_BRIDGE = 0x0001;
+const CATEGORY_CIRCLE_PARTICLE = 0x0002;
+const CATEGORY_RECTANGLE = 0x0004;
 
 function setup() {
-  let canvas = createCanvas(windowWidth, windowHeight);
+  // let canvas = createCanvas(1000, 1000);
+
+  let canvas = createCanvas(550, 800);
   // Move the canvas within the HTML into the appropriate section
   canvas.parent("p5js-canvas");
   engine = Engine.create();
@@ -31,30 +42,39 @@ function setup() {
     mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
       constraint: {
-        stiffness: 0.2,
+        stiffness: 0.08,
       },
     });
 
   World.add(world, mouseConstraint);
 
-  analBeads = new AnalBeads(300, 0, 120);
-
   //bum = new Bum(width / 2, 300, 400);
 
   addEnclosures();
   addBridge(); // Add the bridge here
+  //addBeads();
+  analBeads = new AnalBeads(gameX + 400, gameY - 400, 120);
 }
 
 function draw() {
-  background(255);
+  background(0);
 
-  // for (let particle of particles) {
-  //   particle.display({ r: 0, g: 200, b: 0 });
-  // }
+  // if the beads go low enough, change the collision filter so
+  // they don't collide with the the tunnel enclosure
+  // this is in place to make the beads stay
+  for (let bead of analBeads.beads) {
+    console.log(bead);
+    if (bead.body.position.y >= 600) {
+      bead.body.collisionFilter.mask =
+        CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE;
+    }
+  }
 
   analBeads.display();
   //bum.display();
-  enclosures[0].display({ r: 200, g: 200, b: 200 });
+  for (let enclosure of enclosures) {
+    enclosure.display({ r: 200, g: 200, b: 200, a: 20 });
+  }
   // push();
   // ellipseMode(CENTER);
   // ellipse();
@@ -62,10 +82,9 @@ function draw() {
 
   for (let body of bridge.bodies) {
     push();
-    fill(6, 10, 25);
     noStroke();
     ellipseMode(CENTER);
-    fill(0);
+    fill(100);
     ellipse(body.position.x, body.position.y, 400);
     pop();
   }
@@ -83,6 +102,59 @@ function addEnclosures() {
     world
   );
   enclosures.push(bottomEnclosure);
+
+  let tunnelEnclosureLeft = new RectangleParticle(
+    gameX - 35,
+    gameY + 300,
+    500,
+    1000,
+    true,
+    world
+  );
+  let tunnelEnclosureRight = new RectangleParticle(
+    gameX + 585,
+    gameY + 300,
+    500,
+    1000,
+    true,
+    world
+  );
+
+  enclosures.push(tunnelEnclosureRight);
+  enclosures.push(tunnelEnclosureLeft);
+}
+function addBeads() {
+  // Create a composite to hold the beads and constraints
+  let beadComposite = Composite.create();
+  let x = 0;
+  let beadSize = 50;
+  let spaceBetweenBeads = 40;
+  // Create beads
+  for (let i = 0; i < numBeads; i++) {
+    let bead = new CircleParticle(
+      x + i * beadSize + spaceBetweenBeads,
+      100,
+      beadSize,
+      false,
+      beadComposite
+    );
+    beads.push(bead);
+  }
+
+  // Add constraints (links) between the beads
+  for (let i = 0; i < beads.length - 1; i++) {
+    let options = {
+      bodyA: beads[i].body,
+      bodyB: beads[i + 1].body,
+      length: 60, // Distance between centers of beads
+      stiffness: 0.038,
+    };
+    let constraint = Constraint.create(options);
+    Composite.add(beadComposite, constraint);
+  }
+
+  // Add the bead composite to the world
+  Composite.add(world, beadComposite);
 }
 
 function addBridge() {
@@ -90,7 +162,11 @@ function addBridge() {
 
   bridge = Composites.stack(0, 0, 2, 1, 200, 0, function (x, y) {
     return Bodies.circle(x, y, 200, {
-      collisionFilter: { group: group },
+      collisionFilter: {
+        group: group,
+        category: CATEGORY_BRIDGE,
+        mask: CATEGORY_CIRCLE_PARTICLE, // Collide only with circle particle
+      },
       chamfer: 0,
       density: 1,
       frictionAir: 0,
@@ -108,14 +184,14 @@ function addBridge() {
   Composite.add(world, [
     bridge,
     Constraint.create({
-      pointA: { x: 150, y: 300 },
+      pointA: { x: gameX + 25, y: gameY + 100 },
       bodyB: bridge.bodies[0],
       pointB: { x: -80, y: 0 },
       length: 1,
       stiffness: 1,
     }),
     Constraint.create({
-      pointA: { x: 650, y: 300 },
+      pointA: { x: gameX + 525, y: gameY + 100 },
       bodyB: bridge.bodies[bridge.bodies.length - 1],
       pointB: { x: 80, y: 0 },
       length: 1,

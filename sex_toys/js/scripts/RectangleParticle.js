@@ -6,9 +6,13 @@ class RectangleParticle {
     this.h = h;
 
     let options = {
-      friction: 1,
+      friction: 0,
       restitution: 0,
       isStatic: isStatic,
+      collisionFilter: {
+        category: CATEGORY_RECTANGLE,
+        mask: CATEGORY_CIRCLE_PARTICLE, // Collide only with circle particle
+      },
     };
 
     this.body = Bodies.rectangle(this.x, this.y, this.w, this.h, options);
@@ -16,7 +20,7 @@ class RectangleParticle {
   }
 
   display(color) {
-    let { r, g, b } = color;
+    let { r, g, b, a } = color;
     push();
     let pos = this.body.position;
     let angle = this.body.angle;
@@ -24,9 +28,9 @@ class RectangleParticle {
     rectMode(CENTER);
     translate(pos.x, pos.y);
     rotate(angle);
-    noStroke();
+    // noStroke();
     // fillHsluv(321, 49, 50);
-    fill(r, g, b);
+    fill(r, g, b, a);
     rect(0, 0, this.w, this.h);
     pop();
   }
