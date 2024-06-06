@@ -43,6 +43,11 @@ class CircleParticle {
     rotate(angle);
     fill(r, g, b, a);
     ellipse(0, 0, this.r);
+
+    pop();
+
+    push();
+
     pop();
   }
 }

@@ -28,6 +28,16 @@ const CATEGORY_CIRCLE_PARTICLE = 0x0002;
 const CATEGORY_RECTANGLE = 0x0004;
 const CATEGORY_MOUSE = 0x0008;
 
+let clothOptions = {
+  x: 0,
+  y: 0,
+  col: 60,
+  row: 25,
+  colGap: 5,
+  rowGap: 5,
+  crossBrace: false,
+  particleRad: 5,
+};
 function setup() {
   // let canvas = createCanvas(1000, 1000);
 
@@ -67,7 +77,10 @@ function setup() {
   World.add(world, ballConstraint);
 
   // Add cloth to the world
-  addCloth();
+  // let halfClothLength = (clothOptions.col - 1 / 2) * clothOptions.colGap;
+  // clothOptions.x = width / 2 - halfClothLength;
+
+  // addCloth();
 }
 
 function draw() {
@@ -87,12 +100,12 @@ function draw() {
     nuts.display();
   }
 
-  push();
-  strokeWeight(30);
-  stroke(100, 100, 200);
-  fill(0, 200, 0);
-  ellipse(width / 2, 210, 200);
-  pop();
+  // push();
+  // strokeWeight(30);
+  // stroke(100, 100, 200);
+  // fill(0, 200, 0);
+  // ellipse(width / 2, 210, 200);
+  // pop();
   //bum.display();
   // for (let enclosure of enclosures) {
   //   enclosure.display({ r: 200, g: 200, b: 200, a: 20 });
@@ -111,7 +124,20 @@ function draw() {
     pop();
   }
 
-  renderCloth(cloth);
+  // noStroke();
+  // fill(0, 200, 0);
+  // ellipse(bridge.bodies[54].position.x, bridge.bodies[54].position.y, 130, 180);
+  // push();
+  // noStroke();
+  // fill(0, 150, 0);
+  // ellipse(
+  //   bridge.bodies[54].position.x,
+  //   bridge.bodies[54].position.y + 90,
+  //   80,
+  //   12
+  // );
+  // pop();
+  //renderCloth(cloth, clothOptions.col, clothOptions.row);
 }
 
 function mousePressed() {}
@@ -182,10 +208,19 @@ function addBeads() {
 }
 
 function addCloth() {
-  cloth = createCloth(200, 100, 20, 14, 20, 10, false, 10);
+  cloth = createCloth(
+    clothOptions.x,
+    clothOptions.y,
+    clothOptions.col,
+    clothOptions.row,
+    clothOptions.colGap,
+    clothOptions.rowGap,
+    clothOptions.crossBrace,
+    clothOptions.particleRad
+  );
 
   // Make the first row of particles static to anchor the cloth
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < clothOptions.col; i++) {
     cloth.bodies[i].isStatic = true;
   }
 
@@ -212,7 +247,7 @@ function createCloth(
       restitution: 1,
       collisionFilter: {
         group: group,
-        mask: CATEGORY_MOUSE | CATEGORY_BRIDGE, // Collide with bridge and rectangle
+        mask: CATEGORY_MOUSE, // Collide with bridge and rectangle
       },
       render: { visible: false },
     },
@@ -221,7 +256,7 @@ function createCloth(
 
   constraintOptions = Matter.Common.extend(
     {
-      stiffness: 0.7,
+      stiffness: 1.2,
       // render: { type: "line", anchors: false },
     },
     constraintOptions
@@ -245,36 +280,68 @@ function createCloth(
   return cloth;
 }
 
-function renderCloth(cloth) {
-  // Render particles
-  for (let body of cloth.bodies) {
-    push();
-    noStroke();
-    fill(200);
-    ellipse(body.position.x, body.position.y, body.circleRadius * 2);
-    pop();
+function renderCloth(cloth, columns, rows) {
+  // Draw each square in the cloth
+  push();
+  noStroke();
+  fill(200, 100, 100); // Choose your fill color here
+
+  for (let y = 0; y < rows - 1; y++) {
+    for (let x = 0; x < columns - 1; x++) {
+      let index = x + y * columns;
+      let nextIndex = index + 1;
+      let belowIndex = index + columns;
+      let belowNextIndex = belowIndex + 1;
+
+      beginShape();
+      vertex(cloth.bodies[index].position.x, cloth.bodies[index].position.y);
+      vertex(
+        cloth.bodies[nextIndex].position.x,
+        cloth.bodies[nextIndex].position.y
+      );
+      vertex(
+        cloth.bodies[belowNextIndex].position.x,
+        cloth.bodies[belowNextIndex].position.y
+      );
+      vertex(
+        cloth.bodies[belowIndex].position.x,
+        cloth.bodies[belowIndex].position.y
+      );
+      endShape(CLOSE);
+    }
   }
 
-  // Render constraints
+  pop();
+
+  // Optional: Render particles (if you still want to show them)
+  for (let body of cloth.bodies) {
+    // push();
+    // noStroke();
+    // fill(200);
+    // ellipse(body.position.x, body.position.y, body.circleRadius * 2);
+    // pop();
+  }
+
+  // Optional: Render constraints (if you still want to show them)
   for (let constraint of cloth.constraints) {
-    push();
-    stroke(255);
-    strokeWeight(2);
-    line(
-      constraint.bodyA.position.x + constraint.pointA.x,
-      constraint.bodyA.position.y + constraint.pointA.y,
-      constraint.bodyB.position.x + constraint.pointB.x,
-      constraint.bodyB.position.y + constraint.pointB.y
-    );
-    pop();
+    // push();
+    // stroke(255);
+    // strokeWeight(2);
+    // line(
+    //   constraint.bodyA.position.x + constraint.pointA.x,
+    //   constraint.bodyA.position.y + constraint.pointA.y,
+    //   constraint.bodyB.position.x + constraint.pointB.x,
+    //   constraint.bodyB.position.y + constraint.pointB.y
+    // );
+    // pop();
   }
 }
 
 function addBridge() {
   let group = Body.nextGroup(true);
 
-  bridge = Composites.stack(0, 0, 55, 1, 0, 0, function (x, y) {
-    return Bodies.circle(width / 2, height / 2, 100, {
+  bridge = Composites.stack(0, 0, 58, 1, 0, 0, function (x, y) {
+    return Bodies.circle(width / 2, height / 2, 82, {
       collisionFilter: {
         group: group,
         mask: CATEGORY_MOUSE | 1, // Collide with mouse
@@ -286,15 +353,22 @@ function addBridge() {
       mass: 10000,
     });
   });
-  bridge.bodies[54].circleRadius = 102;
+
+  let downSize = 52;
+  for (let i = 0; i < bridge.bodies.length; i++) {
+    if (i > 40) {
+      bridge.bodies[i].circleRadius = downSize;
+      downSize += 1;
+    }
+  }
   Composites.chain(bridge, 0, 0, 0, 0, {
-    stiffness: 1.3,
+    stiffness: 1.35,
   });
 
   Composite.add(world, [
     bridge,
     Constraint.create({
-      pointA: { x: width / 2, y: height / 2 - 200 },
+      pointA: { x: width / 2, y: height / 2 - 220 },
       bodyB: bridge.bodies[0],
       pointB: { x: 0, y: 0 },
       length: 1,

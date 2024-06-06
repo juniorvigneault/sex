@@ -134,9 +134,38 @@ I added collision filters to all my bodies, because at the player could click on
 Next is color, sounds and slap on the cheeks when clicking.
 
 ![anal beads 2 gif](journal_assets/gifs/anal_beads_3.gif)
-Erotic vs Comedy?
 
-Ideas for next experiment based on matter.js demos
-- Cloth as a skirt to reveal something
-- Dick as a chain 
-- 
+## June 5th 2024 - AFTERNOON
+
+Initially I had decided to continue the anal beads experiment, but I felt like I should start a second one, because I had an idea and felt like I should try it fassst. I'm realizing that I can try things pretty quickly now. I should prioritize this instead of really focusing on details. I mean right now I sort of have an idea of where I want to go with this:
+
+"Are you alone?" is a collection of 2D interactive erotic web experiences. Inspired by the absurd nature of online sex games promoted as invasive popup ads (on porn websites?), they result from a research-creation process exploring the use of humor theory as a motivating material to design interactions with different JavaScript libraries. Developed in partnership with Club Sexu, "Are you alone?" provides a subversive, playful experience for the user at the intersection of eroticism and humor. This iteration uses Matter.js, a physics engine for 2D physics on the web, to facilitate playful interaction. SOMETHING ALONG THOSE LINES.
+
+Like theres a menu with the choices, and there is the voice on loop saying "ARE YOU ALONE? You won't last 5 minutes playing this game" and other similar catchphrases. then you can open the games and play them maybe in different popups? 
+
+ANYWAYS i just wanted to write this somewhere but here is where I am at in terms of actual work.
+
+## June 6th 2024 - MORNING
+
+When I was first doing the anal beads, I was trying to work with matter js composites for the first time to make a chain instead of manually building it from individual bodies and adding constraints. I took an example from the documentation and ended up doing this:
+
+![anal beads 2 gif](journal_assets/gifs/other_gifs/composite_test.gif)
+
+And I thought it looked almost liquidy, and I thought if I add some ellipses then maybe we will get the illusion of something more organic, like a soft thing. I knew something interesting could be done with this but I put it aside to work on the beads again. But then I decided to think about what I could make with this: A SOFT PENIS!!!! Soft penis are like already funny in a sense. And you also don't really usually to play with one. I also really fast decided to add a cloth on top as a sort of skirt that can be pulled up? I thought, that could be the sort of "game" of this one. You can play with the dick but also reveal it from under the skirt or something. It plays with expectations and would add a surprise element. I'm thinking the static ellipses at the top could be buttons that if clicking on them, they unbutton and the cloth falls and then you can play with the penis. Of course in this case the cloth would be opaque (checkered? like a kilt).
+
+![anal beads 2 gif](journal_assets/gifs/penis/penis_1.gif)
+
+So I was playing with this idea, testing different things, making the penis heavier, longer, shorter, to see what felt most realistic. I started adding visual details (a cock ring, a more pointy head) and then I made a mistake working with collision filters and the cloth started to come in contact with the penis, sort of holdins it together, creating a 3D-like effect of a mesh underwear holding a giant shlong and I think this is where I crossed the line of comedy and went to the sexual side. 
+
+![anal beads 2 gif](journal_assets/gifs/penis/penis_2.gif)
+
+It was weird because it was hot and I thought it was funny because I was surprised by it, and the fact that it is over sexual makes it funny im my mind (but maybe only because I'm making it?), but not in all context??? Like it's funny because I'm making this and it's going to be presented out of its context, but if this was on a porn page, I don't know if people would necessarily find it funny. I think it still is but I realized that I needed to cut back on making it realistic. I feel like I pushed the realism too much and the humourous line playing off of the ambiguity between sexual and abstract wasnt so blurry anymore. It was funny because it was crass and very sexual. The subtility was gone. It was just a big floppy dick instead of something suggested. I'm not trying to make something ACTUALLY sexual. Well. I think it's nice if you have the choice to find it sexual or funny. And if its too realistic than its too much on the sexual side. Compared to the first one (beads), the simplicity of just using circles and lines made it perfectly straddle the line of sexy and funny. Like you could play this in public. This I would not. IMO this means that it strays away from being funny. I decided to pull back and see what was up without the cloth, but even then, I thought there is too much details and it crosses the line on the sexual side. ALSO I think that each "game" should have one "toy-like" element, and here the cock ring is not interactive, but still a toy, making it a bit confusing and not necessary and also constributing to making it very sexual. 
+
+![anal beads 2 gif](journal_assets/gifs/penis/penis_3.gif)
+
+So I pulled back again and now I'm here:
+
+![anal beads 2 gif](journal_assets/gifs/penis/penis_4.gif)
+
+I like the simplicity of this, and I think that with the skirt element this could be really fun. I really want to make the skirt NOW but since I know its going to be awesome I'll wait for a day when I'm depresed to do it, and since I have good energy, I want to try to start making a third one with a vulva. I think this is probably going to be more challenging, because first of all I don't know vulvas too well, and also I think that they are not necessarily funny? Like a soft dick is funny but a vulva is not. So yeah. I think the first thing I actually want to try to make is a vibrator. I think that if I make a chain with really tight constraints it creates a vibrating effect and I think it could be interesting.  Moral of the story : realism is OK in terms of physics (makes it funny), but realism in terms of visuals is a thin line to make things overly sexual. ALSO, I think sounds will play a big part in making this more ridiculous. 
+
