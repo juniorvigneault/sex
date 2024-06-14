@@ -1,17 +1,34 @@
 *,
-html{
-    margin:0;
-    padding: 0;
+html {
+  margin: 0;
+  padding: 0;
 }
 
-body{
+#canvases {
   display: grid;
   /* Set up the grid and justify/align to center */
   justify-content: center;
   align-content: center;
-  height: 100vh;
+  height: 800px;
+  width: 1000px;
   /* Body is the height of the viewport */
   overflow: hidden;
+
+  /* background-color: black; */
   /* Hide anything that goes off the window size */
+  /* background-color: black; */
+  /* background-color: black; */
 }
 
+/* canvas {
+} */
+
+#p5js-canvas,
+#particles-canvas {
+  position: absolute;
+}
+
+#particles-canvas {
+  position: absolute;
+  filter: url("#gooey");
+}

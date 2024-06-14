@@ -12,21 +12,21 @@ class AnalBeads {
     this.makeChain();
   } //constructor
 
-  display(p) {
+  display() {
     for (let i = 0; i < this.beads.length; i++) {
       if (i > 0) {
-        p.push();
-        p.stroke(0, 150, 0);
-        p.strokeWeight(200);
-        p.line(
+        push();
+        stroke(0, 150, 0);
+        strokeWeight(200);
+        line(
           this.beads[i - 1].body.position.x,
           this.beads[i - 1].body.position.y,
           this.beads[i].body.position.x,
           this.beads[i].body.position.y
         );
-        p.pop();
+        pop();
       }
-      this.beads[i].display({ r: 0, g: 150, b: 0, a: 255 }, p);
+      this.beads[i].display({ r: 0, g: 150, b: 0, a: 255 });
     }
   }
 

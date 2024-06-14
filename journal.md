@@ -97,11 +97,12 @@ I decided to actually take a step back in terms of I wanna say originality or in
 
 The first thing I wanted to do was to make anal beads. Hahaha. when visiting the matter.js website I kept seeing this:
 
-![matter js chain image](journal_assets/matterjs_chain.png)
+![matter js chain image](journal_assets/imgs/matterjs_chain.png)
+
 And I've really been thinking about making a chain as anal beads coming out of a butt, where the user has to pull it out basically, or even putting it back in? Altough this seems more complex. 
 Anyways, so I did this thing and it sort of *works*.
 
-![Anal Beads 1](journal_assets/gifs/anal_beads_1.gif)
+![Anal Beads 1](journal_assets/gifs/butt/anal_beads_1.gif)
 
  I like it but the mechanics are not perfect obviously. Right now its too simple to pull it all out at the same time. I think my goal right now is to add some sort of realism to it, reactions and sounds but keep the visuals really minimalistic. I think it would maybe be nice to have to again adjust the speed, or maybe even rubbing the butt before popping one out. Something. Like it is stuck in there and you have to do something to get it out?
 
@@ -133,7 +134,7 @@ I added collision filters to all my bodies, because at the player could click on
 
 Next is color, sounds and slap on the cheeks when clicking.
 
-![anal beads 2 gif](journal_assets/gifs/anal_beads_3.gif)
+![anal beads 3 gif](journal_assets/gifs/butt/anal_beads_3.gif)
 
 ## June 5th 2024 - AFTERNOON
 
@@ -167,5 +168,113 @@ So I pulled back again and now I'm here:
 
 ![anal beads 2 gif](journal_assets/gifs/penis/penis_4.gif)
 
-I like the simplicity of this, and I think that with the skirt element this could be really fun. I really want to make the skirt NOW but since I know its going to be awesome I'll wait for a day when I'm depresed to do it, and since I have good energy, I want to try to start making a third one with a vulva. I think this is probably going to be more challenging, because first of all I don't know vulvas too well, and also I think that they are not necessarily funny? Like a soft dick is funny but a vulva is not. So yeah. I think the first thing I actually want to try to make is a vibrator. I think that if I make a chain with really tight constraints it creates a vibrating effect and I think it could be interesting.  Moral of the story : realism is OK in terms of physics (makes it funny), but realism in terms of visuals is a thin line to make things overly sexual. ALSO, I think sounds will play a big part in making this more ridiculous. 
+I like the simplicity of this, and I think that with the skirt element this could be really fun. I really want to make the skirt NOW but since I know its going to be awesome I'll wait for a day when I'm depresed to do it, and since I have good energy, I want to try to start making a third one with a vulva. I think this is probably going to be more challenging, because first of all I don't know vulvas too well, and also I think that they are not necessarily funny? Like a soft dick is funny but a vulva is not? So yeah. I think the first thing I actually want to try to make is a vibrator. I think that if I make a chain with really tight constraints it creates a vibrating effect and I think it could be interesting.  Moral of the story : realism is OK in terms of physics (makes it funny), but realism in terms of visuals is a thin line to make things overly sexual. ALSO, I think sounds will play a big part in making this more ridiculous. 
 
+## June 7th 2024 - MORNING
+
+Vulva - Taking a break for today because I felt KINDA lost, but I was talking with my friend while playing with my sketch and got this idea of making the clitoris a joystick to control something, like a spaceship or something else........ This TRIGGERED an idea, where all the games would be interconnected in some way. Like maybe the clitoris would control something to make the dick do something? Like a frenzy of absurd stuff, sort of a big sex puzzle of sorts..... haha. Feels a TAD weird to write about this for school. 
+
+NEW IDEA: BOOBS. With a chain connecting both, and when they are both connected, electricity (strobe + colors and sparks and boobs flying everywhere??) So yeah making the snaps and the small chain between both. So yeah starting on that this morniiiiiiin. lezzzzgoooooooo. hihihihihihi.
+
+## June 14th 2024 - MORNING
+Reaaaally big week this week so here is a rundown of things.
+
+### VULVA SKETCH:
+Like I said earlier, I kinda dropped it before but wanted to show in gif where I had dropped it. Clitoris-like situation with a vibrator of sorts that you can pick up to stimulate... Not much going on there. I think the joystick route could be really interesting. Also I'm trying to be politically correct because I made a dick and now I feel like I need representation which is not good fuel for funny IMO. Still I think it's important because I risk running into ethical problems which will make the whole thing probably awkward and unfunny. 
+
+![vulva gif 1](journal_assets/gifs/vulva/clitoris_1.gif)
+
+Other interesting thing: I started to record my screen evrytime I add something to the sketch. Its annoying and time consuming but I'm curious to see a sort of timelapse almost of things? I started with vulva and sort of did it with boobs. The goal is just to document more whats happening. Theres a lot of stuff I'm realizing I'm not necessarily writing down or I'm trying so many things that It's not really possible to remember everything. I think having a visual could help me document better my work. I'm actually thinking I could screen record while I'm making, But I think my computer would crash and be so slow. I could possibly look for tools that are less performance consuming than screen recording with quicktime. 
+
+Thing I wanted to meditate on : 
+At one point I thought : Is the vulva even funny? I am biased in thiking its not? Is it a form of systematic underground misogyny for me to see the dick as funny and the vulva as serious? I mean i feel like a dick is genuinly funny, especially a soft one, its so ridiulous and I dunno like its easy to personify as something like a sausage or what not. And a vulva is so complex and interior........ I had a feeling that I had to "respect" its anatomy if I wanted to go on that teritorry because people usually don't care or respect it, like its well known that men don't know how to make women cum or something? Also I'm gay so I don't have as much experience with vulvas as I do with dicks? Which maybe makes me able to laugh at dicks and less at vulvas??? I feel like its wrong of me to not want to make fun of vulvas, like wanting to be nice to them because they deserve it? Like a tacky forced chivalry or something which is gross. ALSO, I've played sex games for inspiration and its literally a pussy with something going in and out, like a toy or something, and that's not funny? Like I need something more special than just a normal, anotomically correct vulva that you can stimulate........ Or it becomes just a normal porn game. I feel like the way to go with this it like i've said before, the joystick option, because it plays on the fact that the clitoris is somthing to be cared for in a specific manner, and ALSO, it gives power back to the pussy as somthing that controls something else, as opposed to being just recieving whatever happens without any control over it.... I feel like in porn in general its usually the opposite, and I think if I want to make humour out of this one I need to go in a direction that is subversive to how it is already represented. 
+
+### BOOBS SKETCH:
+ Obviously I was thinking about making boobs since the beginning, two circles bouncing, much like the butt of the beginning, seemed like an easy thing to do. So I did not do it at first because I thought I wouldnt be surprised enough to be excited about what I’m making, (which is what I think ended up also happening with the vulva episode…). I need to be laughing and excited (feels new) to be going for it. OR it needs to be impressive in a way that exceeds my expectations. Im trying this new thing where I document ALOT, I screen record everytime I'm adding something and I make a gif out of it. I think its nicer that to just explain it through writing. And more explicit? Its really long but I kind of don't mind for some reason. I think it looks nice and is maybe a way for me to feel more comfortable about MDM. This way I feel like i'm reaaaly thorough. So let's go through a little round of what happened :
+
+Trying out a stack of rectangles chained together with a chamfer to make a rounded corner? What do boobs actually look like ahha. Didn't feel it.
+
+  ![electric boobs 1](journal_assets/gifs/boobs/boobs1.gif)
+
+I was a bit confused about what I actually wanted the boobs to look like, and sometimes when I want quick inspiration, I just type whatever I'm looking for on google with p5js following, and theres usually scripts on the online editor that point me in some direction I had not thought about. So I typed "Nipples p5js" and found this : 
+
+  ![boob sketch online](journal_assets/imgs/boob_sketch_online.png)
+
+  I thought ah this is funny and very simple. Why am I trying to make something very realistic? I think I forget that this is not what I should strive for at first. I need some kind of visual goal before playing with physics. I think this usually happens because I realised that when making a new sketch, I copy the one I made before (in this case the penis one because I thought I would use a similar concept but with tighter and shorter constraints). But this limits me!!! Stop doing that!! Actually I'm thinking right now I should have a boilerplate and start from there each time. Anyways, so I decided to go back to basics like always, which is usally a good thing. Because I have to focus on one thing at a time and add on to the thing. Now I was focusing on the visual aspect as well as the physical bounce and such. Made me confused and not happy. So I literally started with two circles. 
+
+  ![boob circles](journal_assets/gifs/boobs/imgs/boobs1.png)
+
+Then I added the a chain stack to each circle and a line with the same weight to make a sort of worm-like effect when pulled (again, old news), to each circle. I also added a chain that is the small circle falling. its all in one spot but if you click on it you can see it unfolds (you cant see now but later I think yes).
+
+ ![boob circles 2](journal_assets/gifs/boobs/boobs2.gif)
+
+ The nipples are the eyes of the face!!!! First nipple. Its an actual matterjs body not just drawn on top. My initial idea was to use it as a sort of thing to clamp on? Looks like a balloon.
+
+ ![first nipple!](journal_assets/gifs/boobs/boob_nipple.gif)
+
+ Ok so at this point I started playing with how I wanted the nipples to look like, and decided to make then on each side, slightly angled outwards and with rounded corners. I chose to make them more on the side instead of straight down because I thought with the chain it would be more interesting, instead of clamping at the very bottom. At first they were both pointing in the same direction which I weirdly liked but ended up making them symmetrical. I also made a clamp with 3 rectangles as a composite, my first time, which was nice. At this point I tought, the player will just try to put the clamp on the nipple directly? So I made the clamp a bit bigger in order to fit the nipple inside like in a container almost. ALSO. I kind of was not feeling the fact that they were round perfectly, so I decided to make the constraints longer, but then in their normal position they looked like sort of pills? Which was ok but I tried to think of something a bit more human. I got the idea of creating each ellipse in the stack bigger everytime (like 5 pixels or something), creating a sort of pear-like shape. I felt like this was the perfect sweet spot of realism/minimalism aesthetic I had going on since the beginning. 
+
+ ![boobs sketch](journal_assets/gifs/boobs/imgs/boobs2.png);
+
+ BUT. While making the clamps I was like : ok this is what I see in my mind but what will actually happen when players will pick it up and try to grab the nipple? After playing with it a bit it was cumbersome to position it on the correct side so that it encapsulated the nipple. The game was actually hard and there was too much room for error. I also had not even figured out how they would stick there........ I didn't want to just stick them in a way where the physics would stop working. So I needed to work with matterjs existing options. So I took a step back and created a simple circle the size of the aerola, and tried different things to make it stick. And it started working!!! Using SetVelocity to 0 and SetPosition if the circle is close enough to the areola. It also was suprisingly sticky! The boob doesnt react when pulling on it but I will definetly be adding this to add to the realism.
+
+![sticker boob](journal_assets/gifs/boobs/sticker_boob.gif)
+
+ After that I added a chain and an ellipse to both ends, and I actually really like way it looks? And I'm thinking of keeping the ellipses as sort of stickers instead of clamps, maybe with bolts on each of them to signify electricity. So here is where I am at with the boob sketch as of now:
+
+ ![electric boobs 2](journal_assets/gifs/boobs/electric_boobs1.gif)
+
+I think what I'm realizing now is that when deciding to make something for this project, is that it becomes funny at one point. I don't know exactly when it will happen, I think I'm not really focused on making things funny per say in the first few moments of making. But usually pretty fast I know how to exagerate a feature or a mechanic or something to try to make it funny. I think in most cases the fact that the body parts are have physical properties (bounce and shape) makes it already comical paired with the minimalist aesthetic, but I think there needs to be an element of surprise in each of them to really push it to the next level. In this case I'm really counting on the electric chaos of it all. I'm basing myself of a demo in matter js where bodies go wild based on an event : 
+
+![chaos matter js](journal_assets/gifs/other_gifs/chaos.gif)
+
+I'm thinking when both are connected ! OHHHH I juste also remembered where I got this idea from ahha. Fantastic Mr Fox!!! (the most amazzing and cool funny movie of all time (srly probably one of my 4 fav movies)) 
+
+![mr fox electrocution](journal_assets/gifs/other_gifs/mr_fox.gif)
+
+I think the humour will explode here. I think ACTUALLY that it is all very fitting with the relief theory. A situation AT FIRST is very sexual and strange and already a bit comical ish? And then a surprise happens that pushes it over the top (in this case the electrocution), that sort of breaks the sexual (not entirely) energy and that is where it becomes funny? I feel like that is how the theory is explained. So maybe the boobs could be something similar. 
+
+### PENIS SKETCH:
+
+I'm following this person on Instagram that is going through Schiffman's Nature of Code but using P5, and publishing their sketches as they go. They have been into physics lately and posted a sort of liquid simulation using particles.
+
+![instagram physics liquid](journal_assets/gifs/other_gifs/insta.gif)
+
+This is literally sperm. 
+
+I made a bit of research and found an example of this on code pen: https://codepen.io/rudtjd2548/pen/mdjWjaP (used as milk)
+
+Basically, it is a blur filter applied to the the canvas, making the particles visually all stick to each other in a blurred out way, and then a high contrast one to bring everything back crisp. So you end up with a crisp sort of liquidy look, like both effects are added separetely. 
+
+So basically it is just particles with a SVG filter on top of the canvas. So I started to try to make this. Of course I started to do all this on the penis sketch, even though I thought this could also maybe be used for the vulva OR a new sketch with a mouth? I did think that this could turn out realllllly too crass but also thought it could be hilarious as a surprise. But yes the initial idea was to pair it with the dick. The first day it did not work at all which was frustrating, I could see the filter applied around the edges of my canvas but not on top directly. And also I did not try to put the particles... I was so mixed up.
+
+I started by making a bunch of particles appear on mouseclick : 
+
+![instagram physics liquid](journal_assets/gifs/penis/penis_sperm1.gif);
+
+Okay next step, I tried to figure out the freaking SVG FILTER on top of everything, but I couldnt understand why it was not working. Again, I could see a sort of blurry rectangle with round corners around the edge of my canvas, so I could see SOMETHING was happing. It looked like it was underneath the canvas or something. I can't remeber if It was by asking ChatGPT or a forum, but I tried to clear the background using clear(canvas) which clears the cavas before it is redrawn every frame, and I turned the particles black, and BOOM, it was working.
+
+![sperm v1](journal_assets/gifs/penis/penis_sperm2.gif);
+
+The thing is that now the whole canvas was affected by the SVG filter, which was actually interesting and made for a cool sort of oil and vinegar feeling that I won't be using here but could be cool in another project.
+
+![sperm v1](journal_assets/gifs/penis/penis_oil.gif);
+
+So yeah. I needed to figure that out. My first instinct was to create an image using createGraphic and draw them there, which worked but I still could apply the svg to this graphic because it did not have its own canvas. I decided to make two p5 instances, so two different canvases, drawn on directly on top of each other the same size, so that I can draw things at the same position but would technically be layers and not the same sketch. The background one would literally be everything, including the creation of the matter sperm particles, and I would pass the position of the particles to the top top layer, which would have the SVG and only draw the particles with a transparent background using clear(canvas). This ALMOST worked, but then I ended up not being able to access with the mouse the background layer with all the matter engine, because the top layer was blocking mouse interaction. SO. I thought Ok im going to switch the engine and matter bodies and particles to the top layer with the drawing of the sperm particles, and pass the position of the penis and balls to the bottom layer. So I started doing that but as I was starting the process and transfering the basic matter engine stuff, I pasted the mouse contraint stuff to the front layer and had to change the canvas target and I thought ! OH ! Maybe all I have to do is change the target and yes it was all I had to do. So I put everything back and just changed the mouse constrain target canvas. I also had to deactivate the collision beween the sperm particles and the dick and balls, because it was really chaotic. Im thinking of maybe reactivating the balls so I'll try this next time. A few last touches I added that are just cherry on top :
+
+- Deleted the gland... the way the sperm was coming out was not working with the wierd elongated ellipse on top of all the other ones
+- Sperm only works when clicking on the penis (using mouse events from matter)
+- I adjusted dynamically where the sperm particles are created on the penis based on the mouse position, because I didnt want them to stay in the middle when pulling it up, down and sideways. Now it moves a bit in the direction of the mouse, so it feels a bit more realistic.
+- I added a force to the sperm stream depending on the mouse position. I wanted the penis to shoot the sperm, because before it was always shooting down even if it was pulled to the side. I found a cool mathematical algorithm for that on a forum (I put the link in my code)
+- I added a second particle stream with a smaller particle range, like little droplets. This makes the flow thicker but also more liquid as it seems like there are small drops separating from the bigger stream and falling faster. I also played with gravity and air friction to achieve the perfect texture and weight. Its gross but so good.
+- Last thing! I used a plugin because yes they do have those and I want to look if there are other plugins that speak to me, to make the sperm wrap around the edges of the canvas. Its working so good. It feels even more grotesque.
+
+Here is the final product (i am so happy about how weird this makes me feel)
+
+![sperm v2](journal_assets/gifs/penis/penis_sperm3.gif);
+
+SO. This is so funny if I'm honest. It looks in 3d haha. Its so weird. Its such a good surprise to just handle the dick and this starts leaking out.
+
+ I think this is all for now tbh. I wrote all day and I' so tired. I think evrything is there for now. 
+
+ Bye.

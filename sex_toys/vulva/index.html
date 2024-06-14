@@ -4,21 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>sex toys</title>
-
     <link rel="stylesheet" href="css/style.css" />
-
-    <!-- libraries -->
     <script src="js/lib/matter.min.js"></script>
-    <script src="
-https://cdn.jsdelivr.net/npm/matter-wrap@0.2.0/build/matter-wrap.min.js
-"></script>
-
     <script src="js/lib/hsluv-0.1.0.min.js"></script>
     <script src="js/lib/p5.min.js"></script>
     <script src="js/lib/p5.sound.min.js"></script>
-
-    <!-- scripts -->
-
     <script src="js/scripts/Bum.js"></script>
     <script src="js/scripts/AnalBeads.js"></script>
     <script src="js/scripts/RectangleParticle.js"></script>
@@ -26,23 +16,6 @@ https://cdn.jsdelivr.net/npm/matter-wrap@0.2.0/build/matter-wrap.min.js
     <script src="js/scripts/main.js"></script>
   </head>
   <body>
-    <svg>
-      <defs>
-        <filter id="gooey" height="130%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-          <feColorMatrix
-            in="blur"
-            mode="matrix"
-            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 50 -10"
-            result="goo"
-          />
-          <feBlend in="SourceGraphic" in2="goo" />
-        </filter>
-      </defs>
-    </svg>
-    <div id="canvases">
-      <section id="p5js-canvas"></section>
-      <section id="particles-canvas"></section>
-    </div>
+    <section id="p5js-canvas"></section>
   </body>
 </html>

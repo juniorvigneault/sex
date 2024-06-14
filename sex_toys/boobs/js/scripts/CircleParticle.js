@@ -1,5 +1,5 @@
 class CircleParticle {
-  constructor(x, y, r, isStatic, composite, p) {
+  constructor(x, y, r, isStatic, composite) {
     this.x = x;
     this.y = y;
     this.r = r;
@@ -14,7 +14,7 @@ class CircleParticle {
       collisionFilter: {
         category: CATEGORY_CIRCLE_PARTICLE,
         mask:
-          CATEGORY_PENIS |
+          CATEGORY_BRIDGE |
           CATEGORY_RECTANGLE |
           CATEGORY_MOUSE |
           CATEGORY_CIRCLE_PARTICLE, // Collide with bridge and rectangle
@@ -22,27 +22,32 @@ class CircleParticle {
     };
 
     this.body = Bodies.circle(this.x, this.y, this.r / 2, options);
+    console.log(this.body);
     // hack to make the balls separated at the beginning without mouse interaction...
     setTimeout(() => {
       this.body.collisionFilter.mask =
-        CATEGORY_PENIS | CATEGORY_RECTANGLE | CATEGORY_MOUSE;
+        CATEGORY_BRIDGE | CATEGORY_RECTANGLE | CATEGORY_MOUSE;
     }, 100);
 
     Composite.add(composite, this.body);
-    this.p = p;
   }
 
-  display(color, p) {
+  display(color) {
     let { r, g, b, a } = color;
-    p.push();
+    push();
     let pos = this.body.position;
     let angle = this.body.angle;
-    p.noStroke();
-    p.ellipseMode(p.CENTER);
-    p.translate(pos.x, pos.y);
-    p.rotate(angle);
-    p.fill(r, g, b, a);
-    p.ellipse(0, 0, this.r);
-    p.pop();
+    noStroke();
+    ellipseMode(CENTER);
+    translate(pos.x, pos.y);
+    rotate(angle);
+    fill(r, g, b, a);
+    ellipse(0, 0, this.r);
+
+    pop();
+
+    push();
+
+    pop();
   }
 }
