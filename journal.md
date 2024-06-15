@@ -275,6 +275,6 @@ Here is the final product (i am so happy about how weird this makes me feel)
 
 SO. This is so funny if I'm honest. It looks in 3d haha. Its so weird. Its such a good surprise to just handle the dick and this starts leaking out.
 
- I think this is all for now tbh. I wrote all day and I' so tired. I think evrything is there for now. 
+ I think this is all for now tbh. I wrote all day and I' so tired. I think evrything is there for now. I will maybe try to write tomorrow about other things (I have a couple notes I want to dive deeper into).
 
  Bye.
