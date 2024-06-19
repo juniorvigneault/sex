@@ -6,7 +6,7 @@ class AnalBeads {
     this.startX = sX;
     this.startY = sY;
     this.constraintLength = 200;
-    this.toyLength = 700;
+    this.toyLength = 1000;
     this.beadSize = beadSize;
     this.spaceBetweenBeads = this.beadSize + 40;
     this.makeChain();
@@ -14,9 +14,10 @@ class AnalBeads {
 
   display() {
     for (let i = 0; i < this.beads.length; i++) {
+      let lastBead = this.beads.length - 1;
       if (i > 0) {
         push();
-        stroke(0, 255, 0);
+        strokeHsluv(0, 0, 13.2);
         strokeWeight(5);
         line(
           this.beads[i - 1].body.position.x,
@@ -26,12 +27,16 @@ class AnalBeads {
         );
         pop();
       }
-      this.beads[i].display({ r: 0, g: 200, b: 0, a: 255 });
+      if (i === lastBead) {
+        this.beads[i].display({ h: 0, s: 0, l: 13.2 }, true);
+      } else {
+        this.beads[i].display({ h: 0, s: 0, l: 13.2 }, false);
+      }
     }
   }
 
   makeChain() {
-    let fixed = false;
+    let handle = false;
     let prev = null;
     let counter = 0;
     for (
@@ -39,13 +44,6 @@ class AnalBeads {
       y < this.startY + this.toyLength;
       y += this.spaceBetweenBeads
     ) {
-      0;
-      if (prev === null) {
-        fixed = true;
-      } else {
-        fixed = false;
-      }
-
       let p = new CircleParticle(this.startX, y, this.beadSize, false, world);
       this.beads.push(p);
       if (prev !== null) {

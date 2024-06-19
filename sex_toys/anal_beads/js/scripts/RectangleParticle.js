@@ -28,7 +28,7 @@ class RectangleParticle {
     rectMode(CENTER);
     translate(pos.x, pos.y);
     rotate(angle);
-    // noStroke();
+    noStroke();
     // fillHsluv(321, 49, 50);
     fill(r, g, b, a);
     rect(0, 0, this.w, this.h);

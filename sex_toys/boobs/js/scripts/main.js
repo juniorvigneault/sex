@@ -209,7 +209,6 @@ function draw() {
       pop();
     }
   }
-
   stickToy(particles[0]);
   stickToy(particles[particles.length - 1]);
 }
@@ -415,7 +414,6 @@ function renderCloth(cloth, columns, rows) {
       endShape(CLOSE);
     }
   }
-
   pop();
 
   // Optional: Render particles (if you still want to show them)
