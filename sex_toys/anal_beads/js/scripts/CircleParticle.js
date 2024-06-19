@@ -47,8 +47,9 @@ class CircleParticle {
       fillHsluv(h, s, l);
       ellipse(0, 0, this.r);
       pop();
-      fillHsluv(61.8, 75.5, 81.9);
-      ellipse(0, 0, 30);
+      // yellow dots
+      // fillHsluv(61.8, 75.5, 81.9);
+      // ellipse(0, 0, 30);
       // White reflection on beads
       // push();
       // strokeHsluv(0, 0, 100);
