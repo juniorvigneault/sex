@@ -28,6 +28,7 @@ let isCumming = false;
 let canvasP;
 let canvasS;
 let penis;
+let peeSound;
 let gameX = 200;
 let gameY = 100;
 let ellipseRadius = 200;
@@ -49,7 +50,7 @@ let clothOptions = {
 
 function sperm(s) {
   s.setup = function () {
-    canvasS = s.createCanvas(1000, 800);
+    canvasS = s.createCanvas(800, 800);
     // Move the canvas within the HTML into the appropriate section
     canvasS.parent("particles-canvas");
   };
@@ -74,8 +75,11 @@ function sperm(s) {
 }
 
 function sketch(p) {
+  p.preload = function () {
+    peeSound = p.loadSound("assets/sounds/peeSound.mp3");
+  };
   p.setup = function () {
-    canvasP = p.createCanvas(1000, 800);
+    canvasP = p.createCanvas(800, 800);
 
     // Move the canvas within the HTML into the appropriate section
     canvasP.parent("p5js-canvas");
@@ -106,7 +110,8 @@ function sketch(p) {
   };
 
   p.draw = function () {
-    p.background(0); // Transparent background to keep the gooey effect
+    // p.background(0); // Transparent background to keep the gooey effect
+    displayBackground();
     // Clear the particles canvas
     // p.clear(canvasP);
 
@@ -160,16 +165,30 @@ function sketch(p) {
     // pop();
 
     for (let i = 0; i < penis.bodies.length; i++) {
-      if (i > 0 && i <= 18) {
+      if (i > 0 && i <= 20) {
         p.push();
-        p.stroke(0, 200, 0);
+        p.strokeWeight(163);
+        // strokeHsluv(0, 0, 13.2, p);
+        // p.line(
+        //   penis.bodies[i].position.x,
+        //   penis.bodies[i].position.y,
+        //   penis.bodies[i - 1].position.x,
+        //   penis.bodies[i - 1].position.y
+        // );
+
         p.strokeWeight(162);
+        strokeHsluv(334.9, 78.7, 78, p);
         p.line(
-          penis.bodies[i - 1].position.x,
-          penis.bodies[i - 1].position.y,
           penis.bodies[i].position.x,
-          penis.bodies[i].position.y
+          penis.bodies[i].position.y,
+          penis.bodies[i - 1].position.x,
+          penis.bodies[i - 1].position.y
         );
+
+        // p.noStroke();
+        // fillHsluv(334.9, 78.7, 78, p);
+        // p.ellipse(penis.bodies[i].position.x, penis.bodies[i].position.y, 200);
+
         p.pop();
       }
     }
@@ -364,6 +383,15 @@ function sketch(p) {
       x: p.cos(targetAngle) * force,
       y: p.sin(targetAngle) * force,
     });
+  }
+
+  function displayBackground() {
+    p.push();
+    p.rectMode(p.CORNER);
+    p.noStroke();
+    fillHsluv(77.1, 88.7, 90.9, p);
+    p.rect(0, 0, p.width, p.height);
+    p.pop();
   }
 
   // function addEnclosures() {
@@ -562,5 +590,16 @@ function sketch(p) {
     // }
   }
 }
+
+function fillHsluv(h, s, l, sketch) {
+  const rgb = hsluv.hsluvToRgb([h, s, l]);
+  sketch.fill(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+}
+
+function strokeHsluv(h, s, l, sketch) {
+  const rgb = hsluv.hsluvToRgb([h, s, l]);
+  sketch.stroke(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+}
+
 new p5(sketch);
 new p5(sperm);

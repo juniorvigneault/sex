@@ -41,7 +41,7 @@ class CircleParticle {
     p.ellipseMode(p.CENTER);
     p.translate(pos.x, pos.y);
     p.rotate(angle);
-    p.fill(r, g, b, a);
+    fillHsluv(color.r, color.g, color.b, p);
     p.ellipse(0, 0, this.r);
     p.pop();
   }

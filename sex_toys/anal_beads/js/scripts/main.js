@@ -128,22 +128,23 @@ function draw() {
   let leftCheek = bridge.bodies[1];
 
   push();
-  strokeWeight(1);
-  strokeHsluv(0, 0, 13.2);
+  // strokeWeight(1);
+  // strokeHsluv(0, 0, 13.2);
+  noStroke();
   ellipseMode(CENTER);
   fillHsluv(126.6, 62.2, 66.8);
   ellipse(rightCheek.position.x, rightCheek.position.y, 400);
-  beginClip();
-  strokeWeight(0.4);
-  strokeHsluv(0, 0, 13.2);
-  ellipseMode(CENTER);
-  fillHsluv(126.6, 62.2, 66.8);
-  ellipse(leftCheek.position.x, leftCheek.position.y, 400);
-  endClip();
+  // beginClip();
+  // // strokeWeight(0.4);
+  // // strokeHsluv(0, 0, 13.2);
+  // ellipseMode(CENTER);
+  // fillHsluv(126.6, 62.2, 66.8);
+  // ellipse(leftCheek.position.x, leftCheek.position.y, 400);
+  // endClip();
 
   pop();
-  strokeWeight(0.4);
-  strokeHsluv(0, 0, 13.2);
+  // strokeWeight(0.4);
+  // strokeHsluv(0, 0, 13.2);
   ellipseMode(CENTER);
   fillHsluv(126.6, 62.2, 66.8);
   ellipse(leftCheek.position.x, leftCheek.position.y, 400);

@@ -657,3 +657,13 @@ function createChain(x, y) {
   //bridge.bodies[0].isStatic = true;
   return bridge;
 }
+
+function fillHsluv(h, s, l, sketch) {
+  const rgb = hsluv.hsluvToRgb([h, s, l]);
+  sketch.fill(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+}
+
+function strokeHsluv(h, s, l, sketch) {
+  const rgb = hsluv.hsluvToRgb([h, s, l]);
+  sketch.stroke(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+}

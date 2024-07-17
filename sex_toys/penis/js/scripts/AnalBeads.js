@@ -16,7 +16,7 @@ class AnalBeads {
     for (let i = 0; i < this.beads.length; i++) {
       if (i > 0) {
         p.push();
-        p.stroke(0, 150, 0);
+        strokeHsluv(243.7, 83.4, 63.5, p);
         p.strokeWeight(200);
         p.line(
           this.beads[i - 1].body.position.x,
@@ -26,7 +26,7 @@ class AnalBeads {
         );
         p.pop();
       }
-      this.beads[i].display({ r: 0, g: 150, b: 0, a: 255 }, p);
+      this.beads[i].display({ r: 243.7, g: 83.4, b: 63.5, a: 255 }, p);
     }
   }
 

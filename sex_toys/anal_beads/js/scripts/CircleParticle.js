@@ -42,8 +42,7 @@ class CircleParticle {
       ellipse(0, 0, this.r - this.handleWidth);
     } else {
       push();
-      strokeWeight(0.4);
-      strokeHsluv(0, 0, 100.2);
+      noStroke();
       fillHsluv(h, s, l);
       ellipse(0, 0, this.r);
       pop();
