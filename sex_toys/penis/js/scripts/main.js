@@ -76,7 +76,7 @@ function sperm(s) {
 
 function sketch(p) {
   p.preload = function () {
-    peeSound = p.loadSound("assets/sounds/peeSound.mp3");
+    // peeSound = p.loadSound("assets/sounds/peeSound.mp3");
   };
   p.setup = function () {
     canvasP = p.createCanvas(800, 800);
