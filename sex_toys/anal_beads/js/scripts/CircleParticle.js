@@ -5,6 +5,7 @@ class CircleParticle {
     this.r = r;
 
     this.popped = false;
+    this.inTunnel = true;
     this.handleWidth = 12;
     let options = {
       friction: 0,

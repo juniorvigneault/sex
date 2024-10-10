@@ -18,8 +18,32 @@ let particles = [];
 let enclosures = [];
 let analBeads;
 let bum;
+let mouse;
 let beads = [];
 let numBeads = 6;
+let showInfoBox = false;
+let textIMG;
+let mouseIsPressed = false;
+let toyIsGone = false;
+
+// shrinking/growing bead animation variables
+
+let ellipseSize = 0; // Initial size of the ellipse
+let fadeAmount = 0; // Initial fade value for the image (opacity)
+let targetSize = 250; // Target size of the ellipse
+let shrinking = false; // Track if we are shrinking the ellipse
+
+let easeFactors = {
+  grow: 0.2,
+  shrink: 0.1,
+  fadeIn: 0.5,
+  fadeOut: 0.4,
+};
+
+let hoverTime = 300; // Time (in ms) to wait before growing (1 second)
+let hoverStartTime = 0; // Time when the bead was first hovered
+let isHovering = false; // Track whether we're currently hovering a bead
+let currentBead = null; // Track the current bead being hovered
 
 let sounds = {
   slap: undefined,
@@ -39,6 +63,7 @@ function preload() {
   sounds.pop = loadSound("assets/sounds/pop2.wav");
   sounds.slap = loadSound("assets/sounds/slap.mp3");
   sounds.pull = loadSound("assets/sounds/pull.wav");
+  textIMG = loadImage("assets/images/text.png");
 }
 
 function setup() {
@@ -52,14 +77,14 @@ function setup() {
   Runner.run(engine);
   engine.world.gravity.scale = 0.005;
 
-  let mouse = Mouse.create(document.querySelector("#p5js-canvas")),
-    mouseConstraint = MouseConstraint.create(engine, {
+  (mouse = Mouse.create(document.querySelector("#p5js-canvas"))),
+    (mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
       collisionFilter: { category: CATEGORY_MOUSE },
       constraint: {
         stiffness: 0.08,
       },
-    });
+    }));
 
   World.add(world, mouseConstraint);
 
@@ -102,6 +127,7 @@ function draw() {
   pop();
   for (let bead of analBeads.beads) {
     if (bead.body.position.y >= 600) {
+      bead.inTunnel = false;
       bead.body.collisionFilter.mask =
         CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE | CATEGORY_MOUSE;
     }
@@ -115,6 +141,8 @@ function draw() {
   }
 
   analBeads.display();
+  mouseInfoBox();
+
   //bum.display();
   for (let enclosure of enclosures) {
     enclosure.display({ r: 200, g: 200, b: 200, a: 0 });
@@ -152,6 +180,13 @@ function draw() {
   ellipseMode(CENTER);
   fillHsluv(126.6, 62.2, 66.8);
   ellipse(rightCheek.position.x, rightCheek.position.y, 400);
+
+  if (analBeads.beads[0].body.position.y > height + 200) {
+    toyIsGone = true;
+  }
+  if (toyIsGone) {
+    articleLink();
+  }
 }
 
 function addEnclosures() {
@@ -186,7 +221,14 @@ function addEnclosures() {
   enclosures.push(tunnelEnclosureLeft);
 }
 
-function mousePressed() {}
+function mousePressed() {
+  mouseIsPressed = true;
+}
+
+function mouseReleased() {
+  mouseIsPressed = false;
+}
+
 function addBeads() {
   // Create a composite to hold the beads and constraints
   let beadComposite = Composite.create();
@@ -274,6 +316,102 @@ function addBridge() {
   ]);
 }
 
+function mouseInfoBox() {
+  const mousePosition = mouse.position; // Get current mouse position
+  let foundBead = false; // Flag to track if a bead is hovered
+  let beadsOnly = analBeads.beads.length - 1;
+
+  for (let i = 0; i < beadsOnly; i++) {
+    let bead = analBeads.beads[i];
+
+    if (!bead.inTunnel) {
+      // Check if the mouse is over this bead
+      if (Matter.Query.point([bead.body], mousePosition).length > 0) {
+        if (!mouseIsPressed) {
+          foundBead = true;
+          if (!isHovering) {
+            // Start the hover timer if this is the first time we're hovering
+            hoverStartTime = millis();
+            isHovering = true;
+          }
+
+          // Check if we've hovered for the required delay time (1 second)
+          if (millis() - hoverStartTime >= hoverTime) {
+            shrinking = false; // Stop shrinking when hovering
+            currentBead = bead; // Track the current bead being hovered
+            // Animate the info box and image
+            animateInfoBox(bead.body.position.x, bead.body.position.y, true);
+          }
+          break; // Exit the loop once we've found the hovered bead
+        }
+      }
+    }
+  }
+
+  // Start shrinking if not hovering over any bead
+  if (!foundBead) {
+    shrinking = true;
+    isHovering = false; // Reset hovering state when mouse leaves the bead
+  }
+
+  // Animate shrinking if not hovering, using the current bead's position
+  if (shrinking && currentBead) {
+    animateInfoBox(
+      currentBead.body.position.x,
+      currentBead.body.position.y,
+      false
+    );
+  }
+}
+
+function animateInfoBox(x, y, grow) {
+  if (grow) {
+    // Apply easing to increase the size smoothly and slow down near the target size
+    let sizeDifference = targetSize - ellipseSize;
+    ellipseSize += sizeDifference * easeFactors.grow; // Easing effect for growth
+
+    // Gradually fade in the image as the ellipse grows
+    if (ellipseSize >= targetSize * 0.9) {
+      fadeAmount += (255 - fadeAmount) * easeFactors.fadeIn; // Ease in the image
+    }
+  } else {
+    // Apply easing to shrink the ellipse smoothly
+    ellipseSize += (0 - ellipseSize) * easeFactors.shrink; // Easing effect for shrinking
+
+    // Gradually fade out the image as the ellipse shrinks
+    fadeAmount += (0 - fadeAmount) * easeFactors.fadeOut; // Ease out the image
+  }
+
+  // Ensure the ellipse size and fade amount remain within valid bounds
+  ellipseSize = constrain(ellipseSize, 0, targetSize);
+  fadeAmount = constrain(fadeAmount, 0, 255);
+
+  // Display the ellipse and image
+  if (ellipseSize > 0) {
+    infoBox(x, y);
+  }
+
+  if (fadeAmount > 0) {
+    displayImage(x, y);
+  }
+}
+
+function infoBox(x, y) {
+  push();
+  ellipseMode(CENTER);
+  fillHsluv(0, 0, 13.2); // Your chosen color
+  ellipse(x, y, ellipseSize); // Use the growing/shrinking ellipse size
+  pop();
+}
+
+function displayImage(x, y) {
+  push();
+  tint(255, fadeAmount); // Apply transparency based on fadeAmount
+  imageMode(CENTER);
+  image(textIMG, x, y + 5); // Display the image at the center of the bead
+  pop();
+}
+
 function fillHsluv(h, s, l) {
   const rgb = hsluv.hsluvToRgb([h, s, l]);
   fill(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
@@ -282,4 +420,18 @@ function fillHsluv(h, s, l) {
 function strokeHsluv(h, s, l) {
   const rgb = hsluv.hsluvToRgb([h, s, l]);
   stroke(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+}
+
+function articleLink() {
+  push();
+  fillHsluv(126.6, 62.2, 0);
+  textSize(36);
+  textAlign(CENTER);
+  text(
+    `Pour lire l'article complet: 
+    clubsexu.com`,
+    width / 2,
+    height / 2 + 30
+  );
+  pop();
 }
