@@ -25,6 +25,7 @@ let showInfoBox = false;
 let textIMG;
 let mouseIsPressed = false;
 let toyIsGone = false;
+let p5jsCanvas;
 
 // shrinking/growing bead animation variables
 
@@ -70,6 +71,7 @@ function setup() {
   // let canvas = createCanvas(1000, 1000);
 
   let canvas = createCanvas(550, 800);
+  p5jsCanvas = document.querySelector("#p5js-canvas");
   // Move the canvas within the HTML into the appropriate section
   canvas.parent("p5js-canvas");
   engine = Engine.create();
@@ -96,7 +98,7 @@ function setup() {
   addEnclosures();
   addBridge(); // Add the bridge here
   //addBeads();
-  analBeads = new AnalBeads(gameX + 400, gameY - 700, 120);
+  analBeads = new AnalBeads(gameX + 400, gameY - 1200, 120);
   let lastBead = analBeads.beads.length - 1;
   analBeads.beads[lastBead].popped = true;
   // Add event listener for mouse clicks
@@ -141,7 +143,7 @@ function draw() {
   }
 
   analBeads.display();
-  mouseInfoBox();
+  // mouseInfoBox();
 
   //bum.display();
   for (let enclosure of enclosures) {
@@ -187,6 +189,8 @@ function draw() {
   if (toyIsGone) {
     articleLink();
   }
+
+  beadHover();
 }
 
 function addEnclosures() {
@@ -198,6 +202,7 @@ function addEnclosures() {
     true,
     world
   );
+
   enclosures.push(bottomEnclosure);
 
   let tunnelEnclosureLeft = new RectangleParticle(
@@ -241,8 +246,9 @@ function addBeads() {
       x + i * beadSize + spaceBetweenBeads,
       100,
       beadSize,
-      false,
-      beadComposite
+      true,
+      beadComposite,
+      "hello"
     );
     beads.push(bead);
   }
@@ -316,101 +322,167 @@ function addBridge() {
   ]);
 }
 
-function mouseInfoBox() {
-  const mousePosition = mouse.position; // Get current mouse position
-  let foundBead = false; // Flag to track if a bead is hovered
+function beadHover() {
+  const mousePosition = mouse.position;
+  let foundBead = false;
   let beadsOnly = analBeads.beads.length - 1;
 
   for (let i = 0; i < beadsOnly; i++) {
     let bead = analBeads.beads[i];
 
-    if (!bead.inTunnel) {
-      // Check if the mouse is over this bead
-      if (Matter.Query.point([bead.body], mousePosition).length > 0) {
-        if (!mouseIsPressed) {
-          foundBead = true;
-          if (!isHovering) {
-            // Start the hover timer if this is the first time we're hovering
-            hoverStartTime = millis();
-            isHovering = true;
-          }
+    if (Matter.Query.point([bead.body], mousePosition).length > 0) {
+      foundBead = true;
 
-          // Check if we've hovered for the required delay time (1 second)
-          if (millis() - hoverStartTime >= hoverTime) {
-            shrinking = false; // Stop shrinking when hovering
-            currentBead = bead; // Track the current bead being hovered
-            // Animate the info box and image
-            animateInfoBox(bead.body.position.x, bead.body.position.y, true);
-          }
-          break; // Exit the loop once we've found the hovered bead
-        }
+      if (!isHovering) {
+        hoverStartTime = millis(); // Start the hover timer
+        isHovering = true;
       }
+
+      if (millis() - hoverStartTime >= hoverTime) {
+        // Grow the bubble when hovered
+        animateBubble(bead.infoBubble, true);
+        currentBead = bead;
+        bead.body.circleRadius = 250;
+      }
+      break;
     }
   }
 
-  // Start shrinking if not hovering over any bead
   if (!foundBead) {
-    shrinking = true;
-    isHovering = false; // Reset hovering state when mouse leaves the bead
-  }
-
-  // Animate shrinking if not hovering, using the current bead's position
-  if (shrinking && currentBead) {
-    animateInfoBox(
-      currentBead.body.position.x,
-      currentBead.body.position.y,
-      false
-    );
-  }
-}
-
-function animateInfoBox(x, y, grow) {
-  if (grow) {
-    // Apply easing to increase the size smoothly and slow down near the target size
-    let sizeDifference = targetSize - ellipseSize;
-    ellipseSize += sizeDifference * easeFactors.grow; // Easing effect for growth
-
-    // Gradually fade in the image as the ellipse grows
-    if (ellipseSize >= targetSize * 0.9) {
-      fadeAmount += (255 - fadeAmount) * easeFactors.fadeIn; // Ease in the image
+    if (currentBead) {
+      // Shrink the bubble when the mouse leaves
+      animateBubble(currentBead.infoBubble, false);
     }
+    isHovering = false;
+  }
+}
+
+function animateBubble(bubble, grow) {
+  if (grow) {
+    bubble.style.transform = "scale(1)"; // Grow to full size
+
+    // Fade in the text with a slight delay
+    setTimeout(() => {
+      bubble.querySelector(".textInfoBubble").style.opacity = "1";
+    }, 200);
   } else {
-    // Apply easing to shrink the ellipse smoothly
-    ellipseSize += (0 - ellipseSize) * easeFactors.shrink; // Easing effect for shrinking
-
-    // Gradually fade out the image as the ellipse shrinks
-    fadeAmount += (0 - fadeAmount) * easeFactors.fadeOut; // Ease out the image
-  }
-
-  // Ensure the ellipse size and fade amount remain within valid bounds
-  ellipseSize = constrain(ellipseSize, 0, targetSize);
-  fadeAmount = constrain(fadeAmount, 0, 255);
-
-  // Display the ellipse and image
-  if (ellipseSize > 0) {
-    infoBox(x, y);
-  }
-
-  if (fadeAmount > 0) {
-    displayImage(x, y);
+    bubble.style.transform = "scale(0)"; // Shrink to invisible
+    bubble.querySelector(".textInfoBubble").style.opacity = "0";
   }
 }
 
-function infoBox(x, y) {
-  push();
-  ellipseMode(CENTER);
-  fillHsluv(0, 0, 13.2); // Your chosen color
-  ellipse(x, y, ellipseSize); // Use the growing/shrinking ellipse size
-  pop();
-}
+// function beadHover() {
+//   const mousePosition = mouse.position; // Get current mouse position
+//   let foundBead = false; // Flag to track if a bead is hovered
+//   let beadsOnly = analBeads.beads.length - 1;
+//   for (let i = 0; i < beadsOnly; i++) {
+//     //     // if (!bead.inTunnel) {
+// //     // Check if the mouse is over this bead
+// //     if (Matter.Query.point([bead.body], mousePosition).length > 0) {
+// //       // if (!mouseIsPressed) {
+// //       foundBead = true;
+// //       if (!isHovering) {
+// //         // Start the hover timer if this is the first time we're hovering
+// //         hoverStartTime = millis();
+// //         isHovering = true;
+// //       }
+//   }
+// }
+// function mouseInfoBox() {
+//   const mousePosition = mouse.position; // Get current mouse position
+//   let foundBead = false; // Flag to track if a bead is hovered
+//   let beadsOnly = analBeads.beads.length - 1;
 
-function displayImage(x, y) {
-  push();
-  tint(255, fadeAmount); // Apply transparency based on fadeAmount
-  imageMode(CENTER);
-  image(textIMG, x, y + 5); // Display the image at the center of the bead
-  pop();
-}
+//   for (let i = 0; i < beadsOnly; i++) {
+//     let bead = analBeads.beads[i];
+
+//     // if (!bead.inTunnel) {
+//     // Check if the mouse is over this bead
+//     if (Matter.Query.point([bead.body], mousePosition).length > 0) {
+//       // if (!mouseIsPressed) {
+//       foundBead = true;
+//       if (!isHovering) {
+//         // Start the hover timer if this is the first time we're hovering
+//         hoverStartTime = millis();
+//         isHovering = true;
+//       }
+
+//       // Check if we've hovered for the required delay time (1 second)
+//       if (millis() - hoverStartTime >= hoverTime) {
+//         shrinking = false; // Stop shrinking when hovering
+//         currentBead = bead; // Track the current bead being hovered
+//         // Animate the info box and image
+//         animateInfoBox(bead.body.position.x, bead.body.position.y, true);
+//       }
+//       break; // Exit the loop once we've found the hovered bead
+//       // }
+//     }
+//     // }
+//   }
+
+//   // Start shrinking if not hovering over any bead
+//   if (!foundBead) {
+//     shrinking = true;
+//     isHovering = false; // Reset hovering state when mouse leaves the bead
+//   }
+
+//   // Animate shrinking if not hovering, using the current bead's position
+//   if (shrinking && currentBead) {
+//     animateInfoBox(
+//       currentBead.body.position.x,
+//       currentBead.body.position.y,
+//       false
+//     );
+//   }
+// }
+
+// function animateInfoBox(x, y, grow) {
+//   if (grow) {
+//     // Apply easing to increase the size smoothly and slow down near the target size
+//     let sizeDifference = targetSize - ellipseSize;
+//     ellipseSize += sizeDifference * easeFactors.grow; // Easing effect for growth
+
+//     // Gradually fade in the image as the ellipse grows
+//     if (ellipseSize >= targetSize * 0.9) {
+//       fadeAmount += (255 - fadeAmount) * easeFactors.fadeIn; // Ease in the image
+//     }
+//   } else {
+//     // Apply easing to shrink the ellipse smoothly
+//     ellipseSize += (0 - ellipseSize) * easeFactors.shrink; // Easing effect for shrinking
+
+//     // Gradually fade out the image as the ellipse shrinks
+//     fadeAmount += (0 - fadeAmount) * easeFactors.fadeOut; // Ease out the image
+//   }
+
+//   // Ensure the ellipse size and fade amount remain within valid bounds
+//   ellipseSize = constrain(ellipseSize, 0, targetSize);
+//   fadeAmount = constrain(fadeAmount, 0, 255);
+
+//   // Display the ellipse and image
+//   if (ellipseSize > 0) {
+//     infoBox(x, y);
+//   }
+
+//   if (fadeAmount > 0) {
+//     displayImage(x, y);
+//   }
+// }
+
+// function infoBox(x, y) {
+//   push();
+//   ellipseMode(CENTER);
+//   fillHsluv(0, 0, 13.2); // Your chosen color
+//   ellipse(x, y, ellipseSize); // Use the growing/shrinking ellipse size
+//   pop();
+// }
+
+// function displayImage(x, y) {
+//   push();
+//   tint(255, fadeAmount); // Apply transparency based on fadeAmount
+//   imageMode(CENTER);
+//   image(textIMG, x, y + 5); // Display the image at the center of the bead
+//   pop();
+// }
 
 function fillHsluv(h, s, l) {
   const rgb = hsluv.hsluvToRgb([h, s, l]);

@@ -1,8 +1,15 @@
 class CircleParticle {
-  constructor(x, y, r, isStatic, composite) {
+  constructor(x, y, r, isStatic, composite, text) {
     this.x = x;
     this.y = y;
     this.r = r;
+    this.infoBubble = document.createElement("div");
+    this.infoBubble.classList.add("infoBubble");
+    p5jsCanvas.append(this.infoBubble);
+    this.textInfoBubble = document.createElement("p");
+    this.infoBubble.append(this.textInfoBubble);
+    this.textInfoBubble.classList.add("textInfoBubble");
+    this.textInfoBubble.innerText = text;
 
     this.popped = false;
     this.inTunnel = true;
@@ -46,7 +53,6 @@ class CircleParticle {
       noStroke();
       fillHsluv(h, s, l);
       ellipse(0, 0, this.r);
-      pop();
       // yellow dots
       // fillHsluv(61.8, 75.5, 81.9);
       // ellipse(0, 0, 30);
@@ -60,6 +66,15 @@ class CircleParticle {
       // noStroke();
       // ellipse(7, 45, 14);
       // pop();
+      // Get the current position of the canvas in the viewport
+      let canvasRect = p5jsCanvas.getBoundingClientRect();
+
+      // Update the div's position relative to the canvas
+      this.infoBubble.style.left = canvasRect.left + pos.x - 125 + "px"; // Center by subtracting 125 (half of 250px)
+      this.infoBubble.style.top = canvasRect.top + pos.y - 125 + "px";
+      // rotate the element by the same angle
+      // this.infoBubble.style.transform = `rotate(${angle}rad)`;
+      pop();
     }
     pop();
   }

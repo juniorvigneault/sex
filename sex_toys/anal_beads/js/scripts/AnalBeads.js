@@ -6,7 +6,7 @@ class AnalBeads {
     this.startX = sX;
     this.startY = sY;
     this.constraintLength = 200;
-    this.toyLength = 1000;
+    this.toyLength = 1600;
     this.beadSize = beadSize;
     this.spaceBetweenBeads = this.beadSize + 40;
     this.makeChain();
@@ -38,14 +38,40 @@ class AnalBeads {
   makeChain() {
     let handle = false;
     let prev = null;
-    let counter = 0;
+
+    // Array of unique messages for each bead
+    const messages = [
+      "Message for bead 1: Welcome!",
+      "Il faut donc lui donner un coup de pouce et enduire le jouet de lubrifiant pour que les stimulations ne causent pas trop de friction ou de l’inconfort.",
+      "Savais-tu que la stimulation anale demande une bonne quantité de lubrifiants? C’est parce que l’anus ne lubrifie pas naturellement.",
+      "Par exemple, utiliser des billes anales lors de la pénétration vaginale peut décupler les sensations.",
+      "Les jouets comme les billes anales peuvent avoir le premier rôle, mais peuvent aussi être utilisés pour amplifier les sensations d'autres stimulations.",
+      "L’anus peut être stimulé à son entrée doucement avec le doigt, la langue ou encore la bouche. En plus de procurer du plaisir, cette stimulation permet de détendre les muscles de l’anus et d’y faciliter la pénétration qui pourrait suivre.",
+      "Ça vaut la peine de prendre son temps et de préparer l’anus avant d’y insérer un jouet.",
+      "La principale sensation vient de la contraction et décontraction des muscles lors de l’insertion et le retrait lent des billes.",
+      "Les billes anales sont un jouet sexuel constitué de billes sphériques ou ovales alignées sur un fil. La taille des billes augmente le long du fil, ce qui permet une insertion progressive.",
+      "Message for bead 10: Final stretch!",
+    ];
+
     for (
       let y = this.startY;
       y < this.startY + this.toyLength;
       y += this.spaceBetweenBeads
     ) {
-      let p = new CircleParticle(this.startX, y, this.beadSize, false, world);
+      // Use the index of the bead to get the corresponding message
+      const index = this.beads.length % messages.length; // Loop through messages if more beads than messages
+      const message = messages[index];
+
+      let p = new CircleParticle(
+        this.startX,
+        y,
+        this.beadSize,
+        false,
+        world,
+        message // Pass the unique message for the bead
+      );
       this.beads.push(p);
+
       if (prev !== null) {
         let options = {
           bodyA: prev.body,
@@ -57,11 +83,11 @@ class AnalBeads {
           length: this.constraintLength,
           stiffness: 0.17,
         };
-        //see doc
+        // Create the constraint between beads
         let constraint = Constraint.create(options);
         World.add(world, constraint);
       }
       prev = p;
     } //for
-  }
+  } //makeChain
 } //class
