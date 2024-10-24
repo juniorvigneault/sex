@@ -8,8 +8,8 @@ class CircleParticle {
       friction: 0.1,
       restitution: 1,
       isStatic: isStatic,
-      density: 0.001,
-      frictionAir: 0.1,
+      // density: 0.001,
+      frictionAir: 0.03,
       mass: 10000,
       collisionFilter: {
         category: CATEGORY_CIRCLE_PARTICLE,

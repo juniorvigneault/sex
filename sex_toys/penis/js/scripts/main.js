@@ -33,10 +33,11 @@ let gameX = 200;
 let gameY = 100;
 let ellipseRadius = 200;
 const CATEGORY_PENIS = 0x0001;
+const CATEGORY_SPERM = 0x0003;
 const CATEGORY_CIRCLE_PARTICLE = 0x0002;
 const CATEGORY_RECTANGLE = 0x0004;
 const CATEGORY_MOUSE = 0x0008;
-
+let penisBeadsSize = 55;
 let clothOptions = {
   x: 0,
   y: 0,
@@ -47,6 +48,7 @@ let clothOptions = {
   crossBrace: false,
   particleRad: 5,
 };
+let boxes = [];
 
 function sperm(s) {
   s.setup = function () {
@@ -91,13 +93,13 @@ function sketch(p) {
     // addEnclosures();
     // Add the bridge here
     //addBeads();
-    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 180, 200));
-    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 180, 200));
+    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 100, 120));
+    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 100, 120));
 
     let ballConstraint = Constraint.create({
       bodyA: analBeads[0].beads[1].body,
       bodyB: analBeads[1].beads[1].body,
-      length: 130,
+      length: 100,
       stiffness: 0.8,
     });
     World.add(world, ballConstraint);
@@ -107,6 +109,17 @@ function sketch(p) {
     // clothOptions.x = width / 2 - halfClothLength;
 
     // addCloth();
+    let bottomLeftContainer = new Box(150, 750);
+    let bottomRightContainer = new Box(650, 750);
+    let topRightContainer = new Box(150, 250);
+    let topLeftContainer = new Box(650, 250);
+
+    boxes.push(
+      bottomLeftContainer,
+      bottomRightContainer,
+      topRightContainer,
+      topLeftContainer
+    );
   };
 
   p.draw = function () {
@@ -167,7 +180,7 @@ function sketch(p) {
     for (let i = 0; i < penis.bodies.length; i++) {
       if (i > 0 && i <= 20) {
         p.push();
-        p.strokeWeight(163);
+        // p.strokeWeight(penisBeadsSize);
         // strokeHsluv(0, 0, 13.2, p);
         // p.line(
         //   penis.bodies[i].position.x,
@@ -176,7 +189,7 @@ function sketch(p) {
         //   penis.bodies[i - 1].position.y
         // );
 
-        p.strokeWeight(162);
+        p.strokeWeight(penisBeadsSize * 2);
         strokeHsluv(334.9, 78.7, 78, p);
         p.line(
           penis.bodies[i].position.x,
@@ -231,6 +244,14 @@ function sketch(p) {
       }
     }
     // console.log(particles);
+
+    for (let box of boxes) {
+      for (wall of box.walls) {
+        let color = 0;
+        let p5Var = p;
+        wall.display(color, p5Var);
+      }
+    }
   };
 
   function createEngine() {
@@ -238,13 +259,13 @@ function sketch(p) {
     world = engine.world;
     Runner.run(engine);
     // engine.world.gravity.scale = 0.01;
-    engine.world.gravity.scale = 0.002;
+    engine.world.gravity.scale = 0.003;
 
     let mouse = Mouse.create(document.querySelector("#particles-canvas")),
       mouseConstraint = MouseConstraint.create(engine, {
         mouse: mouse,
         constraint: {
-          stiffness: 0.009,
+          stiffness: 0.004,
         },
         collisionFilter: { category: CATEGORY_MOUSE },
       });
@@ -277,33 +298,30 @@ function sketch(p) {
   function addPenis() {
     let group = Body.nextGroup(true);
 
-    penis = Composites.stack(0, 0, 18, 1, 0, 0, function (x, y) {
-      return Bodies.circle(p.width / 2, p.height / 2, 81, {
+    penis = Composites.stack(0, 10, 17, 1, 0, 0, function (x, y) {
+      return Bodies.circle(p.width / 2 - penisBeadsSize, 130, penisBeadsSize, {
         collisionFilter: {
           group: group,
           mask: CATEGORY_MOUSE | 1, // Collide with mouse
         },
-        frictionAir: 0.05,
-        resititution: 0,
-        friction: 0,
-        density: 1,
-        mass: 90000,
+        // isStatic: true,
+        frictionAir: 0.02,
       });
     });
 
     Composites.chain(penis, 0, 0, 0, 0, {
-      stiffness: 1.1,
-      length: 18,
+      stiffness: 1,
+      length: 13,
     });
 
     Composite.add(world, [
       penis,
       Constraint.create({
-        pointA: { x: p.width / 2, y: p.height / 2 - 200 },
+        pointA: { x: p.width / 2, y: p.height / 2 - 105 },
         bodyB: penis.bodies[0],
         pointB: { x: 0, y: 0 },
         length: 1,
-        stiffness: 1.2,
+        stiffness: 1,
       }),
     ]);
   }
@@ -314,34 +332,34 @@ function sketch(p) {
 
   function makeSperm() {
     let lastCircle = penis.bodies.length - 1;
-    let randomSize = p.random(10, 15);
-    let randomSmall = p.random(5, 10);
+    let randomSize = p.random(8, 12);
+    let randomSmall = p.random(4, 6);
     let group = Body.nextGroup(true);
 
     let y = p.map(
       p.mouseY,
       0,
       p.height,
-      penis.bodies[lastCircle].position.y - 50,
-      penis.bodies[lastCircle].position.y + 65
+      penis.bodies[lastCircle].position.y - 35,
+      penis.bodies[lastCircle].position.y + 45
     );
 
     let x = p.map(
       p.mouseX,
       0,
       p.width,
-      penis.bodies[lastCircle].position.x - 50,
-      penis.bodies[lastCircle].position.x + 50
+      penis.bodies[lastCircle].position.x - 35,
+      penis.bodies[lastCircle].position.x + 35
     );
 
     let particle = Bodies.circle(x, y, randomSize, {
       friction: 0,
       density: 1,
-      mass: 200,
+      // mass: 200,
       restitution: 0.7,
       collisionFilter: {
-        group: group,
-        mask: CATEGORY_MOUSE,
+        group: CATEGORY_SPERM,
+        mask: CATEGORY_MOUSE | CATEGORY_RECTANGLE,
       },
     });
     let smallParticle;
@@ -358,13 +376,13 @@ function sketch(p) {
       });
       World.add(world, smallParticle);
       particles.push(smallParticle);
-      spermForce(smallParticle, 5);
+      spermForce(smallParticle, 3);
     }
 
     World.add(world, particle);
     particles.push(particle);
 
-    spermForce(particle, 14);
+    spermForce(particle, 10);
 
     // Body.applyForce(particle, particle.position, { x: 0, y: 10 });
     // console.log(particles);

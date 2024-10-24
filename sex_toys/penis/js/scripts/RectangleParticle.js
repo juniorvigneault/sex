@@ -11,7 +11,7 @@ class RectangleParticle {
       isStatic: isStatic,
       collisionFilter: {
         category: CATEGORY_RECTANGLE,
-        mask: CATEGORY_CIRCLE_PARTICLE, // Collide only with circle particle
+        mask: CATEGORY_CIRCLE_PARTICLE | CATEGORY_SPERM, // Collide only with circle particle
       },
     };
 
@@ -19,19 +19,19 @@ class RectangleParticle {
     World.add(world, this.body);
   }
 
-  display(color) {
-    let { r, g, b, a } = color;
-    push();
+  display(color, p) {
+    p.push();
     let pos = this.body.position;
     let angle = this.body.angle;
 
-    rectMode(CENTER);
-    translate(pos.x, pos.y);
-    rotate(angle);
+    p.rectMode(p.CENTER);
+    p.translate(pos.x, pos.y);
+    p.rotate(angle);
     // noStroke();
     // fillHsluv(321, 49, 50);
-    fill(r, g, b, a);
-    rect(0, 0, this.w, this.h);
-    pop();
+    p.fill(color, 0, 0, 0);
+    p.noStroke();
+    p.rect(0, 0, this.w, this.h);
+    p.pop();
   }
 }
