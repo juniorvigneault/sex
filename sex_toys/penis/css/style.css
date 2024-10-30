@@ -26,3 +26,33 @@ body {
 #particles-canvas {
   filter: url("#gooey");
 }
+
+.infoBubble {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  /* background-color: white; */
+  /* border-radius: 50%; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* overflow: hidden; */
+
+  /* Start hidden by scaling it down */
+  /* transform: scale(0); */
+  /* transform-origin: center; Ensure scaling happens from the center */
+  /* transition: transform 0.3s ease; Smooth scaling animation */
+}
+
+.textInfoBubble {
+  text-align: center;
+  color: black;
+  font-family: sans-serif;
+  font-size: 15px;
+  margin: 28px 5px 20px 5px;
+  z-index: 999999;
+  /* transition: opacity 0.1s ease; Smooth fade-in/out */
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}

@@ -109,10 +109,15 @@ function sketch(p) {
     // clothOptions.x = width / 2 - halfClothLength;
 
     // addCloth();
-    let bottomLeftContainer = new Box(150, 750);
-    let bottomRightContainer = new Box(650, 750);
-    let topRightContainer = new Box(150, 250);
-    let topLeftContainer = new Box(650, 250);
+    let bottomLeftContainer = new Box(
+      140,
+      770,
+      `Le gland contient une concentration de terminaisons nerveuses qui en fait LA zone de stimulation du pénis. Cependant, d’autres zones méritent notre attention: le frein, le périnée et les testicules sont particulièrement sensibles pour certaines personnes et peuvent susciter du plaisir si elles sont stimulées doucement. 
+`
+    );
+    let bottomRightContainer = new Box(660, 770);
+    let topLeftContainer = new Box(140, 250);
+    let topRightContainer = new Box(660, 250);
 
     boxes.push(
       bottomLeftContainer,
@@ -246,6 +251,7 @@ function sketch(p) {
     // console.log(particles);
 
     for (let box of boxes) {
+      box.display(p);
       for (wall of box.walls) {
         let color = 0;
         let p5Var = p;
