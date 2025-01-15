@@ -26,7 +26,7 @@ let cloth;
 let gameX = 200;
 let gameY = 100;
 let ellipseRadius = 100;
-let boobSize = 180;
+let boobSize = 130;
 let rightBoob;
 let leftBoob;
 let chain;
@@ -58,13 +58,13 @@ let clothOptions = {
 function setup() {
   // let canvas = createCanvas(1000, 1000);
 
-  let canvas = createCanvas(1000, 800);
+  let canvas = createCanvas(800, 550);
   // Move the canvas within the HTML into the appropriate section
   canvas.parent("p5js-canvas");
   engine = Engine.create();
   world = engine.world;
   Runner.run(engine);
-  engine.world.gravity.scale = 0.0014;
+  engine.world.gravity.scale = 0;
   let mouse = Mouse.create(document.querySelector("#p5js-canvas")),
     mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
@@ -84,7 +84,7 @@ function setup() {
     y: 200,
   };
 
-  let spaceBetweenBoobs = 60;
+  let spaceBetweenBoobs = 80;
   rightBoob = addBridge(breasts.x - boobSize - spaceBetweenBoobs / 2, 220); // Add the bridge here
   leftBoob = addBridge(breasts.x + boobSize + spaceBetweenBoobs / 2, 220); // Add the bridge here
 
@@ -442,7 +442,7 @@ function renderCloth(cloth, columns, rows) {
 
 function drawBridge(bridge, boobSize, boob) {
   let lastCircle = leftBoob.bodies.length - 1;
-  let circleSize = 150;
+  let circleSize = boobSize;
   for (let i = 0; i < bridge.bodies.length; i++) {
     if (i > 0) {
       if (boob) {
@@ -594,10 +594,10 @@ function addBridge(x, y) {
         group: group,
         mask: CATEGORY_MOUSE | 1, // Collide with mouse
       },
-      frictionAir: 0.08,
+      // frictionAir: 0.7,
       resititution: 0,
       friction: 0,
-      density: 1,
+      // density: 1,
       mass: 100000,
     });
   });

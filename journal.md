@@ -278,3 +278,12 @@ SO. This is so funny if I'm honest. It looks in 3d haha. Its so weird. Its such 
  I think this is all for now tbh. I wrote all day and I' so tired. I think evrything is there for now. I will maybe try to write tomorrow about other things (I have a couple notes I want to dive deeper into).
 
  Bye.
+
+ MDM quick notes:
+
+ - boobs should be less volatile, still move but more static.
+ - The nipples should be more important?
+ - Soft bodies seem like a good avenue?
+ - Change the design to something a bit more 2D - like maybe the boobs are like mountains at the bottom
+ - Zero Gravity for this one?
+ - 
