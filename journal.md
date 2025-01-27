@@ -286,4 +286,50 @@ SO. This is so funny if I'm honest. It looks in 3d haha. Its so weird. Its such 
  - Soft bodies seem like a good avenue?
  - Change the design to something a bit more 2D - like maybe the boobs are like mountains at the bottom
  - Zero Gravity for this one?
- - 
+  
+  ## January 27th 2025 - MORNING
+  
+  Coming back to the project after taking a loooong break. Couple things to mention:
+
+  - Working with club sexu, we decided to use the toys as interfaces to interact with content from their website. For example, they have an article on anal beads and safe use of sex toys, so the anal beads would be used to interact in some way with the article, like reading parts of it for example
+  - They shared 3 articles that fit with three of the games, anal beads, penis and nipple stimulation, and split them into small excerpts
+  - Working with anal beads first, I decided it could be interesting to have the excerpts of the text into the beads themselves, and how to literally pull out the information of the butt. The user would hover over each bead, the bubble would grow and the text would appear. I first tried to do this in P5 directly but it was annoying to manage the text in p5 instead of in html. It was cool but something was sort of bugging me visually. Like if i was corrupting my original game that I thought was perfect, the motion of the beads, the bouncing of the butt. Having the beads grow and shrink made it feel less physical, less realistic and minimalistic. It lost its sort of basic simple bouncy charm. I liked the idea conceptually, having the information in the beads and pulling them out, but also the hovering was a problem because beads were growing and shrinking all the time, and also the ones that were just out of the butt but close to them was also growing and shrinking and broke again the realism. Something I figured was not helping, was that it was only the visual content that was growing and shrinking, and not the actual body of matter js. I feel like that was why it felt not aligned with the energy it had. But I decided to stick with that for a while.
+ - For the penis, i really wanted the text to appear as the sperm was filling up some kind of container, so i built 4 containers in each corners, and when being filled up, reveal the text on top. This is not working yet, and also filling up the 4 containers requires a lot of performance and makes the game really slow even on my computer. ALSO, on mobile this would not work, because the penis would be super small if the canvas was a square. I prefer filling up the "phone". I need to figure out how to do this without losing performance. I'm there now.
+ - Boobs one, did not work on it, but thinking about making it about nipples instead of boobs. More gender neutral.
+  
+  Anal Beads {
+Does the interface need to also be the content? Or could they still be separated in a sense... I decided to separate them. The info in the beads was really annoying. The card system is way more clean and easy to manage. I have a feeling that its a bit of a copout but really i think that this is the closest to being integrative as i can between weird and pragmatic. 
+This made me think about context being resistant to playfulness. I'm also managing the balance between art, emotion and provocation and pragmatism. I think there is a huge gap between both, like in windows and mirrors, and right now im trying to make this gape smaller and this is where i've landed. I wish i could close the gap completely but im lacking time right now and want to finish this project.
+
+![beads text](journal_assets/imgs/beads_text.png);
+
+When i decided to switch back to pop ups of info instead of text in beads, I thought about using jquery and i even tried implementing it. I thought it could be nice to have the info be dialog boxes popping up, but after reminding myself that these games have to work on mobile, I realized that it would not be an easy manage. I deleted that and decided to make a simple info card, using css animations to appear. Each bead would have one card with different text. The card would appear on top in the middle and would sort of be a modal, where the user cant interact with anything until they press continue or arrow button or something. I headed over to club sexu's instagram to get inspiration on how to design the card. I found a nice one.
+
+![card inspo](journal_assets/imgs/card_inspo.png);
+
+So I proceeded to do the same thing ish and added the cards to the program. Meanwhile I met with Club Sexu and they sent me their brand identity colors and fonts. I decided to try something out. I really want to brand it club sexu beacause I think this will show that i can adapt to make cool weird things but for companies or people. $
+
+![beads with card v1](journal_assets/imgs/beads_card_v1.png)
+
+
+I fixed a small problem that was there for a while: because the chain was becoming so long now, the part inside the butt was falling to the side and passing the pop threshold but outside the canvas, so i decided to elongate the tunnel that is holding the toy straight so that it is holding upright until the very end. i think it made it more stable as well and less glitchy. Dunno why i waited so long to fix that but i got the idea in my bed sometime. 
+
+I realized I was doing 3 jobs at once : graphic designer, interaction designer and developper. Most of this for the first time, and all mixed together in weird orders. All these design decisions in all these 3 fields influence each other and make the whole thing more me and expressive. I think of it kind of like making a movie that you write, direct and edit yourself. Isn't that always just so personal and interesting? I think that makes the interace feel very special. 
+
+BUT. Being slightly colorblind and hating CSS, i did reach out to my friend and amazing designer to help me with the color stuff. Still waiting for his response to make the "final" first version. 
+
+- Random thought: designing humour has to be personal, like a series created, written, directed and acted by one person but this can also happen with any other emotion: you need to feel while making the thing as your working, and in my case it is humour. Maybe look for emotion and vulnerability in MDM?
+- Humour, you have it or not have it? Can you really make unfunny people make funny things?
+- MAYBE not, but you can make them feel free… whatever that means?
+- Sometimes I think maybe its not about humour per say, but creating personal interaction design for people to use that are not homogenized and yes maybe cause friction because the usability has to share its place with emotion and expression but even if it takes time to do something, it makes people be aware of what they are doing instead of having a seamless experience aimed at productivity. It creates a break into what they are expecting. Sometimes things don’t have to be so cold and fast. maybe you need to slow down and play and be invited to think differently about the way you do things and to think about the thing your doing instead of not think about it (computers dissapearing = norman vs computer not dissapearing and becoming mediums)Design friction and hartmut rosa? I should watch the interview (you know which one)
+- Like maybe its not about making something perfectly seamless, because this erases the playfulness and the emotion and thought, maybe its about finding a balance and letting people deal with the thing. Like it has to feel intuitive but also retain its artistic qualities and not be overexplained. 
+- Making a didactic interaction is like explaining the joke to the user, it erases the surprise and thus the humour and laughter that could happe. This impacts the usability of the design and yes maybe makes it less easy to use but I think we need these kinds of designs that are not meant to provide seamless experiences and aim towards productivity. Maybe you need to figure it out and be a bit frustrated or encounter friciton, but adding friction is about adding life and humaness, and what is more human than humour itself? This is why its so hard to talk about making it in design or it is a challenge to do it with AI, because humour has nothing to do with automation or prediction or instructions or rules. It is about being embodied, being human, being sensitive, thoughtful, empathetic, all those things that are required to make interaction design more human. 
+
+I started working with mobile straight away because they really want the game to work on mobile which I get, and also I think its more cool to play with matter js on mobile using touch, it adds another level of playfulness and subversion (literally touching the penis with your hand) So yeah now im developping on mobile as well ahha. 
+
+There are some really annoying differentces on each browsers and mobile... like sound doesnt work on chrome mobile for some reason. All details i should fix soon. 
+
+Also should have something happen when user switches to landscape with phone because it screws everything. 
+
+So. Thats it for now. I will def try to be more MDM. promise.
+  }
