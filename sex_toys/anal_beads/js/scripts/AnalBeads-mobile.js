@@ -46,6 +46,7 @@ class AnalBeads {
 
     // Array of unique messages for each bead
     const messages = [
+      "last_bead",
       "Message for bead 1: Welcome!",
       "Il faut donc lui donner un coup de pouce et enduire le jouet de lubrifiant pour que les stimulations ne causent pas trop de friction ou de l’inconfort.",
       "Savais-tu que la stimulation anale demande une bonne quantité de lubrifiants? C’est parce que l’anus ne lubrifie pas naturellement.",
@@ -55,7 +56,6 @@ class AnalBeads {
       "Ça vaut la peine de prendre son temps et de préparer l’anus avant d’y insérer un jouet.",
       "La principale sensation vient de la contraction et décontraction des muscles lors de l’insertion et le retrait lent des billes.",
       "Les billes anales sont un jouet sexuel constitué de billes sphériques ou ovales alignées sur un fil. La taille des billes augmente le long du fil, ce qui permet une insertion progressive.",
-      "Message for bead 10: Final stretch!",
     ];
 
     for (
