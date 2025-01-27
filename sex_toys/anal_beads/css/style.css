@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "gtAmerica";
+  src: url("/sex_toys/anal_beads/assets/fonts/GT-America-Regular.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "clubSexu";
+  src: url("/sex_toys/anal_beads/assets/fonts/Club_Sexu-Regular.woff")
+    format("opentype");
+}
 *,
 html {
   margin: 0;
@@ -12,6 +22,7 @@ body {
   height: 100vh;
   /* Body is the height of the viewport */
   overflow: hidden;
+  background-color: #f2eedf;
   /* Hide anything that goes off the window size */
 }
 
@@ -19,32 +30,93 @@ body {
   position: relative;
 }
 
-.infoBubble {
+.infoCardDiv {
   position: absolute;
-  width: 250px;
-  height: 250px;
-  background-color: #222222;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-
-  /* Start hidden by scaling it down */
-  transform: scale(0);
-  transform-origin: center; /* Ensure scaling happens from the center */
-  transition: transform 0.3s ease; /* Smooth scaling animation */
+  width: 0;
+  height: 0;
+  overflow: hidden; /* Prevent content from showing while shrinking */
+  top: 300px;
+  left: 500px;
+  background-color: #ff4c1e;
+  border-radius: 7%;
+  /* opacity: 10%; */
+  /* display: flex;  */
+  align-items: center; /* Centers content vertically */
+  justify-content: center; /* Centers content horizontally */
+  /* display: none; */
+  transition: height 0.4s cubic-bezier(0, 0, 0.15, 1.01); /* Smooth size change */
 }
 
-.textInfoBubble {
-  text-align: center;
+.infoCardDiv.visible {
+  display: flex;
+  width: 240px; /* Full width of the card */
+  height: 320px; /* Full height of the card */
+}
+
+.infoCard {
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* justify-content: center; */
+  /* align-items: center; */
+  text-align: left; /* Center text inside the card */
   color: white;
-  font-family: sans-serif;
+  height: 265px;
+  width: 210px;
+  border-radius: 7%;
+  border: 1px solid #f2eedf90;
+  opacity: 0%;
+  transition: opacity 0.3s cubic-bezier(0, 0, 0.15, 1.01);
+  padding: 16px; /* Adds spacing inside the card */
+  box-sizing: border-box; /* Includes padding in the width/height */
+  position: relative; /* Necessary for the absolute button to be positioned relative to this card */
+}
+
+.infoCard.opacity {
+  opacity: 100%;
+}
+
+.textInfoCard {
+  font-family: "gtAmerica";
+  font-size: 16px;
+  color: #f2eedf;
+  padding-top: 15px;
+  /* top: -20px; */
+  /* margin-bottom: 40px; Ensure space for the button */
+}
+
+.continueButton {
+  position: absolute;
+  bottom: -15px; /* Position the button at the bottom of the card */
+  /* align-self: center; Center the button horizontally */
+  left: 48px;
+  font-family: "clubSexu";
   font-size: 15px;
-  margin: 28px 25px 20px 25px;
-  opacity: 0; /* Text starts invisible */
-  transition: opacity 0.1s ease; /* Smooth fade-in/out */
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+  color: #bc3006;
+  padding: 3px 18px;
+  padding-top: 5px;
+  border-radius: 20px;
+  background-color: #f2eedf;
+  letter-spacing: 0.02rem;
+}
+
+.cardNumber {
+  position: absolute;
+
+  background-color: #ff4c1e;
+  /* font-family: "gtAmerica"; */
+  padding: 2px 15px;
+  border-width: 1px;
+  align-self: center; /* Center the button horizontally */
+  top: -16px;
+  text-align: center;
+  /* border-style: solid; */
+  border-radius: 100%;
+  /* z-index: 1; */
+}
+
+.cardNumberText {
+  color: #f2eedf;
+
+  font-family: "clubSexu";
+  font-size: 25px;
 }

@@ -26,6 +26,7 @@ let textIMG;
 let mouseIsPressed = false;
 let toyIsGone = false;
 let p5jsCanvas;
+let showCard = false;
 
 // shrinking/growing bead animation variables
 
@@ -54,6 +55,16 @@ let sounds = {
 
 let gameX = 0;
 let gameY = -50;
+let canvasDimensions = {
+  x: 550,
+  y: 800,
+};
+// let gameX = 200;
+// let gameY = 1400;
+// let canvasDimensions = {
+//   x: 1000,
+//   y: 1000,
+// };
 
 const CATEGORY_BRIDGE = 0x0001;
 const CATEGORY_CIRCLE_PARTICLE = 0x0002;
@@ -69,8 +80,9 @@ function preload() {
 
 function setup() {
   // let canvas = createCanvas(1000, 1000);
+  let canvas = createCanvas(canvasDimensions.x, canvasDimensions.y);
+  // let canvas = createCanvas(displayWidth, displayHeight);
 
-  let canvas = createCanvas(550, 800);
   p5jsCanvas = document.querySelector("#p5js-canvas");
   // Move the canvas within the HTML into the appropriate section
   canvas.parent("p5js-canvas");
@@ -112,9 +124,10 @@ function setup() {
         x: -30000,
         y: -60000,
       });
-      sounds.slap.play();
+      // sounds.slap.play();
     }
   });
+  // createInfoCard();
 }
 
 function draw() {
@@ -133,11 +146,13 @@ function draw() {
       bead.body.collisionFilter.mask =
         CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE | CATEGORY_MOUSE;
     }
+
     // console.log(bead.popped);
     if (bead.body.position.y >= 250) {
       if (!bead.popped) {
-        sounds.pop.play();
+        // sounds.pop.play();
         bead.popped = true;
+        bead.showCard = true;
       }
     }
   }
@@ -157,13 +172,13 @@ function draw() {
   let rightCheek = bridge.bodies[0];
   let leftCheek = bridge.bodies[1];
 
-  push();
+  // push();
   // strokeWeight(1);
   // strokeHsluv(0, 0, 13.2);
-  noStroke();
-  ellipseMode(CENTER);
-  fillHsluv(126.6, 62.2, 66.8);
-  ellipse(rightCheek.position.x, rightCheek.position.y, 400);
+  // noStroke();
+  // ellipseMode(CENTER);
+  // fillHsluv(16.4, 98.4, 42.5);
+  // ellipse(rightCheek.position.x, rightCheek.position.y, 400);
   // beginClip();
   // // strokeWeight(0.4);
   // // strokeHsluv(0, 0, 13.2);
@@ -172,15 +187,15 @@ function draw() {
   // ellipse(leftCheek.position.x, leftCheek.position.y, 400);
   // endClip();
 
-  pop();
+  // pop();
   // strokeWeight(0.4);
   // strokeHsluv(0, 0, 13.2);
   ellipseMode(CENTER);
-  fillHsluv(126.6, 62.2, 66.8);
+  fillHsluv(16.4, 98.4, 42.5);
   ellipse(leftCheek.position.x, leftCheek.position.y, 400);
   noStroke();
   ellipseMode(CENTER);
-  fillHsluv(126.6, 62.2, 66.8);
+  fillHsluv(16.4, 98.4, 42.5);
   ellipse(rightCheek.position.x, rightCheek.position.y, 400);
 
   if (analBeads.beads[0].body.position.y > height + 200) {
@@ -190,7 +205,37 @@ function draw() {
     articleLink();
   }
 
-  beadHover();
+  // createInfoCard();
+  // beadHover();
+  // moveInfoCardX();
+  // moveInfoCardY();
+
+  // if (showCard) {
+  //   // displayCard();
+  // }
+}
+
+// function displayCard() {
+//   let infoCardDiv = document.querySelector("#infoCardDiv");
+//   let cardButton = document.querySelector("#cardButton");
+//   infoCardDiv.style.display = "flex";
+
+//   cardButton.onclick = function () {
+//     // showCard == false;
+//     // infoCardDiv.style.display = "none";
+//     // console.log("clicked");
+//   };
+// }
+
+function createInfoCard() {
+  let infoCardDiv = document.createElement("div");
+  infoCardDiv.classList.add("infoCard");
+  p5jsCanvas.append(infoCardDiv);
+  let textInfoCard = document.createElement("p");
+  infoCardDiv.append(textInfoCard);
+  textInfoCard.classList.add("textInfoCard");
+  textInfoCard.innerText =
+    "Les billes anales sont un jouet sexuel constitué de billes sphériques ou ovales alignées sur un fil. La taille des billes augmente le long du fil, ce qui permet une insertion progressive.";
 }
 
 function addEnclosures() {
@@ -209,7 +254,7 @@ function addEnclosures() {
     gameX - 35,
     gameY + 300,
     500,
-    1000,
+    3000,
     true,
     world
   );
@@ -217,7 +262,7 @@ function addEnclosures() {
     gameX + 585,
     gameY + 300,
     500,
-    1000,
+    3000,
     true,
     world
   );
@@ -273,7 +318,7 @@ function displayBackground() {
   push();
   rectMode(CORNER);
   noStroke();
-  fillHsluv(230, 72.9, 78.2);
+  fillHsluv(14, 79.6, 29.1);
   rect(0, 0, width, height);
   pop();
 }
@@ -288,7 +333,6 @@ function addBridge() {
         category: CATEGORY_BRIDGE,
         mask: CATEGORY_CIRCLE_PARTICLE,
       }, // Collide only with circle particle
-
       chamfer: 0,
       density: 0.7,
       // frictionAir: 0.1,
@@ -322,54 +366,54 @@ function addBridge() {
   ]);
 }
 
-function beadHover() {
-  const mousePosition = mouse.position;
-  let foundBead = false;
-  let beadsOnly = analBeads.beads.length - 1;
+// function beadHover() {
+//   const mousePosition = mouse.position;
+//   let foundBead = false;
+//   let beadsOnly = analBeads.beads.length - 1;
 
-  for (let i = 0; i < beadsOnly; i++) {
-    let bead = analBeads.beads[i];
+//   for (let i = 0; i < beadsOnly; i++) {
+//     let bead = analBeads.beads[i];
 
-    if (Matter.Query.point([bead.body], mousePosition).length > 0) {
-      foundBead = true;
+//     if (Matter.Query.point([bead.body], mousePosition).length > 0) {
+//       foundBead = true;
 
-      if (!isHovering) {
-        hoverStartTime = millis(); // Start the hover timer
-        isHovering = true;
-      }
+//       if (!isHovering) {
+//         hoverStartTime = millis(); // Start the hover timer
+//         isHovering = true;
+//       }
 
-      if (millis() - hoverStartTime >= hoverTime) {
-        // Grow the bubble when hovered
-        animateBubble(bead.infoBubble, true);
-        currentBead = bead;
-        bead.body.circleRadius = 250;
-      }
-      break;
-    }
-  }
+//       if (millis() - hoverStartTime >= hoverTime) {
+//         // Grow the bubble when hovered
+//         animateBubble(bead.infoBubble, true);
+//         currentBead = bead;
+//         bead.body.circleRadius = 250;
+//       }
+//       break;
+//     }
+//   }
 
-  if (!foundBead) {
-    if (currentBead) {
-      // Shrink the bubble when the mouse leaves
-      animateBubble(currentBead.infoBubble, false);
-    }
-    isHovering = false;
-  }
-}
+//   if (!foundBead) {
+//     if (currentBead) {
+//       // Shrink the bubble when the mouse leaves
+//       animateBubble(currentBead.infoBubble, false);
+//     }
+//     isHovering = false;
+//   }
+// }
 
-function animateBubble(bubble, grow) {
-  if (grow) {
-    bubble.style.transform = "scale(1)"; // Grow to full size
+// function animateBubble(bubble, grow) {
+//   if (grow) {
+//     bubble.style.transform = "scale(1)"; // Grow to full size
 
-    // Fade in the text with a slight delay
-    setTimeout(() => {
-      bubble.querySelector(".textInfoBubble").style.opacity = "1";
-    }, 200);
-  } else {
-    bubble.style.transform = "scale(0)"; // Shrink to invisible
-    bubble.querySelector(".textInfoBubble").style.opacity = "0";
-  }
-}
+//     // Fade in the text with a slight delay
+//     setTimeout(() => {
+//       bubble.querySelector(".textInfoBubble").style.opacity = "1";
+//     }, 200);
+//   } else {
+//     bubble.style.transform = "scale(0)"; // Shrink to invisible
+//     bubble.querySelector(".textInfoBubble").style.opacity = "0";
+//   }
+// }
 
 // function beadHover() {
 //   const mousePosition = mouse.position; // Get current mouse position

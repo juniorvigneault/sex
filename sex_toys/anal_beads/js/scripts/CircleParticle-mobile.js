@@ -1,5 +1,5 @@
 class CircleParticle {
-  constructor(x, y, r, isStatic, composite, text) {
+  constructor(x, y, r, isStatic, composite, text, number) {
     this.x = x;
     this.y = y;
     this.r = r;
@@ -11,9 +11,21 @@ class CircleParticle {
     // this.textInfoBubble.classList.add("textInfoBubble");
     // this.textInfoBubble.innerText = text;
     this.infoCardDiv = document.createElement("div");
+    this.infoCard = document.createElement("div");
+
     // console.log(this.infoCardDiv);
     // button for each card
+
     this.cardButton = document.createElement("button");
+    this.cardNumber = document.createElement("div");
+    this.cardNumberText = document.createElement("p");
+
+    this.cardNumber.append(this.cardNumberText);
+    this.infoCard.append(this.cardNumber);
+    this.cardNumberText.innerHTML = 1;
+
+    this.cardNumber.classList.add("cardNumber");
+    this.cardNumberText.classList.add("cardNumberText");
 
     this.popped = false;
     this.showCard = false;
@@ -22,7 +34,8 @@ class CircleParticle {
     this.handleWidth = 12;
     let options = {
       friction: 1,
-      restitution: 0.8,
+      restitution: 0,
+      // mass: ,
       isStatic: isStatic,
       density: 1,
       collisionFilter: {
@@ -44,22 +57,29 @@ class CircleParticle {
   createInfoCard() {
     this.infoCardDiv.classList.add("infoCardDiv");
     p5jsCanvas.append(this.infoCardDiv);
-    this.infoCard = document.createElement("div");
     this.infoCard.classList.add("infoCard");
     this.infoCardDiv.append(this.infoCard);
     this.textInfoCard = document.createElement("p");
     this.infoCard.append(this.textInfoCard);
     this.textInfoCard.classList.add("textInfoCard");
     this.textInfoCard.innerText = this.text;
-    this.textInfoCard.append(this.cardButton);
+    this.infoCard.append(this.cardButton);
     this.cardButton.classList.add("continueButton");
-    this.cardButton.innerText = "continue";
-    // if user clicks on continue, the card disapears
+    this.cardButton.innerText = "CONTINUER";
+
+    this.cardButton.addEventListener("touchend", (e) => {
+      e.preventDefault(); // Prevent default touch behavior
+      this.showCard = false;
+      this.infoCardDiv.classList.remove("visible"); // Remove animation class
+
+      this.infoCardDiv.style.display = "none";
+      mouseConstraint.constraint.stiffness = 0.08;
+    });
+
     this.cardButton.onclick = () => {
       // console.log(this.infoCardDiv);
       this.showCard = false;
       this.infoCardDiv.classList.remove("visible"); // Remove animation class
-
       this.infoCardDiv.style.display = "none";
       mouseConstraint.constraint.stiffness = 0.08;
     };
@@ -71,7 +91,7 @@ class CircleParticle {
     let canvasRect = p5jsCanvas.getBoundingClientRect();
     // let infoCard = document.querySelector("#infoCardDiv");
     // card with is 270px
-    let infoCardHalfWidth = 270 / 2;
+    let infoCardHalfWidth = 230 / 2;
     this.infoCardDiv.style.left =
       canvasRect.left + canvasDimensions.x / 2 - infoCardHalfWidth + "px"; // Center by subtracting 125 (half of 250px)
   }
@@ -79,7 +99,7 @@ class CircleParticle {
   moveInfoCardY() {
     let canvasRect = p5jsCanvas.getBoundingClientRect();
     // card height is 350px
-    let infoCardHalfHeight = 350 / 2;
+    let infoCardHalfHeight = 320 / 2;
     this.infoCardDiv.style.top =
       canvasRect.top + canvasDimensions.y / 2 - infoCardHalfHeight + "px"; // Center by subtracting 125 (half of 250px)
   }
@@ -104,7 +124,6 @@ class CircleParticle {
       }, 100); // Delay in milliseconds
 
       this.infoCardDiv.style.display = "flex";
-
       mouseConstraint.constraint.stiffness = 0;
     }
     // if handle, then draw ellipse in the middle with color of background

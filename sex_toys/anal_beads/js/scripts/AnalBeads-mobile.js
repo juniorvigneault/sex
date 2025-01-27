@@ -5,11 +5,14 @@ class AnalBeads {
     this.beadConstraints = [];
     this.startX = sX;
     this.startY = sY;
-    this.constraintLength = 200;
+    this.constraintLength = 225;
     this.toyLength = 1600;
     this.beadSize = beadSize;
     this.spaceBetweenBeads = this.beadSize + 40;
     this.makeChain();
+    this.number = 0;
+    // this.cardNumber;
+    // this.cardNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   } //constructor
 
   display() {
@@ -48,7 +51,7 @@ class AnalBeads {
       "Savais-tu que la stimulation anale demande une bonne quantité de lubrifiants? C’est parce que l’anus ne lubrifie pas naturellement.",
       "Par exemple, utiliser des billes anales lors de la pénétration vaginale peut décupler les sensations.",
       "Les jouets comme les billes anales peuvent avoir le premier rôle, mais peuvent aussi être utilisés pour amplifier les sensations d'autres stimulations.",
-      "L’anus peut être stimulé à son entrée doucement avec le doigt, la langue ou encore la bouche. En plus de procurer du plaisir, cette stimulation permet de détendre les muscles de l’anus et d’y faciliter la pénétration qui pourrait suivre.",
+      "L’anus peut être stimulé à son entrée doucement avec le doigt, la langue ou encore la bouche. Cette stimulation permet de détendre les muscles de l’anus et d’y faciliter la pénétration qui pourrait suivre.",
       "Ça vaut la peine de prendre son temps et de préparer l’anus avant d’y insérer un jouet.",
       "La principale sensation vient de la contraction et décontraction des muscles lors de l’insertion et le retrait lent des billes.",
       "Les billes anales sont un jouet sexuel constitué de billes sphériques ou ovales alignées sur un fil. La taille des billes augmente le long du fil, ce qui permet une insertion progressive.",
@@ -64,6 +67,7 @@ class AnalBeads {
       const index = this.beads.length % messages.length; // Loop through messages if more beads than messages
       const message = messages[index];
 
+      console.log(this.number);
       let p = new CircleParticle(
         this.startX,
         y,
@@ -74,6 +78,10 @@ class AnalBeads {
       );
       this.beads.push(p);
 
+      // console.log(index);
+      // let cardNumberText = document.querySelector(".cardNumberText");
+      // cardNumberText.innerHTML = index;
+
       if (prev !== null) {
         let options = {
           bodyA: prev.body,
@@ -83,7 +91,7 @@ class AnalBeads {
             y: 0,
           },
           length: this.constraintLength,
-          stiffness: 0.17,
+          stiffness: 0.18,
         };
         // Create the constraint between beads
         let constraint = Constraint.create(options);
