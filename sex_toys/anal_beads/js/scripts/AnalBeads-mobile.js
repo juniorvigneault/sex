@@ -10,7 +10,8 @@ class AnalBeads {
     this.beadSize = beadSize;
     this.spaceBetweenBeads = this.beadSize + 40;
     this.makeChain();
-    this.number = 0;
+    this.numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
     // this.cardNumber;
     // this.cardNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   } //constructor
@@ -46,8 +47,8 @@ class AnalBeads {
 
     // Array of unique messages for each bead
     const messages = [
-      "last_bead",
-      "Message for bead 1: Welcome!",
+      "Dernière carte",
+      "Extrait 9",
       "Il faut donc lui donner un coup de pouce et enduire le jouet de lubrifiant pour que les stimulations ne causent pas trop de friction ou de l’inconfort.",
       "Savais-tu que la stimulation anale demande une bonne quantité de lubrifiants? C’est parce que l’anus ne lubrifie pas naturellement.",
       "Par exemple, utiliser des billes anales lors de la pénétration vaginale peut décupler les sensations.",
@@ -63,18 +64,20 @@ class AnalBeads {
       y < this.startY + this.toyLength;
       y += this.spaceBetweenBeads
     ) {
+      let numbers = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+
       // Use the index of the bead to get the corresponding message
       const index = this.beads.length % messages.length; // Loop through messages if more beads than messages
       const message = messages[index];
-
-      console.log(this.number);
+      // console.log(numbers[index]);
       let p = new CircleParticle(
         this.startX,
         y,
         this.beadSize,
         false,
         world,
-        message // Pass the unique message for the bead
+        message,
+        numbers[index] // Pass the unique message for the bead
       );
       this.beads.push(p);
 

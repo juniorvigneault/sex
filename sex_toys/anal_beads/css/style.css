@@ -132,8 +132,12 @@ body {
   /* font-family: "Club Sexu_Regular"; */
   font-size: 16px;
   color: #bc3006;
-  padding: 3px 18px;
+  /* padding: 3px 18px; */
+  padding-left: 18px;
+  padding-right: 18px;
+
   padding-top: 5px;
+  padding-bottom: 2px;
   border-radius: 20px;
   background-color: #f2eedf;
   letter-spacing: 0.02rem;

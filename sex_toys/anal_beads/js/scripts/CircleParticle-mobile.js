@@ -12,19 +12,19 @@ class CircleParticle {
     // this.textInfoBubble.innerText = text;
     this.infoCardDiv = document.createElement("div");
     this.infoCard = document.createElement("div");
-
+    this.cardNumber = number;
     // console.log(this.infoCardDiv);
     // button for each card
 
     this.cardButton = document.createElement("button");
-    this.cardNumber = document.createElement("div");
+    this.cardNumberDiv = document.createElement("div");
     this.cardNumberText = document.createElement("p");
 
-    this.cardNumber.append(this.cardNumberText);
-    this.infoCard.append(this.cardNumber);
-    this.cardNumberText.innerHTML = 1;
+    this.cardNumberDiv.append(this.cardNumberText);
+    this.infoCard.append(this.cardNumberDiv);
+    this.cardNumberText.innerHTML = number;
 
-    this.cardNumber.classList.add("cardNumber");
+    this.cardNumberDiv.classList.add("cardNumber");
     this.cardNumberText.classList.add("cardNumberText");
 
     this.popped = false;
@@ -115,7 +115,8 @@ class CircleParticle {
     // keep cards in the middle x axis
     this.moveInfoCardX();
     this.moveInfoCardY();
-    if (this.showCard) {
+    // show card when bead is popped but prevent last card from opening
+    if (this.showCard && this.cardNumber !== 10) {
       this.infoCardDiv.classList.add("visible"); // Add visible class for animation
 
       // Add a delay before applying opacity

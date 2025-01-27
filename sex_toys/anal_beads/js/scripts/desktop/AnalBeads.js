@@ -70,7 +70,8 @@ class AnalBeads {
         this.beadSize,
         false,
         world,
-        message // Pass the unique message for the bead
+        message,
+        item // Pass the unique message for the bead
       );
       this.beads.push(p);
 

@@ -333,3 +333,12 @@ Also should have something happen when user switches to landscape with phone bec
 
 So. Thats it for now. I will def try to be more MDM. promise.
   }
+
+
+  ### To Do Today 
+Anal beads:
+  - Fix item number on info cards. Should be going from 1 to 9 [DONE]
+  - Add hover/click css animation to button 
+  - Make cursor hand that grabs when clicking to help understand
+Penis: 
+  - Start mobile version
