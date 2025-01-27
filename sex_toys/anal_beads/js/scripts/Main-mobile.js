@@ -124,7 +124,7 @@ function setup() {
         y: -50000,
       });
       // sounds.slap.play();
-      // soundMobile.playSound("slap");
+      soundMobile.playSound("slap");
     }
   });
   // createInfoCard();
@@ -152,7 +152,7 @@ function draw() {
     if (bead.body.position.y >= 250) {
       if (!bead.popped) {
         // sounds.pop.play();
-        // soundMobile.playSound("pop");
+        soundMobile.playSound("pop");
         bead.popped = true;
         bead.showCard = true;
       }

@@ -67,8 +67,13 @@ class CircleParticle {
     this.cardButton.classList.add("continueButton");
     this.cardButton.innerText = "CONTINUER";
 
+    this.cardButton.addEventListener("touchstart", () => {
+      this.cardButton.style.backgroundColor = "#E2DBCC"; // Change to desired color
+    });
     this.cardButton.addEventListener("touchend", (e) => {
       e.preventDefault(); // Prevent default touch behavior
+      this.cardButton.style.backgroundColor = "#f5a623"; // Example color
+
       this.showCard = false;
       this.infoCardDiv.classList.remove("visible"); // Remove animation class
 
@@ -76,6 +81,13 @@ class CircleParticle {
       mouseConstraint.constraint.stiffness = 0.08;
     });
 
+    this.cardButton.addEventListener("mousedown", () => {
+      this.cardButton.style.backgroundColor = "#E2DBCC"; // Change to desired color
+    });
+
+    this.cardButton.addEventListener("mouseup", () => {
+      this.cardButton.style.backgroundColor = "#FFF6F1"; // Reset to default (or another color)
+    });
     this.cardButton.onclick = () => {
       // console.log(this.infoCardDiv);
       this.showCard = false;
