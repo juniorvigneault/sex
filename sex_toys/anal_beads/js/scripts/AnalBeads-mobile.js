@@ -20,9 +20,10 @@ class AnalBeads {
     // make chain
     for (let i = 0; i < this.beads.length; i++) {
       let lastBead = this.beads.length - 1;
-      if (i > 0) {
+      if (i > 1 && i !== 10) {
         push();
-        strokeHsluv(2.9, 81.2, 7.4);
+        // strokeHsluv(2.9, 81.2, 7.4);
+        stroke(140, 19, 19);
         strokeWeight(5);
         line(
           this.beads[i - 1].body.position.x,
@@ -32,11 +33,25 @@ class AnalBeads {
         );
         pop();
       }
+      if (i === 10) {
+        push();
+        // strokeHsluv(2.9, 81.2, 7.4);
+        stroke(140, 19, 19);
+        strokeWeight(5);
+        line(
+          this.beads[i - 1].body.position.x,
+          this.beads[i - 1].body.position.y,
+          this.beads[i].body.position.x,
+          this.beads[i].body.position.y - 50
+        );
+
+        pop();
+      }
       // color of beads and ring
       if (i === lastBead) {
-        this.beads[i].display({ h: 2.9, s: 81.2, l: 7.4 }, true);
+        this.beads[i].display({ r: 140, g: 19, b: 19 }, true);
       } else {
-        this.beads[i].display({ h: 2.9, s: 81.2, l: 7.4 }, false);
+        this.beads[i].display({ r: 140, g: 19, b: 19 }, false);
       }
     }
   }

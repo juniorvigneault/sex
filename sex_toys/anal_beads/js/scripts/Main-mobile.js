@@ -65,6 +65,7 @@ const CATEGORY_BRIDGE = 0x0001;
 const CATEGORY_CIRCLE_PARTICLE = 0x0002;
 const CATEGORY_RECTANGLE = 0x0004;
 const CATEGORY_MOUSE = 0x0008;
+let endMessage;
 
 function setup() {
   // let canvas = createCanvas(1000, 1000);
@@ -99,7 +100,7 @@ function setup() {
     }));
 
   World.add(world, mouseConstraint);
-
+  endMessage = document.querySelector("#end-message");
   // getAudioContext().resume(); // Resume the audio context
 
   //bum = new Bum(width / 2, 300, 400);
@@ -131,7 +132,7 @@ function setup() {
 }
 
 function draw() {
-  // background(0);
+  // background(255);
   displayBackground();
   // console.log("Velocity:", bridge.bodies[0].velocity);
   // if the beads go low enough, change the collision filter so
@@ -195,11 +196,13 @@ function draw() {
   let buttCheekSize = rightCheek.circleRadius * 2;
 
   ellipseMode(CENTER);
-  fillHsluv(16.4, 98.4, 42.5);
+  // fill(255, 115, 191);
+
+  fillHsluv(339.1, 100, 67.5);
   ellipse(leftCheek.position.x, leftCheek.position.y, buttCheekSize);
   noStroke();
   ellipseMode(CENTER);
-  fillHsluv(16.4, 98.4, 42.5);
+  // fillHsluv(16.4, 98.4, 42.5);
   ellipse(rightCheek.position.x, rightCheek.position.y, buttCheekSize);
 
   if (analBeads.beads[0].body.position.y > height + 200) {
@@ -315,10 +318,21 @@ function mouseReleased() {
 
 function displayBackground() {
   push();
-  rectMode(CORNER);
-  noStroke();
-  fillHsluv(14, 79.6, 29.1);
+  fill(255, 51, 0);
   rect(0, 0, width, height);
+  let gradient = drawingContext.createLinearGradient(0, height / 2, 0, height); // Vertical gradient from middle to bottom
+
+  let rgb = hsluv.hsluvToRgb([284.9, 100, 70.1]);
+  let colorBottom = `rgba(${rgb[0] * 255}, ${rgb[1] * 255}, ${
+    rgb[2] * 255
+  }, 1)`; // Fully opaque
+  let colorTop = `rgba(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255}, 0)`; // Fully transparent
+
+  gradient.addColorStop(0, colorTop); // Transparent at the midpoint
+  gradient.addColorStop(1, colorBottom); // Full color at the bottom
+
+  drawingContext.fillStyle = gradient;
+  rect(0, height / 2, width, height / 2); // Draw the gradient
   pop();
 }
 
@@ -530,9 +544,9 @@ function addBridge() {
 //   pop();
 // }
 
-function fillHsluv(h, s, l) {
+function fillHsluv(h, s, l, alpha = 255) {
   const rgb = hsluv.hsluvToRgb([h, s, l]);
-  fill(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+  fill(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255, alpha);
 }
 
 function strokeHsluv(h, s, l) {
@@ -541,15 +555,26 @@ function strokeHsluv(h, s, l) {
 }
 
 function articleLink() {
-  push();
-  fillHsluv(126.6, 62.2, 0);
-  textSize(36);
-  textAlign(CENTER);
-  text(
-    `Pour lire l'article complet: 
-    clubsexu.com`,
-    width / 2,
-    height / 2 + 30
-  );
-  pop();
+  endMessage.style.opacity = "1";
+  moveInfoCardX();
+  moveInfoCardY();
+}
+
+// position info card in the middle of the canvas even if user resizes
+function moveInfoCardX() {
+  // Get the current position of the canvas in the viewport
+  let canvasRect = p5jsCanvas.getBoundingClientRect();
+  // let infoCard = document.querySelector("#infoCardDiv");
+  // card with is 240px (220+ 40 padding)
+  let endMessageWidth = 200 / 2;
+  endMessage.style.left =
+    canvasRect.left + canvasDimensions.x / 2 - endMessageWidth + "px"; // Center by subtracting 125 (half of 250px)
+}
+
+function moveInfoCardY() {
+  let canvasRect = p5jsCanvas.getBoundingClientRect();
+  // card height is 280px + 40 padd
+  let endMessageHeight = 50 / 2;
+  endMessage.style.top =
+    canvasRect.top + canvasDimensions.y / 2 - endMessageHeight + "px"; // Center by subtracting 125 (half of 250px)
 }

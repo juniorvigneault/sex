@@ -78,43 +78,50 @@ canvas:active {
 
 .infoCardDiv {
   position: absolute;
+  display: flex;
+  flex-direction: column;
   width: 0;
   height: 0;
   overflow: hidden; /* Prevent content from showing while shrinking */
   top: 300px;
   left: 500px;
-  background-color: #ff4c1e;
-  border-radius: 7%;
+  background-color: #37010f;
+  border-radius: 10%;
+  padding: 20px;
   /* opacity: 10%; */
   /* display: flex;  */
+  /* margin: 10px; */
   align-items: center; /* Centers content vertically */
   justify-content: center; /* Centers content horizontally */
   /* display: none; */
+  opacity: 0;
   transition: height 0.4s cubic-bezier(0, 0, 0.15, 1.01); /* Smooth size change */
 }
 
 .infoCardDiv.visible {
   display: flex;
-  width: 240px; /* Full width of the card */
-  height: 320px; /* Full height of the card */
+  width: 220px; /* Full width of the card */
+  height: 280px; /* Full height of the card */
+  opacity: 1;
 }
 
 .infoCard {
-  display: flex;
-  flex-direction: column;
   /* justify-content: center; */
+  /* height: 100%; */
   /* align-items: center; */
   text-align: left; /* Center text inside the card */
-  color: white;
-  height: 265px;
-  width: 210px;
-  border-radius: 7%;
-  border: 1px solid #f2eedf90;
+  color: #f4eddb;
+  height: 100%;
+  width: fit-content;
+  border-radius: 15px;
+  border: 1px solid #f4eddb;
   opacity: 0%;
   transition: opacity 0.3s cubic-bezier(0, 0, 0.15, 1.01);
-  padding: 16px; /* Adds spacing inside the card */
+  /* padding: 16px; Adds spacing inside the card */
   box-sizing: border-box; /* Includes padding in the width/height */
   position: relative; /* Necessary for the absolute button to be positioned relative to this card */
+  padding: 25px;
+  border-bottom: 0;
 }
 
 .infoCard.opacity {
@@ -123,9 +130,10 @@ canvas:active {
 
 .textInfoCard {
   font-family: "GT America Regular";
+  /* font-size: 14px; */
   font-size: 16px;
   color: #f2eedf;
-  padding-top: 15px;
+  /* padding-top: 15px; */
   user-select: none; /* Prevent text selection */
 
   /* top: -20px; */
@@ -133,46 +141,81 @@ canvas:active {
 }
 
 .continueButton {
-  position: absolute;
-  bottom: -12px; /* Position the button at the bottom of the card */
-
+  /* position: absolute; */
+  color: #f2eedf;
+  border-color: #f2eedf;
+  border-style: solid;
+  /* border-width: 2px; */
   /* left: 53px; */
-  align-self: center;
+  /* align-self: center; */
   text-align: center;
-  font-family: "Club Sexu_Regular";
+  /* font-family: "Club Sexu_Regular"; */
   /* font-family: "Club Sexu_Regular"; */
   font-size: 16px;
-  color: #bc3006;
-  /* padding: 3px 18px; */
-  padding-left: 18px;
-  padding-right: 18px;
+  width: 100%;
+  padding: 5px;
 
-  padding-top: 5px;
-  padding-bottom: 2px;
+  /* color: #bc3006; */
+  /* padding: 3px 18px; */
+  /* padding-left: 18px; */
+  /* padding-right: 18px; */
+  /* width: 220px; */
+  /* padding-top: 5px; */
+  /* padding-bottom: 2px; */
+  background-color: #37010f;
   border-radius: 20px;
-  background-color: #fff6f1;
-  letter-spacing: 0.02rem;
-  border: none;
+  border-width: 1px;
+  /* letter-spacing: 0.02rem; */
+  /* border: none; */
+
   /* border-color: #7fbc06; */
 }
 
 .cardNumber {
   position: absolute;
-
-  background-color: #ff4c1e;
-  /* font-family: "gtAmerica"; */
-  padding: 2px 15px;
-  border-width: 1px;
-  /* align-self: center; Center the button horizontally */
-  top: -16px;
+  align-self: center;
   text-align: center;
+  background-color: #37010f;
+  /* background-color: #c78a9a; */
+  padding: 10px;
+  top: 0;
+  /* background-color: #ff4c1e; */
+  /* font-family: "gtAmerica"; */
+  /* padding: 2px 15px; */
+  /* border-width: 1px; */
+  /* align-self: center; Center the button horizontally */
+  /* top: -20px; */
+  /* text-align: center; */
   /* border-style: solid; */
-  border-radius: 100%;
-  /* z-index: 1; */
+  /* border-radius: 100%; */
+  z-index: 1;
 }
 
 .cardNumberText {
+  /* position: absolute; */
+  font-size: 16px;
+  /* display: flex; */
   color: #f2eedf;
-  font-family: "Club Sexu_Regular";
-  font-size: 25px;
+  font-family: "GT America Regular";
+  font-size: 16px;
+  user-select: none; /* Prevent text selection */
+  align-items: center;
+}
+
+#end-message {
+  /* width: 200px; */
+  position: absolute;
+  text-align: center;
+  color: white;
+  font-family: "GT America Regular";
+  font-size: 16px;
+  height: 135px;
+  /* border-style: solid; */
+  /* display: none; */
+  opacity: 0;
+}
+
+#logo {
+  width: 200px;
+  padding: 10px;
 }

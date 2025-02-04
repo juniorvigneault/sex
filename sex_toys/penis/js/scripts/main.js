@@ -50,22 +50,46 @@ let clothOptions = {
 };
 let boxes = [];
 
+let particlesCanvas;
+
+let borderThreshold = 10;
+
+let rows, cols;
+let size = 30;
+let grid = [];
+
 function sperm(s) {
   s.setup = function () {
-    canvasS = s.createCanvas(800, 800);
+    canvasS = s.createCanvas(400, 700);
     // Move the canvas within the HTML into the appropriate section
     canvasS.parent("particles-canvas");
+    // s.pixelDensity(0.1);
+    // s.frameRate(10); // Cap to 30 FPS
+    cols = s.width / size + 1;
+    rows = s.height / size + 1;
+
+    for (let i = 0; i < cols; i++) {
+      grid[i] = [];
+      for (let j = 0; j < rows; j++) {
+        grid[i][j] = 0;
+      }
+    }
   };
 
   s.draw = function () {
-    s.background(0); // Transparent background to keep the gooey effect
+    // s.background(0, 0, 0);
+    // push();
+    // s.fill(255, 255, 255, 100);
+    // s.rect(0, 0, s.width, s.height);
+    // pop();
     // Clear the particles canvas
-    s.clear(canvasS);
+    // s.clear();
     for (let i = 0; i < particles.length; i++) {
       s.push();
       s.fill(255);
       s.noStroke();
       s.ellipseMode(s.CENTER);
+
       s.ellipse(
         particles[i].position.x,
         particles[i].position.y,
@@ -73,23 +97,62 @@ function sperm(s) {
       );
       s.pop();
     }
+    // gooeyEffect();
   };
+
+  function gooeyEffect() {
+    s.loadPixels();
+    for (let i = 0; i < s.width; i++) {
+      for (let j = 0; j < s.height; j++) {
+        let index = (i + j * s.width) * 4; // Get pixel index
+        let r = index;
+        let g = index + 1;
+        let b = index + 2;
+        if (s.pixels[r] < 100) {
+          // Blob (smoother core)
+          s.pixels[r] = 135;
+          s.pixels[g] = 199;
+          s.pixels[b] = 191;
+        } else if (s.pixels[r] < borderThreshold) {
+          // Border (gooey edges)
+          s.pixels[r] = 22;
+          s.pixels[g] = 147;
+          s.pixels[b] = 165;
+        } else {
+          // Background
+          s.pixels[r] = 98;
+          s.pixels[g] = 182;
+          s.pixels[b] = 182;
+        }
+      }
+    }
+    s.updatePixels(); // Apply the pixel changes
+  }
 }
 
 function sketch(p) {
   p.preload = function () {
     // peeSound = p.loadSound("assets/sounds/peeSound.mp3");
   };
-  p.setup = function () {
-    canvasP = p.createCanvas(800, 800);
 
+  p.setup = function () {
+    canvasP = p.createCanvas(400, 700);
     // Move the canvas within the HTML into the appropriate section
     canvasP.parent("p5js-canvas");
+    p.frameRate(30);
+    cols = p.width / size + 1;
+    rows = p.height / size + 1;
+
+    for (let i = 0; i < cols; i++) {
+      grid[i] = [];
+      for (let j = 0; j < rows; j++) {
+        grid[i][j] = 0;
+      }
+    }
     // create engine, gravity, mouse constraint...
     createEngine();
     addPenis();
     //bum = new Bum(width / 2, 300, 400);
-
     // addEnclosures();
     // Add the bridge here
     //addBeads();
@@ -103,28 +166,6 @@ function sketch(p) {
       stiffness: 0.8,
     });
     World.add(world, ballConstraint);
-
-    // Add cloth to the world
-    // let halfClothLength = (clothOptions.col - 1 / 2) * clothOptions.colGap;
-    // clothOptions.x = width / 2 - halfClothLength;
-
-    // addCloth();
-    //     let bottomLeftContainer = new Box(
-    //       140,
-    //       770,
-    //       `Le gland contient une concentration de terminaisons nerveuses qui en fait LA zone de stimulation du pénis. Cependant, d’autres zones méritent notre attention: le frein, le périnée et les testicules sont particulièrement sensibles pour certaines personnes et peuvent susciter du plaisir si elles sont stimulées doucement.
-    // `
-    //     );
-    // let bottomRightContainer = new Box(660, 770);
-    // let topLeftContainer = new Box(140, 250);
-    // let topRightContainer = new Box(660, 250);
-
-    // boxes.push(
-    //   bottomLeftContainer,
-    //   bottomRightContainer,
-    //   topRightContainer,
-    //   topLeftContainer
-    // );
   };
 
   p.draw = function () {
@@ -241,13 +282,26 @@ function sketch(p) {
     //renderCloth(cloth, clothOptions.col, clothOptions.row);
 
     for (let i = 0; i < particles.length; i++) {
-      if (particles[i].position.y > 1200) {
+      // p.push();
+      // p.fill(255);
+      // p.noStroke();
+      // p.ellipseMode(p.CENTER);
+
+      // p.ellipse(
+      //   particles[i].position.x,
+      //   particles[i].position.y,
+      //   particles[i].circleRadius * 2
+      // );
+      // p.pop();
+
+      if (particles[i].position.y > 800) {
         World.remove(world, particles[i]);
         particles.splice(i, 1);
         // prevents the skipping of a box when removed from the array by backing up 1
         i--;
       }
     }
+    marchingSquares();
     // console.log(particles);
 
     for (let box of boxes) {
@@ -260,14 +314,151 @@ function sketch(p) {
     }
   };
 
+  function marchingSquares() {
+    if (particles.length > 0) {
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          let val = 0;
+          for (let k = 0; k < particles.length; k++) {
+            val +=
+              (particles[k].circleRadius * particles[k].circleRadius) /
+              ((i * size - particles[k].position.x) *
+                (i * size - particles[k].position.x) +
+                (j * size - particles[k].position.y) *
+                  (j * size - particles[k].position.y));
+          }
+
+          grid[i][j] = val; // Store the computed value in the grid
+
+          // p.noFill();
+          // s.stroke(200);
+          // s.rect(i * size, j * size, size, size);
+
+          // if (val >= 1) {
+          //   s.fill(0, 255, 0);
+          // } else {
+          //   s.fill(0);
+          // }
+          // s.text(s.round(val, 2), i * size, j * size);
+        }
+      }
+
+      for (let i = 0; i < cols - 1; i++) {
+        for (let j = 0; j < rows - 1; j++) {
+          let a = 0;
+          let b = 0;
+          let c = 0;
+          let d = 0;
+          let f_a = grid[i][j];
+          let f_b = grid[i + 1][j];
+          let f_c = grid[i + 1][j + 1];
+          let f_d = grid[i][j + 1];
+
+          if (f_a >= 1) a = 1;
+          else a = 0;
+          if (f_b >= 1) b = 1;
+          else b = 0;
+          if (f_c >= 1) c = 1;
+          else c = 0;
+          if (f_d >= 1) d = 1;
+          else d = 0;
+
+          let config = 8 * a + 4 * b + 2 * c + 1 * d;
+          // config += grid[i][j] >= 0.5; // Instead of 1
+
+          p.push();
+          p.strokeWeight(10);
+          p.stroke(255);
+
+          // let pt1 = p.createVector(i * size + size / 2, j * size);
+          // let pt2 = p.createVector(i * size + size, j * size + size / 2);
+          // let pt3 = p.createVector(i * size + size / 2, j * size + size);
+          // let pt4 = p.createVector(i * size, j * size + size / 2);
+
+          let pt1 = p.createVector();
+          let amt = (1 - f_a) / (f_b - f_a);
+          pt1.x = p.lerp(i * size, i * size + size, amt);
+          pt1.y = j * size;
+
+          let pt2 = p.createVector();
+          amt = (1 - f_b) / (f_c - f_b);
+          pt2.x = i * size + size;
+          pt2.y = p.lerp(j * size, j * size + size, amt);
+
+          let pt3 = p.createVector();
+          amt = (1 - f_d) / (f_c - f_d);
+          pt3.x = p.lerp(i * size, i * size + size, amt);
+          pt3.y = j * size + size;
+
+          let pt4 = p.createVector();
+          amt = (1 - f_a) / (f_d - f_a);
+          pt4.x = i * size;
+          pt4.y = p.lerp(j * size, j * size + size, amt);
+
+          switch (config) {
+            case 0:
+              break;
+            case 1:
+              p.line(pt3.x, pt3.y, pt4.x, pt4.y);
+              break;
+            case 2:
+              p.line(pt2.x, pt2.y, pt3.x, pt3.y);
+              break;
+            case 3:
+              p.line(pt2.x, pt2.y, pt4.x, pt4.y);
+              break;
+            case 4:
+              p.line(pt1.x, pt1.y, pt2.x, pt2.y);
+              break;
+            case 5:
+              p.line(pt1.x, pt1.y, pt4.x, pt4.y);
+              p.line(pt2.x, pt2.y, pt3.x, pt3.y);
+              break;
+            case 6:
+              p.line(pt1.x, pt1.y, pt3.x, pt3.y);
+              break;
+            case 7:
+              p.line(pt1.x, pt1.y, pt4.x, pt4.y);
+              break;
+            case 8:
+              p.line(pt1.x, pt1.y, pt4.x, pt4.y);
+              break;
+            case 9:
+              p.line(pt1.x, pt1.y, pt3.x, pt3.y);
+              break;
+            case 10:
+              p.line(pt1.x, pt1.y, pt2.x, pt2.y);
+              p.line(pt3.x, pt3.y, pt4.x, pt4.y);
+              break;
+            case 11:
+              p.line(pt1.x, pt1.y, pt2.x, pt2.y);
+              break;
+            case 12:
+              p.line(pt2.x, pt2.y, pt4.x, pt4.y);
+              break;
+            case 13:
+              p.line(pt2.x, pt2.y, pt3.x, pt3.y);
+              break;
+            case 14:
+              p.line(pt3.x, pt3.y, pt4.x, pt4.y);
+              break;
+            case 15:
+              break;
+          }
+        }
+        p.pop();
+      }
+    }
+  }
+
   function createEngine() {
     engine = Engine.create();
     world = engine.world;
     Runner.run(engine);
     // engine.world.gravity.scale = 0.01;
-    engine.world.gravity.scale = 0.003;
+    // engine.world.gravity.scale = 0.003;
 
-    let mouse = Mouse.create(document.querySelector("#particles-canvas")),
+    let mouse = Mouse.create(document.querySelector("#p5js-canvas")),
       mouseConstraint = MouseConstraint.create(engine, {
         mouse: mouse,
         constraint: {
@@ -296,9 +487,9 @@ function sketch(p) {
     // wrapping plugin
 
     // Initialize matter-wrap plugin
-    if (typeof MatterWrap !== "undefined") {
-      Matter.use("matter-wrap");
-    }
+    // if (typeof MatterWrap !== "undefined") {
+    //   Matter.use("matter-wrap");
+    // }
   }
 
   function addPenis() {
@@ -311,7 +502,7 @@ function sketch(p) {
           mask: CATEGORY_MOUSE | 1, // Collide with mouse
         },
         // isStatic: true,
-        frictionAir: 0.02,
+        // frictionAir: 0.05,
       });
     });
 
@@ -340,6 +531,7 @@ function sketch(p) {
     let lastCircle = penis.bodies.length - 1;
     let randomSize = p.random(8, 12);
     let randomSmall = p.random(4, 6);
+
     let group = Body.nextGroup(true);
 
     let y = p.map(
@@ -360,7 +552,7 @@ function sketch(p) {
 
     let particle = Bodies.circle(x, y, randomSize, {
       friction: 0,
-      density: 1,
+      // density: 1,
       // mass: 200,
       restitution: 0.7,
       collisionFilter: {
@@ -382,13 +574,13 @@ function sketch(p) {
       });
       World.add(world, smallParticle);
       particles.push(smallParticle);
-      spermForce(smallParticle, 3);
+      spermForce(smallParticle, 0.01);
     }
 
     World.add(world, particle);
     particles.push(particle);
 
-    spermForce(particle, 10);
+    spermForce(particle, 0.01);
 
     // Body.applyForce(particle, particle.position, { x: 0, y: 10 });
     // console.log(particles);
@@ -626,4 +818,4 @@ function strokeHsluv(h, s, l, sketch) {
 }
 
 new p5(sketch);
-new p5(sperm);
+// new p5(sperm);

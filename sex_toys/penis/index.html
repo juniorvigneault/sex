@@ -15,7 +15,7 @@ https://cdn.jsdelivr.net/npm/matter-wrap@0.2.0/build/matter-wrap.min.js
 
     <script src="js/lib/hsluv-0.1.0.min.js"></script>
     <script src="js/lib/p5.min.js"></script>
-    <script src="js/lib/p5.sound.min.js"></script>
+    <!-- <script src="js/lib/p5.sound.min.js"></script> -->
 
     <!-- scripts -->
     <script src="js/scripts/Box.js"></script>
@@ -29,17 +29,22 @@ https://cdn.jsdelivr.net/npm/matter-wrap@0.2.0/build/matter-wrap.min.js
     <svg>
       <defs>
         <filter id="gooey" height="130%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+          <feGaussianBlur
+            in="SourceGraphic"
+            stdDeviation="10"
+            result="blur"
+          ></feGaussianBlur>
           <feColorMatrix
             in="blur"
-            mode="matrix"
-            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 50 -10"
+            type="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -3"
             result="goo"
-          />
-          <feBlend in="SourceGraphic" in2="goo" />
+          ></feColorMatrix>
+          <feBlend in="SourceGraphic" in2="goo"></feBlend>
         </filter>
       </defs>
     </svg>
+    <!-- <h1>hello</h1> -->
     <div id="canvases">
       <section id="p5js-canvas"></section>
       <section id="particles-canvas"></section>

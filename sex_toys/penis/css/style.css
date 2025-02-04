@@ -7,6 +7,15 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  /* filter: url("#gooey"); */
+}
+
+h1 {
+  position: absolute;
+  color: black;
+  top: 0px;
+  left: 0px;
+  font-size: 300px;
 }
 
 /* Center the #canvases div perfectly in the middle of the window */
@@ -22,9 +31,14 @@ body {
   height: fit-content;
 }
 
-/* Gooey effect applied to the particles canvas */
-#particles-canvas {
+/* #p5js-canvas canvas {
   filter: url("#gooey");
+} */
+
+/* Gooey effect applied to the particles canvas */
+#particles-canvas canvas {
+  /* filter: url("#gooey"); */
+  /* transform: translate3d(0, 0, 0); */
 }
 
 .infoBubble {
@@ -43,7 +57,14 @@ body {
   /* transform-origin: center; Ensure scaling happens from the center */
   /* transition: transform 0.3s ease; Smooth scaling animation */
 }
-
+.particlesDiv {
+  position: absolute;
+  /* width: 10px;
+  height: 10px; */
+  background-color: white;
+  border-radius: 100%;
+  filter: url("#gooey");
+}
 .textInfoBubble {
   text-align: center;
   color: black;

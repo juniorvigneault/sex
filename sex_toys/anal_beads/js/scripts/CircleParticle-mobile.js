@@ -21,7 +21,7 @@ class CircleParticle {
     this.cardNumberText = document.createElement("p");
 
     this.cardNumberDiv.append(this.cardNumberText);
-    this.infoCard.append(this.cardNumberDiv);
+    this.infoCardDiv.append(this.cardNumberDiv);
     this.cardNumberText.innerHTML = number;
 
     this.cardNumberDiv.classList.add("cardNumber");
@@ -63,7 +63,7 @@ class CircleParticle {
     this.infoCard.append(this.textInfoCard);
     this.textInfoCard.classList.add("textInfoCard");
     this.textInfoCard.innerText = this.text;
-    this.infoCard.append(this.cardButton);
+    this.infoCardDiv.append(this.cardButton);
     this.cardButton.classList.add("continueButton");
     this.cardButton.innerText = "CONTINUER";
 
@@ -102,22 +102,22 @@ class CircleParticle {
     // Get the current position of the canvas in the viewport
     let canvasRect = p5jsCanvas.getBoundingClientRect();
     // let infoCard = document.querySelector("#infoCardDiv");
-    // card with is 270px
-    let infoCardHalfWidth = 230 / 2;
+    // card with is 240px (220+ 40 padding)
+    let infoCardHalfWidth = 260 / 2;
     this.infoCardDiv.style.left =
       canvasRect.left + canvasDimensions.x / 2 - infoCardHalfWidth + "px"; // Center by subtracting 125 (half of 250px)
   }
 
   moveInfoCardY() {
     let canvasRect = p5jsCanvas.getBoundingClientRect();
-    // card height is 350px
+    // card height is 280px + 40 padd
     let infoCardHalfHeight = 320 / 2;
     this.infoCardDiv.style.top =
       canvasRect.top + canvasDimensions.y / 2 - infoCardHalfHeight + "px"; // Center by subtracting 125 (half of 250px)
   }
 
   display(color, isHandle) {
-    let { h, s, l } = color;
+    let { r, g, b } = color;
     push();
     let pos = this.body.position;
     let angle = this.body.angle;
@@ -142,14 +142,18 @@ class CircleParticle {
     // if handle, then draw ellipse in the middle with color of background
     // to create illusion that it is a ring
     if (isHandle) {
-      strokeHsluv(h, s, l);
+      // strokeHsluv(h, s, l);
+      stroke(r, g, b);
       strokeWeight(this.handleWidth);
-      fillHsluv(14, 79.6, 29.1);
+      // fillHsluv(14, 79.6, 29.1);
+      // fill();
+      noFill();
       ellipse(0, 0, this.r - this.handleWidth);
     } else {
       push();
       noStroke();
-      fillHsluv(h, s, l);
+      // fillHsluv(h, s, l);
+      fill(r, g, b);
       ellipse(0, 0, this.r);
       // yellow dots
       // fillHsluv(61.8, 75.5, 81.9);
