@@ -1,4 +1,9 @@
 /* Reset margins, paddings, and ensure full height */
+@font-face {
+  font-family: "GT America Regular";
+  src: url("/sex_toys/anal_beads/css/GT-America-Regular.otf") format("opentype");
+}
+
 *,
 html,
 body {
@@ -7,7 +12,11 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+
   /* filter: url("#gooey"); */
+}
+body {
+  background-color: #f2eedf;
 }
 
 h1 {
@@ -29,15 +38,13 @@ h1 {
   transform: translate(-50%, -50%);
   width: fit-content;
   height: fit-content;
+  border-radius: 20px;
 }
-
-/* #p5js-canvas canvas {
-  filter: url("#gooey");
-} */
 
 /* Gooey effect applied to the particles canvas */
 #particles-canvas canvas {
-  /* filter: url("#gooey"); */
+  filter: url("#gooey");
+
   /* transform: translate3d(0, 0, 0); */
 }
 
@@ -57,23 +64,129 @@ h1 {
   /* transform-origin: center; Ensure scaling happens from the center */
   /* transition: transform 0.3s ease; Smooth scaling animation */
 }
-.particlesDiv {
+
+#infoCardDiv {
   position: absolute;
-  /* width: 10px;
-  height: 10px; */
-  background-color: white;
-  border-radius: 100%;
-  filter: url("#gooey");
+  display: flex;
+  flex-direction: column;
+  /* width: 0;
+  height: 0; */
+  overflow: hidden; /* Prevent content from showing while shrinking */
+  top: 600px;
+  left: 500px;
+  /* background-color: #f2eedf; */
+
+  border-radius: 10%;
+  padding: 20px;
+  /* opacity: 10%; */
+  /* display: flex;  */
+  /* margin: 10px; */
+  align-items: center; /* Centers content vertically */
+  justify-content: center; /* Centers content horizontally */
+  /* display: none; */
+  /* opacity: 0; */
+  width: 220px;
+  height: 220px;
 }
-.textInfoBubble {
+
+#infoCard {
+  /* justify-content: center; */
+  /* height: 100%; */
+  /* align-items: center; */
+  text-align: left; /* Center text inside the card */
+  color: #37010f;
+  height: 100%;
+  width: fit-content;
+  border-radius: 15px;
+  /* border: 1px solid #f4eddb; */
+  /* height: fit-content; */
+  /* opacity: 0%; */
+  /* padding: 16px; Adds spacing inside the card */
+  box-sizing: border-box; /* Includes padding in the width/height */
+  position: relative; /* Necessary for the absolute button to be positioned relative to this card */
+  padding: 20px;
+  border-bottom: 0;
+  /* padding-top: 25px; */
+}
+
+#textInfoCard {
+  font-family: "GT America Regular";
+  /* font-family: Arial, Helvetica, sans-serif; */
+  /* font-size: 14px; */
+  font-size: 16px;
+  /* color: #f2eedf; */
+  /* padding-top: 15px; */
+  user-select: none; /* Prevent text selection */
+
+  /* top: -20px; */
+  /* margin-bottom: 40px; Ensure space for the button */
+}
+
+#continueButton {
+  /* position: absolute; */
+  /* color: #f2eedf; */
+  font-family: "GT America Regular";
+
+  border-color: #f2eedf;
+  border-style: solid;
+  background-color: #37010f00;
+  border-color: #37010f;
+  /* border-width: 2px; */
+  /* left: 53px; */
+  /* align-self: center; */
   text-align: center;
-  color: black;
-  font-family: sans-serif;
-  font-size: 15px;
-  margin: 28px 5px 20px 5px;
-  z-index: 999999;
-  /* transition: opacity 0.1s ease; Smooth fade-in/out */
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+  /* font-family: "Club Sexu_Regular"; */
+  /* font-family: "Club Sexu_Regular"; */
+  font-size: 16px;
+  width: 100%;
+  /* padding: 5px; */
+  /* height: 20px; */
+  /* color: #bc3006; */
+  /* padding: 3px 18px; */
+  /* padding-left: 18px; */
+  /* padding-right: 18px; */
+  /* width: 220px; */
+  /* padding-top: 5px; */
+  /* padding-bottom: 2px; */
+  /* background-color: #37010f; */
+  height: 35px;
+  border-radius: 20px;
+  border-width: 1px;
+  /* letter-spacing: 0.02rem; */
+  /* border: none; */
+  /* height: 30px; */
+  /* border-color: #7fbc06; */
+}
+
+#cardNumber {
+  font-family: "GT America Regular";
+
+  position: absolute;
+  align-self: center;
+  text-align: center;
+  /* background-color: #37010f; */
+  /* background-color: #c78a9a; */
+  padding: 10px;
+  /* top: 5px; */
+  /* background-color: #ff4c1e; */
+  /* font-family: "gtAmerica"; */
+  /* padding: 2px 15px; */
+  /* border-width: 1px; */
+  /* align-self: center; Center the button horizontally */
+  /* top: -20px; */
+  /* text-align: center; */
+  /* border-style: solid; */
+  /* border-radius: 100%; */
+  z-index: 1;
+}
+
+#cardNumberText {
+  /* position: absolute; */
+  font-size: 16px;
+  /* display: flex; */
+  color: #37010f;
+  font-family: "GT America Regular";
+  font-size: 16px;
+  user-select: none; /* Prevent text selection */
+  align-items: center;
 }

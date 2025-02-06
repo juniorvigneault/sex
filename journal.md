@@ -342,3 +342,23 @@ Anal beads:
   - Make cursor hand that grabs when clicking to help understand [DONE]
 Penis: 
   - Start mobile version
+
+  ## Febuary 2025 - AFTERNOON
+
+  Ok after finishing a more advanced version of anal beads with the good colors, I was very happy.
+  
+  ![beads with colors](journal_assets/imgs/anal_beads_colors.png)
+
+  
+I innocently decided to start working on the mobile version for the penis. I was working on mobile because of the event that was going to happen, the comedy event with queer stand up comics. They hold this event every year and thought it could be nice to have the games available in the lobby for people to play with and test. I thought it was amazing but alsoooo they are really unresponsive and I was the one who had to figure out how to present them (ipads, large touch screens...?) and I had no idea how I would set it up. BASICALLy I loved the idea but it was a lot of work. But i was ready to make it happen, and the first thing i needed to figure out was to make the mobile version. The anal beads worked fine except for minor details I had to fix. I opened the penis one and the SVG was not being applied. After working through why, and sort of forcing the effect onto my canvas, it was soooooo slow and was crashing. FUCK. After doing some research I found out that SVG filters are really CPU (GPU?) intensive or whatever. And on mobile its too intense to process. I tried different ways, I thought maybe instead of drawing two canvases, I could instead create divs for each particle and then apply the svg to the divs individually, because i tried applying it to a regular H3 and it seemed fine. Anyway I tried this but it did not work (needs to be applied to a full layer, or else the particles don't mesh together). Even with this it was also lagging because there were so much divs created. I found a [tutorial](https://mofu-dev.com/en/blog/gooey-shader/) mentionning the actual technique I was using with SVG and saying it was not performing well, and that instead to use shaders and threejs. Having no experience in both I tried for 3 hours to implement it using chatGPT but it was useless. I also worked with Sabine and its a lot of work, and I need to learn the tools before going in this tutorial. After that I tried two other techniques, one where someone seemed to be creating a gooey-ish effect using p5 effects, but I didn't manage to make it happen and did not really like how it looked. I might need to look back into it though. ANYWAYS here i things i tried that failed for various reasons:
+
+- Applying a css filter on a the canvas and trying to key out the background to only keep the effect. Maybe look more into that to see if something could be done. Basically this works if theres nothing else on the canvas and the colors are really contrasted. Sketch [here](https://editor.p5js.org/bojidar-bg/sketches/hR5w4V_Z-) 
+- [This](https://gvisco.github.io/gooey/) weird thing I need to try again
+- [This](https://www.youtube.com/watch?v=lEiXBA_xHOQ) completely different technique using marching squares... which made for a cool effect but in the end was lagging even more than the svg even on destop because there are too many calculations going on. Basically drawing outlines around the particles. It worked with small amounts of particles and keeping the lines very geometric. It gave geometric sperm which was interesting, but it lags hard. 
+  
+  ![marching squares](journal_assets/imgs/marching_squares.png)
+
+So I decided to stop thinking about making these things work on mobile for now because its a lot of trouble. I think being on your phone is also a solo experience vs opening up on a computer for other people to see which maybe makes the humour happen a bit more I guess. I guess the title are you alone is about opening these when your alone and on the desktop its harder to be alone? 
+
+Ive been caught up in making something work so I don't have much to say conceptually now. But I'm happy with it now, with the colors and everything. 
+

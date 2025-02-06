@@ -9,8 +9,9 @@ class CircleParticle {
       restitution: 1,
       isStatic: isStatic,
       // density: 0.001,
-      frictionAir: 0.03,
-      mass: 10000,
+      // frictionAir: 0.01,
+      // mass: 10000,
+      // density: 0.1,
       collisionFilter: {
         category: CATEGORY_CIRCLE_PARTICLE,
         mask:
@@ -33,7 +34,7 @@ class CircleParticle {
   }
 
   display(color, p) {
-    let { r, g, b, a } = color;
+    let { h, s, l, a } = color;
     p.push();
     let pos = this.body.position;
     let angle = this.body.angle;
@@ -41,7 +42,7 @@ class CircleParticle {
     p.ellipseMode(p.CENTER);
     p.translate(pos.x, pos.y);
     p.rotate(angle);
-    fillHsluv(color.r, color.g, color.b, p);
+    fillHsluv(color.h, color.s, color.l, p);
     p.ellipse(0, 0, this.r);
     p.pop();
   }

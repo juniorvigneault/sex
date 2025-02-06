@@ -37,7 +37,7 @@ const CATEGORY_SPERM = 0x0003;
 const CATEGORY_CIRCLE_PARTICLE = 0x0002;
 const CATEGORY_RECTANGLE = 0x0004;
 const CATEGORY_MOUSE = 0x0008;
-let penisBeadsSize = 55;
+let penisBeadsSize = 57;
 let clothOptions = {
   x: 0,
   y: 0,
@@ -49,55 +49,75 @@ let clothOptions = {
   particleRad: 5,
 };
 let boxes = [];
-
+let canvasSize = {
+  x: 550,
+  y: 800,
+};
 let particlesCanvas;
-
+let infoCard;
 let borderThreshold = 10;
-
+let pg;
+let keyedImage;
 let rows, cols;
 let size = 30;
 let grid = [];
 
 function sperm(s) {
   s.setup = function () {
-    canvasS = s.createCanvas(400, 700);
+    canvasS = s.createCanvas(canvasSize.x, canvasSize.y);
     // Move the canvas within the HTML into the appropriate section
     canvasS.parent("particles-canvas");
-    // s.pixelDensity(0.1);
-    // s.frameRate(10); // Cap to 30 FPS
-    cols = s.width / size + 1;
-    rows = s.height / size + 1;
 
-    for (let i = 0; i < cols; i++) {
-      grid[i] = [];
-      for (let j = 0; j < rows; j++) {
-        grid[i][j] = 0;
-      }
-    }
+    // canvasS.style("filter", "blur(20px) contrast(2000%)");
+    // s.pixelDensity(0.5);
+    // s.frameRate(10); // Cap to 30 FPS
+    // cols = s.width / size + 1;
+    // rows = s.height / size + 1;
+
+    // for (let i = 0; i < cols; i++) {
+    //   grid[i] = [];
+    //   for (let j = 0; j < rows; j++) {
+    //     grid[i][j] = 0;
+    //   }
+    // }
   };
 
   s.draw = function () {
-    // s.background(0, 0, 0);
-    // push();
-    // s.fill(255, 255, 255, 100);
-    // s.rect(0, 0, s.width, s.height);
-    // pop();
-    // Clear the particles canvas
-    // s.clear();
+    // s.background(0); // Black background
+    s.clear();
+    // Draw white particles
     for (let i = 0; i < particles.length; i++) {
       s.push();
       s.fill(255);
       s.noStroke();
       s.ellipseMode(s.CENTER);
-
       s.ellipse(
         particles[i].position.x,
         particles[i].position.y,
         particles[i].circleRadius * 2
       );
       s.pop();
+
+      if (particles[i].position.y > 800) {
+        World.remove(world, particles[i]);
+        particles.splice(i, 1);
+        i--;
+      }
     }
-    // gooeyEffect();
+
+    // // Process pixels to key out black
+    // s.loadPixels();
+    // for (let i = 0; i < s.pixels.length; i += 4) {
+    //   let r = s.pixels[i]; // Red
+    //   let g = s.pixels[i + 1]; // Green
+    //   let b = s.pixels[i + 2]; // Blue
+
+    //   // Check if the pixel is black (or close to black)
+    //   if (r === 0 && g === 0 && b === 0) {
+    //     s.pixels[i + 3] = 0; // Set alpha to 0 (transparent)
+    //   }
+    // }
+    // s.updatePixels();
   };
 
   function gooeyEffect() {
@@ -136,34 +156,36 @@ function sketch(p) {
   };
 
   p.setup = function () {
-    canvasP = p.createCanvas(400, 700);
+    canvasP = p.createCanvas(canvasSize.x, canvasSize.y);
     // Move the canvas within the HTML into the appropriate section
     canvasP.parent("p5js-canvas");
-    p.frameRate(30);
-    cols = p.width / size + 1;
-    rows = p.height / size + 1;
 
-    for (let i = 0; i < cols; i++) {
-      grid[i] = [];
-      for (let j = 0; j < rows; j++) {
-        grid[i][j] = 0;
-      }
-    }
+    // p.frameRate(30);
+    // cols = p.width / size + 1;
+    // rows = p.height / size + 1;
+
+    // for (let i = 0; i < cols; i++) {
+    //   grid[i] = [];
+    //   for (let j = 0; j < rows; j++) {
+    //     grid[i][j] = 0;
+    //   }
+    // }
     // create engine, gravity, mouse constraint...
+    infoCard = document.querySelector("#infoCardDiv");
     createEngine();
     addPenis();
     //bum = new Bum(width / 2, 300, 400);
-    // addEnclosures();
+    addEnclosures();
     // Add the bridge here
     //addBeads();
-    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 100, 120));
-    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 100, 120));
+    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 240, 115));
+    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 240, 115));
 
     let ballConstraint = Constraint.create({
       bodyA: analBeads[0].beads[1].body,
       bodyB: analBeads[1].beads[1].body,
       length: 100,
-      stiffness: 0.8,
+      stiffness: 0.9,
     });
     World.add(world, ballConstraint);
   };
@@ -184,6 +206,8 @@ function sketch(p) {
     //       CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE;
     //   }
     // }
+    moveInfoCardX();
+    moveInfoCardY();
     for (let nuts of analBeads) {
       nuts.display(p);
     }
@@ -197,11 +221,11 @@ function sketch(p) {
     for (let i = 0; i < allBodies.length; i++) {
       allBodies[i].plugin.wrap = {
         min: {
-          x: -100,
+          x: 0,
           y: -3000,
         },
         max: {
-          x: p.width + 100,
+          x: p.width,
           y: p.height + 2000,
         },
       };
@@ -215,16 +239,14 @@ function sketch(p) {
     // ellipse(width / 2, 210, 200);
     // pop();
     //bum.display();
-    // for (let enclosure of enclosures) {
-    //   enclosure.display({ r: 200, g: 200, b: 200, a: 20 });
-    // }
+
     // push();
     // ellipseMode(CENTER);
     // ellipse();
     // pop();
 
     for (let i = 0; i < penis.bodies.length; i++) {
-      if (i > 0 && i <= 20) {
+      if (i > 0 && i <= 30) {
         p.push();
         // p.strokeWeight(penisBeadsSize);
         // strokeHsluv(0, 0, 13.2, p);
@@ -236,7 +258,7 @@ function sketch(p) {
         // );
 
         p.strokeWeight(penisBeadsSize * 2);
-        strokeHsluv(334.9, 78.7, 78, p);
+        strokeHsluv(14.7, 100, 55.7, p);
         p.line(
           penis.bodies[i].position.x,
           penis.bodies[i].position.y,
@@ -249,6 +271,10 @@ function sketch(p) {
         // p.ellipse(penis.bodies[i].position.x, penis.bodies[i].position.y, 200);
 
         p.pop();
+      }
+
+      for (let enclosure of enclosures) {
+        enclosure.display(200, p);
       }
     }
 
@@ -281,37 +307,37 @@ function sketch(p) {
     // pop();
     //renderCloth(cloth, clothOptions.col, clothOptions.row);
 
-    for (let i = 0; i < particles.length; i++) {
-      // p.push();
-      // p.fill(255);
-      // p.noStroke();
-      // p.ellipseMode(p.CENTER);
+    // for (let i = 0; i < particles.length; i++) {
+    //   p.push();
+    //   p.fill(255);
+    //   p.noStroke();
+    //   p.ellipseMode(p.CENTER);
 
-      // p.ellipse(
-      //   particles[i].position.x,
-      //   particles[i].position.y,
-      //   particles[i].circleRadius * 2
-      // );
-      // p.pop();
+    //   p.ellipse(
+    //     particles[i].position.x,
+    //     particles[i].position.y,
+    //     particles[i].circleRadius * 2
+    //   );
+    //   p.pop();
 
-      if (particles[i].position.y > 800) {
-        World.remove(world, particles[i]);
-        particles.splice(i, 1);
-        // prevents the skipping of a box when removed from the array by backing up 1
-        i--;
-      }
-    }
-    marchingSquares();
+    //   if (particles[i].position.y > 800) {
+    //     World.remove(world, particles[i]);
+    //     particles.splice(i, 1);
+    //     // prevents the skipping of a box when removed from the array by backing up 1
+    //     i--;
+    //   }
+    // }
+    // marchingSquares();
     // console.log(particles);
 
-    for (let box of boxes) {
-      box.display(p);
-      for (wall of box.walls) {
-        let color = 0;
-        let p5Var = p;
-        wall.display(color, p5Var);
-      }
-    }
+    // for (let box of boxes) {
+    //   box.display(p);
+    //   for (wall of box.walls) {
+    //     let color = 0;
+    //     let p5Var = p;
+    //     wall.display(color, p5Var);
+    //   }
+    // }
   };
 
   function marchingSquares() {
@@ -456,9 +482,9 @@ function sketch(p) {
     world = engine.world;
     Runner.run(engine);
     // engine.world.gravity.scale = 0.01;
-    // engine.world.gravity.scale = 0.003;
+    engine.world.gravity.scale = 0.002;
 
-    let mouse = Mouse.create(document.querySelector("#p5js-canvas")),
+    let mouse = Mouse.create(document.querySelector("#particles-canvas")),
       mouseConstraint = MouseConstraint.create(engine, {
         mouse: mouse,
         constraint: {
@@ -487,38 +513,41 @@ function sketch(p) {
     // wrapping plugin
 
     // Initialize matter-wrap plugin
-    // if (typeof MatterWrap !== "undefined") {
-    //   Matter.use("matter-wrap");
-    // }
+    if (typeof MatterWrap !== "undefined") {
+      Matter.use("matter-wrap");
+    }
   }
 
   function addPenis() {
     let group = Body.nextGroup(true);
 
-    penis = Composites.stack(0, 10, 17, 1, 0, 0, function (x, y) {
+    penis = Composites.stack(0, 10, 20, 1, 0, 0, function (x, y) {
       return Bodies.circle(p.width / 2 - penisBeadsSize, 130, penisBeadsSize, {
         collisionFilter: {
           group: group,
           mask: CATEGORY_MOUSE | 1, // Collide with mouse
         },
+        // density: 0.0001,
+
         // isStatic: true,
-        // frictionAir: 0.05,
+        frictionAir: 0.03,
       });
     });
 
     Composites.chain(penis, 0, 0, 0, 0, {
       stiffness: 1,
-      length: 13,
+      length: 10,
+      // mass: 500,
     });
 
     Composite.add(world, [
       penis,
       Constraint.create({
-        pointA: { x: p.width / 2, y: p.height / 2 - 105 },
+        pointA: { x: p.width / 2, y: p.height / 2 - 245 },
         bodyB: penis.bodies[0],
         pointB: { x: 0, y: 0 },
-        length: 1,
-        stiffness: 1,
+        length: 0,
+        // stiffness: 1,
       }),
     ]);
   }
@@ -527,10 +556,29 @@ function sketch(p) {
     isCumming = false;
   };
 
+  // position info card in the middle of the canvas even if user resizes
+  function moveInfoCardX() {
+    // Get the current position of the canvas in the viewport
+    let canvasRect = canvasP.elt.getBoundingClientRect();
+    // let infoCard = document.querySelector("#infoCardDiv");
+    // card with is 220px (220+ 40 padding)
+    let infoCardWidth = 260 / 2;
+    infoCard.style.left =
+      canvasRect.left + canvasSize.x / 2 - infoCardWidth + "px"; // Center by subtracting 125 (half of 250px)
+  }
+
+  function moveInfoCardY() {
+    let canvasRect = canvasP.elt.getBoundingClientRect();
+    // card height is 220px + 40 padd
+    let infoCardHeight = -95;
+    infoCard.style.top =
+      canvasRect.top + canvasSize.y / 2 - infoCardHeight + "px"; // Center by subtracting 125 (half of 250px)
+  }
+
   function makeSperm() {
     let lastCircle = penis.bodies.length - 1;
-    let randomSize = p.random(8, 12);
-    let randomSmall = p.random(4, 6);
+    let randomSize = p.random(7, 12);
+    let randomSmall = p.random(4, 7);
 
     let group = Body.nextGroup(true);
 
@@ -552,9 +600,10 @@ function sketch(p) {
 
     let particle = Bodies.circle(x, y, randomSize, {
       friction: 0,
-      // density: 1,
+      density: 0.0005,
       // mass: 200,
       restitution: 0.7,
+      // frictionAir: 0.5,
       collisionFilter: {
         group: CATEGORY_SPERM,
         mask: CATEGORY_MOUSE | CATEGORY_RECTANGLE,
@@ -562,25 +611,26 @@ function sketch(p) {
     });
     let smallParticle;
     let randomFrameCount = p.random(10, 60);
-    if (p.frameCount % 60 > randomFrameCount) {
+    if (p.frameCount % 40 > randomFrameCount) {
       smallParticle = Bodies.circle(x, y + 3, randomSmall, {
         friction: 0,
+        density: 0.0001,
         density: 1,
         restitution: 0.7,
         collisionFilter: {
           group: group,
-          mask: CATEGORY_MOUSE,
+          mask: CATEGORY_MOUSE | CATEGORY_RECTANGLE,
         },
       });
       World.add(world, smallParticle);
       particles.push(smallParticle);
-      spermForce(smallParticle, 0.01);
+      spermForce(smallParticle, 0.1);
     }
 
     World.add(world, particle);
     particles.push(particle);
 
-    spermForce(particle, 0.01);
+    spermForce(particle, 0.004);
 
     // Body.applyForce(particle, particle.position, { x: 0, y: 10 });
     // console.log(particles);
@@ -605,42 +655,68 @@ function sketch(p) {
     p.push();
     p.rectMode(p.CORNER);
     p.noStroke();
-    fillHsluv(77.1, 88.7, 90.9, p);
+    fillHsluv(98.9, 100, 94.7, p);
     p.rect(0, 0, p.width, p.height);
+
+    let gradient = p.drawingContext.createLinearGradient(
+      0,
+      p.height / 2,
+      0,
+      p.height
+    ); // Vertical gradient from middle to bottom
+
+    let rgb = hsluv.hsluvToRgb([284.9, 100, 70.1]);
+    let colorBottom = `rgba(${rgb[0] * 255}, ${rgb[1] * 255}, ${
+      rgb[2] * 255
+    }, 1)`; // Fully opaque
+
+    let colorTop = `rgba(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255}, 0)`; // Fully transparent
+
+    gradient.addColorStop(0, colorTop); // Transparent at the midpoint
+    gradient.addColorStop(1, colorBottom); // Full color at the bottom
+
+    p.drawingContext.fillStyle = gradient;
+    p.rect(0, p.height / 2, p.width, p.height / 2); // Draw the gradient
     p.pop();
   }
 
-  // function addEnclosures() {
-  //   let bottomEnclosure = new RectangleParticle(
-  //     width / 2,
-  //     height + 50,
-  //     width,
-  //     100,
-  //     true,
-  //     world
-  //   );
-  //   enclosures.push(bottomEnclosure);
+  function addEnclosures() {
+    let container = {
+      x: 0,
+      y: -50,
+    };
 
-  //   let tunnelEnclosureLeft = new RectangleParticle(
-  //     gameX - 35,
-  //     gameY + 300,
-  //     500,
-  //     1000,
-  //     true,
-  //     world
-  //   );
-  //   let tunnelEnclosureRight = new RectangleParticle(
-  //     gameX + 585,
-  //     gameY + 300,
-  //     500,
-  //     1000,
-  //     true,
-  //     world
-  //   );
+    let bottomEnclosure = new RectangleParticle(
+      container.x + p.width / 2,
+      container.y + p.height,
+      270,
+      20,
+      true,
+      world
+    );
 
-  //   enclosures.push(tunnelEnclosureRight);
-  //   enclosures.push(tunnelEnclosureLeft);
-  // }
+    let tunnelEnclosureLeft = new RectangleParticle(
+      container.x + 150,
+      container.y + 680,
+      20,
+      240,
+      true,
+      world
+    );
+
+    let tunnelEnclosureRight = new RectangleParticle(
+      container.x + 400,
+      container.y + 680,
+      20,
+      240,
+      true,
+      world
+    );
+
+    enclosures.push(tunnelEnclosureRight);
+    enclosures.push(tunnelEnclosureLeft);
+    enclosures.push(bottomEnclosure);
+  }
 
   // function addBeads() {
   //   // Create a composite to hold the beads and constraints
@@ -807,9 +883,9 @@ function sketch(p) {
   }
 }
 
-function fillHsluv(h, s, l, sketch) {
+function fillHsluv(h, s, l, sketch, alpha = 255) {
   const rgb = hsluv.hsluvToRgb([h, s, l]);
-  sketch.fill(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
+  sketch.fill(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255, alpha);
 }
 
 function strokeHsluv(h, s, l, sketch) {
@@ -818,4 +894,4 @@ function strokeHsluv(h, s, l, sketch) {
 }
 
 new p5(sketch);
-// new p5(sperm);
+new p5(sperm);

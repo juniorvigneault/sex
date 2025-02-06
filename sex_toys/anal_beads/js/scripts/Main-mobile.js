@@ -574,7 +574,7 @@ function moveInfoCardX() {
 function moveInfoCardY() {
   let canvasRect = p5jsCanvas.getBoundingClientRect();
   // card height is 280px + 40 padd
-  let endMessageHeight = 50 / 2;
+  let endMessageHeight = 135 / 2;
   endMessage.style.top =
     canvasRect.top + canvasDimensions.y / 2 - endMessageHeight + "px"; // Center by subtracting 125 (half of 250px)
 }

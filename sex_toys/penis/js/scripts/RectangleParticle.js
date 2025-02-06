@@ -7,7 +7,7 @@ class RectangleParticle {
 
     let options = {
       friction: 0,
-      restitution: 0,
+      restitution: 0.7,
       isStatic: isStatic,
       collisionFilter: {
         category: CATEGORY_RECTANGLE,
@@ -29,7 +29,8 @@ class RectangleParticle {
     p.rotate(angle);
     // noStroke();
     // fillHsluv(321, 49, 50);
-    p.fill(color, 0, 0, 0);
+    // p.fill(color, 0, 0, 0);
+    p.fill(0, 0, 0, 0);
     p.noStroke();
     p.rect(0, 0, this.w, this.h);
     p.pop();

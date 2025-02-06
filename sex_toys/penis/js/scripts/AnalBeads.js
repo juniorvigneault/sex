@@ -5,8 +5,8 @@ class AnalBeads {
     this.beadConstraints = [];
     this.startX = sX;
     this.startY = sY;
-    this.constraintLength = 200;
-    this.toyLength = 180;
+    this.constraintLength = 210;
+    this.toyLength = 230;
     this.beadSize = beadSize;
     this.spaceBetweenBeads = this.beadSize + 0;
     this.makeChain();
@@ -16,7 +16,7 @@ class AnalBeads {
     for (let i = 0; i < this.beads.length; i++) {
       if (i > 0) {
         p.push();
-        strokeHsluv(243.7, 83.4, 63.5, p);
+        strokeHsluv(12.2, 88.2, 29.6, p);
         p.strokeWeight(this.beadSize);
         p.line(
           this.beads[i - 1].body.position.x,
@@ -26,7 +26,7 @@ class AnalBeads {
         );
         p.pop();
       }
-      this.beads[i].display({ r: 243.7, g: 83.4, b: 63.5, a: 255 }, p);
+      this.beads[i].display({ h: 12.2, s: 88.2, l: 29.6, a: 255 }, p);
     }
   }
 
@@ -58,7 +58,7 @@ class AnalBeads {
             y: 0,
           },
           length: this.constraintLength,
-          stiffness: 0.1,
+          stiffness: 0.04,
         };
         //see doc
         let constraint = Constraint.create(options);
