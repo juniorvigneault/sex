@@ -16,7 +16,9 @@ class AnalBeads {
     for (let i = 0; i < this.beads.length; i++) {
       if (i > 0) {
         p.push();
-        strokeHsluv(12.2, 88.2, 29.6, p);
+        strokeHsluv(293.4, 71.1, 90.1, p);
+        // p.blendMode(p.DARKEST);
+
         p.strokeWeight(this.beadSize);
         p.line(
           this.beads[i - 1].body.position.x,
@@ -26,7 +28,7 @@ class AnalBeads {
         );
         p.pop();
       }
-      this.beads[i].display({ h: 12.2, s: 88.2, l: 29.6, a: 255 }, p);
+      this.beads[i].display({ h: 293.4, s: 71.1, l: 90.1, a: 255 }, p);
     }
   }
 

@@ -30,7 +30,7 @@ class RectangleParticle {
     // noStroke();
     // fillHsluv(321, 49, 50);
     // p.fill(color, 0, 0, 0);
-    p.fill(0, 0, 0, 0);
+    p.fill(0, 0, 0, 200);
     p.noStroke();
     p.rect(0, 0, this.w, this.h);
     p.pop();

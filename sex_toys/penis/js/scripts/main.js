@@ -31,6 +31,7 @@ let penis;
 let peeSound;
 let gameX = 200;
 let gameY = 100;
+let ejaculationLevel = 0;
 let ellipseRadius = 200;
 const CATEGORY_PENIS = 0x0001;
 const CATEGORY_SPERM = 0x0003;
@@ -48,6 +49,7 @@ let clothOptions = {
   crossBrace: false,
   particleRad: 5,
 };
+let GTAmericaFont;
 let boxes = [];
 let canvasSize = {
   x: 550,
@@ -61,8 +63,27 @@ let keyedImage;
 let rows, cols;
 let size = 30;
 let grid = [];
+let buttonClickable = true;
+let infoCardDivOutline;
+const messages = [
+  "les testicules sont particulièrement sensibles pour certaines personnes et peuvent susciter du plaisir si elles sont stimulées doucement.",
+  "Cependant, d’autres zones méritent notre attention: le frein (situé à la jonction du gland et de la verge) et le périnée (la zone entre les testicules et l’anus).",
+  "Le gland contient une concentration de terminaisons nerveuses qui en fait LA zone de stimulation du pénis.",
+  "Le lubrifiant est un allié sous-estimé du pénis. Il permet de favoriser la glisse et réduire la friction, ce qui crée une stimulation plus agréable et confortable.",
+  "Ça crée des insécurité, même si ça arrive relativement souvent et pour plusieurs raisons: une stimulation est interrompue ou modifiée, on vit un stress ou une anxiété liée à la performance, on est fatigué·e.",
+  "Un pénis peut perdre son érection  pendant une relation sexuelle.",
+  "Par contre, une surstimulation pourrait causer une irritation et une désensibilisation temporaire. La clé c’est de reconnaître ses limites.",
+];
+let messageItem = 7;
+
+let hasShownInfoCard = false;
+let allowInfoCardReveal = true;
 
 function sperm(s) {
+  s.preload = function () {
+    // GTAmericaFont = s.loadFont("/penis/css/GT-America-Regular.otf");
+  };
+
   s.setup = function () {
     canvasS = s.createCanvas(canvasSize.x, canvasSize.y);
     // Move the canvas within the HTML into the appropriate section
@@ -85,6 +106,8 @@ function sperm(s) {
   s.draw = function () {
     // s.background(0); // Black background
     s.clear();
+    // s.blendMode(s.SCREEN);
+
     // Draw white particles
     for (let i = 0; i < particles.length; i++) {
       s.push();
@@ -105,6 +128,20 @@ function sperm(s) {
       }
     }
 
+    // s.push();
+    // s.rectMode(s.CENTER);
+    // s.textSize(15);
+    // s.textFont(GTAmericaFont);
+    // // p.rect(275, 610, 180, 155);
+    // s.text(
+    //   "Est-ce qu’un pénis peut être désensibilisé si on le stimule trop? N’ayez crainte, les séances de masturbation récurrentes ne sont pas problématiques pour la sensibilité du pénis.",
+    //   275,
+    //   650,
+    //   185,
+    //   200
+    // );
+    // s.pop();
+
     // // Process pixels to key out black
     // s.loadPixels();
     // for (let i = 0; i < s.pixels.length; i += 4) {
@@ -119,35 +156,6 @@ function sperm(s) {
     // }
     // s.updatePixels();
   };
-
-  function gooeyEffect() {
-    s.loadPixels();
-    for (let i = 0; i < s.width; i++) {
-      for (let j = 0; j < s.height; j++) {
-        let index = (i + j * s.width) * 4; // Get pixel index
-        let r = index;
-        let g = index + 1;
-        let b = index + 2;
-        if (s.pixels[r] < 100) {
-          // Blob (smoother core)
-          s.pixels[r] = 135;
-          s.pixels[g] = 199;
-          s.pixels[b] = 191;
-        } else if (s.pixels[r] < borderThreshold) {
-          // Border (gooey edges)
-          s.pixels[r] = 22;
-          s.pixels[g] = 147;
-          s.pixels[b] = 165;
-        } else {
-          // Background
-          s.pixels[r] = 98;
-          s.pixels[g] = 182;
-          s.pixels[b] = 182;
-        }
-      }
-    }
-    s.updatePixels(); // Apply the pixel changes
-  }
 }
 
 function sketch(p) {
@@ -159,7 +167,6 @@ function sketch(p) {
     canvasP = p.createCanvas(canvasSize.x, canvasSize.y);
     // Move the canvas within the HTML into the appropriate section
     canvasP.parent("p5js-canvas");
-
     // p.frameRate(30);
     // cols = p.width / size + 1;
     // rows = p.height / size + 1;
@@ -171,15 +178,20 @@ function sketch(p) {
     //   }
     // }
     // create engine, gravity, mouse constraint...
+    // infoCardDivOutline = document.querySelector("#infoCardDivOutline");
     infoCard = document.querySelector("#infoCardDiv");
+    continueButton.onclick = () => {
+      swapCard();
+    };
+
     createEngine();
     addPenis();
     //bum = new Bum(width / 2, 300, 400);
     addEnclosures();
     // Add the bridge here
     //addBeads();
-    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 240, 115));
-    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 240, 115));
+    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 120, 115));
+    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 120, 115));
 
     let ballConstraint = Constraint.create({
       bodyA: analBeads[0].beads[1].body,
@@ -188,11 +200,26 @@ function sketch(p) {
       stiffness: 0.9,
     });
     World.add(world, ballConstraint);
+
+    moveInfoCardX();
+    moveInfoCardY();
+
+    window.addEventListener("resize", () => {
+      moveInfoCardX();
+      moveInfoCardY();
+    });
   };
 
   p.draw = function () {
     // p.background(0); // Transparent background to keep the gooey effect
     displayBackground();
+
+    //marchingSquares();
+    // console.log(particles.length);
+
+    // if (particles.length >= 350) {
+    //   infoCard.style.opacity = 1;
+    // }
     // Clear the particles canvas
     // p.clear(canvasP);
 
@@ -206,8 +233,21 @@ function sketch(p) {
     //       CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE;
     //   }
     // }
-    moveInfoCardX();
-    moveInfoCardY();
+    console.log(ejaculationLevel);
+
+    if (ejaculationLevel >= 270 && !hasShownInfoCard && allowInfoCardReveal) {
+      // console.log(mouseConstraint);
+      infoCard.classList.add("visible");
+      setTimeout(() => {
+        infoCard.classList.add("opacity"); // Add the opacity transition class
+      }, 100); // Delay in milliseconds
+      infoCardDiv.style.display = "flex";
+      mouseConstraint.constraint.stiffness = 0;
+
+      hasShownInfoCard = true;
+      isCumming = false;
+    }
+
     for (let nuts of analBeads) {
       nuts.display(p);
     }
@@ -244,6 +284,7 @@ function sketch(p) {
     // ellipseMode(CENTER);
     // ellipse();
     // pop();
+    emptyBalls();
 
     for (let i = 0; i < penis.bodies.length; i++) {
       if (i > 0 && i <= 30) {
@@ -258,7 +299,7 @@ function sketch(p) {
         // );
 
         p.strokeWeight(penisBeadsSize * 2);
-        strokeHsluv(14.7, 100, 55.7, p);
+        strokeHsluv(284.9, 100, 70.1, p);
         p.line(
           penis.bodies[i].position.x,
           penis.bodies[i].position.y,
@@ -272,73 +313,282 @@ function sketch(p) {
 
         p.pop();
       }
+    }
+    // if (particles.length >= 350 && !hasShownInfoCard && allowInfoCardReveal) {
+    //   infoCard.classList.add("visible");
+    //   hasShownInfoCard = true;
+    // }
+    // console.log(enclosures);
+    for (let enclosure of enclosures) {
+      enclosure.display(200, p);
+      // console.log("color");
+    }
+  };
 
-      for (let enclosure of enclosures) {
-        enclosure.display(200, p);
+  //MASK CLIP FOR EMPTYING BALLS
+  function emptyBalls() {
+    p.push();
+    p.rectMode(p.CENTER);
+    p.fill(200, 200, 200, 100);
+    // p.rect(275, 400, 300, 370);
+    // let staticBodyPos = analBeads[0].beads[0].body.position;
+    // let dynamicBodyPos = analBeads[0].beads[1].body.position;
+
+    // let dx = dynamicBodyPos.x - staticBodyPos.x;
+    // let dy = dynamicBodyPos.y - staticBodyPos.y;
+
+    // let angle = Math.atan2(dy, dx);
+    // p.translate(
+    //   analBeads[0].beads[0].body.position.x,
+    //   analBeads[0].beads[0].body.position.y
+    // );
+    // p.blendMode(p.REMOVE);
+    p.clip(mask);
+    // p.rotate(angle + 0.223);
+
+    let staticBodyPos = analBeads[0].beads[0].body.position;
+    let posLeftBall = analBeads[0].beads[1].body.position;
+    let posRightBall = analBeads[1].beads[1].body.position;
+    p.strokeWeight(115);
+    p.stroke(255);
+    p.line(staticBodyPos.x, staticBodyPos.y, posLeftBall.x, posLeftBall.y);
+    p.line(staticBodyPos.x, staticBodyPos.y, posRightBall.x, posRightBall.y);
+    // p.noStroke();
+    // p.blendMode(p.LIGHTEST);
+    // p.fill(0);
+    // p.rect(p.mouseX, p.mouseY, 200, 200);
+    p.pop();
+    // console.log(analBeads[0].beads[1].body.position);
+  }
+  function mask() {
+    p.push();
+    let staticBodyPos = analBeads[0].beads[0].body.position;
+    let dynamicBodyPos = analBeads[0].beads[1].body.position;
+    let dx = dynamicBodyPos.x - staticBodyPos.x;
+    let dy = dynamicBodyPos.y - staticBodyPos.y;
+    let angle = Math.atan2(dy, dx);
+    // let posLeftBall = analBeads[0].beads[1].body.position;
+    // let posRightBall = analBeads[1].beads[1].body.position;
+    // console.log(analBeads[0].beads[0].body.position.x);
+    // p.translate(0, 0);
+    // p.ellipseMode(p.CENTER);
+    // p.ellipse(275, 0, 300);
+    // p.ellipse(posRightBall.x - 275, posRightBall.y - 275, 115);
+    // p.ellipse(posLeftBall.x - 275, posLeftBall.y - 275, 115);
+    // p.strokeWeight(20);
+    p.rectMode(p.CENTER);
+    p.translate(staticBodyPos.x, staticBodyPos.y);
+    p.rotate(angle + 0.223);
+    // start sperm in balls at 150px
+    let offset = 150;
+    // console.log(offset);
+    p.rect(ejaculationLevel + offset, 0, 300, 370);
+    p.pop();
+  }
+
+  function swapCard() {
+    messageItem--;
+    ejaculationLevel = 0;
+    infoCard.classList.remove("visible"); // fade out
+    hasShownInfoCard = false;
+    allowInfoCardReveal = false; // prevent immediate re-show
+
+    enclosures.forEach((enclosure) => removeFromWorld(enclosure.body));
+    mouseConstraint.constraint.stiffness = 0.004;
+
+    setTimeout(() => {
+      // textInfoCard.innerHTML = messages[messageItem];
+      addEnclosures();
+      buttonClickable = true;
+
+      // ✅ Re-enable reveal *after* fade is done and particles can build back up
+      allowInfoCardReveal = true;
+    }, 1000); // Match the CSS transition duration
+  }
+
+  // remove droplets from the engine
+  function removeFromWorld(body) {
+    World.remove(world, body);
+  }
+
+  function createEngine() {
+    engine = Engine.create();
+    world = engine.world;
+    Runner.run(engine);
+    // engine.world.gravity.scale = 0.01;
+    engine.world.gravity.scale = 0.002;
+
+    let mouse = Mouse.create(document.querySelector("#particles-canvas"));
+    mouseConstraint = MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        stiffness: 0.004,
+      },
+      collisionFilter: { category: CATEGORY_MOUSE },
+    });
+
+    World.add(world, mouseConstraint);
+
+    // Add event listener for mouse clicks
+    Events.on(mouseConstraint, "mousedown", function (event) {
+      const mousePosition = event.mouse.position;
+      const bodies = Composite.allBodies(penis);
+      const collidedBodies = Matter.Query.point(bodies, mousePosition);
+
+      if (collidedBodies.length > 0) {
+        setTimeout(() => {
+          isCumming = true;
+        }, 1000);
+      } else {
+        isCumming = false;
       }
+    });
+
+    // wrapping plugin
+
+    // Initialize matter-wrap plugin
+    if (typeof MatterWrap !== "undefined") {
+      Matter.use("matter-wrap");
+    }
+  }
+
+  function addPenis() {
+    let group = Body.nextGroup(true);
+
+    penis = Composites.stack(0, 10, 20, 1, 0, 0, function (x, y) {
+      return Bodies.circle(p.width / 2 - penisBeadsSize, 130, penisBeadsSize, {
+        collisionFilter: {
+          group: group,
+          mask: CATEGORY_MOUSE | 1, // Collide with mouse
+        },
+        // density: 0.0001,
+
+        // isStatic: true,
+        frictionAir: 0.03,
+      });
+    });
+
+    Composites.chain(penis, 0, 0, 0, 0, {
+      stiffness: 1,
+      length: 10,
+      // mass: 500,
+    });
+
+    Composite.add(world, [
+      penis,
+      Constraint.create({
+        pointA: { x: p.width / 2, y: p.height / 2 - 125 },
+        bodyB: penis.bodies[0],
+        pointB: { x: 0, y: 0 },
+        length: 0,
+        // stiffness: 1,
+      }),
+    ]);
+  }
+
+  p.mouseReleased = function () {
+    isCumming = false;
+  };
+
+  // position info card in the middle of the canvas even if user resizes
+  function moveInfoCardX() {
+    // Get the current position of the canvas in the viewport
+    let canvasRect = canvasP.elt.getBoundingClientRect();
+    // let infoCard = document.querySelector("#infoCardDiv");
+    // card with is 220px (220+ 40 padding)
+    let infoCardWidth = 260 / 2;
+    let left = canvasRect.left + canvasSize.x / 2 - infoCardWidth + "px"; // Center by subtracting 125 (half of 250px)
+    // console.log(infoCardDivOutline.style);
+    // infoCardDivOutline.style.left = left;
+    infoCard.style.left = left;
+  }
+
+  function moveInfoCardY() {
+    let canvasRect = canvasP.elt.getBoundingClientRect();
+    // card height is 220px + 40 padd
+    infoCardHalfHeight = 320 / 2;
+    let top = canvasRect.top + canvasSize.y / 2 - infoCardHalfHeight; // Center by subtracting 125 (half of 250px)
+
+    infoCard.style.top = top - 1 + "px";
+    // infoCardDivOutline.style.top = top - 20 + "px";
+  }
+
+  function makeSperm() {
+    let lastCircle = penis.bodies.length - 1;
+    let randomSize = p.random(7, 12);
+    let randomSmall = p.random(4, 7);
+
+    let group = Body.nextGroup(true);
+
+    let y = p.map(
+      p.mouseY,
+      0,
+      p.height,
+      penis.bodies[lastCircle].position.y - 35,
+      penis.bodies[lastCircle].position.y + 45
+    );
+
+    let x = p.map(
+      p.mouseX,
+      0,
+      p.width,
+      penis.bodies[lastCircle].position.x - 35,
+      penis.bodies[lastCircle].position.x + 35
+    );
+
+    let particle = Bodies.circle(x, y, randomSize, {
+      friction: 0,
+      density: 0.0005,
+      // mass: 200,
+      restitution: 0.7,
+      // frictionAir: 0.5,
+      collisionFilter: {
+        group: CATEGORY_SPERM,
+        mask: CATEGORY_MOUSE | CATEGORY_RECTANGLE,
+      },
+    });
+    let smallParticle;
+    let randomFrameCount = p.random(10, 60);
+    if (p.frameCount % 40 > randomFrameCount) {
+      smallParticle = Bodies.circle(x, y + 3, randomSmall, {
+        friction: 0,
+        density: 0.0001,
+        density: 1,
+        restitution: 0.7,
+        collisionFilter: {
+          group: group,
+          mask: CATEGORY_MOUSE | CATEGORY_RECTANGLE,
+        },
+      });
+      World.add(world, smallParticle);
+      particles.push(smallParticle);
+      spermForce(smallParticle, 0.1);
     }
 
-    // let lastCircle = penis.bodies.length - 1;
-    // GLAND;
-    // p.push();
-    // p.noStroke();
-    // p.ellipseMode(p.CENTER);
-    // p.fill(0, 100, 0);
-    // p.ellipse(
-    //   penis.bodies[lastCircle].position.x,
-    //   penis.bodies[lastCircle].position.y + 15,
-    //   40,
-    //   0
-    // );
-    // p.pop();
+    World.add(world, particle);
+    particles.push(particle);
 
-    // noStroke();
-    // fill(0, 200, 0);
-    // ellipse(bridge.bodies[54].position.x, bridge.bodies[54].position.y, 130, 180);
-    // push();
-    // noStroke();
-    // fill(0, 150, 0);
-    // ellipse(
-    //   bridge.bodies[54].position.x,
-    //   bridge.bodies[54].position.y + 90,
-    //   80,
-    //   12
-    // );
-    // pop();
-    //renderCloth(cloth, clothOptions.col, clothOptions.row);
+    spermForce(particle, 0.004);
 
-    // for (let i = 0; i < particles.length; i++) {
-    //   p.push();
-    //   p.fill(255);
-    //   p.noStroke();
-    //   p.ellipseMode(p.CENTER);
-
-    //   p.ellipse(
-    //     particles[i].position.x,
-    //     particles[i].position.y,
-    //     particles[i].circleRadius * 2
-    //   );
-    //   p.pop();
-
-    //   if (particles[i].position.y > 800) {
-    //     World.remove(world, particles[i]);
-    //     particles.splice(i, 1);
-    //     // prevents the skipping of a box when removed from the array by backing up 1
-    //     i--;
-    //   }
-    // }
-    // marchingSquares();
+    // Body.applyForce(particle, particle.position, { x: 0, y: 10 });
     // console.log(particles);
+    ejaculationLevel++;
+  }
 
-    // for (let box of boxes) {
-    //   box.display(p);
-    //   for (wall of box.walls) {
-    //     let color = 0;
-    //     let p5Var = p;
-    //     wall.display(color, p5Var);
-    //   }
-    // }
-  };
+  function spermForce(particle, f) {
+    // from https://stackoverflow.com/questions/35827012/matter-js-calculating-force-needed
+    let targetAngle = Vector.angle(particle.position, {
+      x: p.mouseX,
+      y: p.mouseY,
+    });
+
+    let force = f;
+
+    Body.applyForce(particle, particle.position, {
+      x: p.cos(targetAngle) * force,
+      y: p.sin(targetAngle) * force,
+    });
+  }
 
   function marchingSquares() {
     if (particles.length > 0) {
@@ -477,185 +727,11 @@ function sketch(p) {
     }
   }
 
-  function createEngine() {
-    engine = Engine.create();
-    world = engine.world;
-    Runner.run(engine);
-    // engine.world.gravity.scale = 0.01;
-    engine.world.gravity.scale = 0.002;
-
-    let mouse = Mouse.create(document.querySelector("#particles-canvas")),
-      mouseConstraint = MouseConstraint.create(engine, {
-        mouse: mouse,
-        constraint: {
-          stiffness: 0.004,
-        },
-        collisionFilter: { category: CATEGORY_MOUSE },
-      });
-
-    World.add(world, mouseConstraint);
-
-    // Add event listener for mouse clicks
-    Events.on(mouseConstraint, "mousedown", function (event) {
-      const mousePosition = event.mouse.position;
-      const bodies = Composite.allBodies(penis);
-      const collidedBodies = Matter.Query.point(bodies, mousePosition);
-
-      if (collidedBodies.length > 0) {
-        setTimeout(() => {
-          isCumming = true;
-        }, 1000);
-      } else {
-        isCumming = false;
-      }
-    });
-
-    // wrapping plugin
-
-    // Initialize matter-wrap plugin
-    if (typeof MatterWrap !== "undefined") {
-      Matter.use("matter-wrap");
-    }
-  }
-
-  function addPenis() {
-    let group = Body.nextGroup(true);
-
-    penis = Composites.stack(0, 10, 20, 1, 0, 0, function (x, y) {
-      return Bodies.circle(p.width / 2 - penisBeadsSize, 130, penisBeadsSize, {
-        collisionFilter: {
-          group: group,
-          mask: CATEGORY_MOUSE | 1, // Collide with mouse
-        },
-        // density: 0.0001,
-
-        // isStatic: true,
-        frictionAir: 0.03,
-      });
-    });
-
-    Composites.chain(penis, 0, 0, 0, 0, {
-      stiffness: 1,
-      length: 10,
-      // mass: 500,
-    });
-
-    Composite.add(world, [
-      penis,
-      Constraint.create({
-        pointA: { x: p.width / 2, y: p.height / 2 - 245 },
-        bodyB: penis.bodies[0],
-        pointB: { x: 0, y: 0 },
-        length: 0,
-        // stiffness: 1,
-      }),
-    ]);
-  }
-
-  p.mouseReleased = function () {
-    isCumming = false;
-  };
-
-  // position info card in the middle of the canvas even if user resizes
-  function moveInfoCardX() {
-    // Get the current position of the canvas in the viewport
-    let canvasRect = canvasP.elt.getBoundingClientRect();
-    // let infoCard = document.querySelector("#infoCardDiv");
-    // card with is 220px (220+ 40 padding)
-    let infoCardWidth = 260 / 2;
-    infoCard.style.left =
-      canvasRect.left + canvasSize.x / 2 - infoCardWidth + "px"; // Center by subtracting 125 (half of 250px)
-  }
-
-  function moveInfoCardY() {
-    let canvasRect = canvasP.elt.getBoundingClientRect();
-    // card height is 220px + 40 padd
-    let infoCardHeight = -95;
-    infoCard.style.top =
-      canvasRect.top + canvasSize.y / 2 - infoCardHeight + "px"; // Center by subtracting 125 (half of 250px)
-  }
-
-  function makeSperm() {
-    let lastCircle = penis.bodies.length - 1;
-    let randomSize = p.random(7, 12);
-    let randomSmall = p.random(4, 7);
-
-    let group = Body.nextGroup(true);
-
-    let y = p.map(
-      p.mouseY,
-      0,
-      p.height,
-      penis.bodies[lastCircle].position.y - 35,
-      penis.bodies[lastCircle].position.y + 45
-    );
-
-    let x = p.map(
-      p.mouseX,
-      0,
-      p.width,
-      penis.bodies[lastCircle].position.x - 35,
-      penis.bodies[lastCircle].position.x + 35
-    );
-
-    let particle = Bodies.circle(x, y, randomSize, {
-      friction: 0,
-      density: 0.0005,
-      // mass: 200,
-      restitution: 0.7,
-      // frictionAir: 0.5,
-      collisionFilter: {
-        group: CATEGORY_SPERM,
-        mask: CATEGORY_MOUSE | CATEGORY_RECTANGLE,
-      },
-    });
-    let smallParticle;
-    let randomFrameCount = p.random(10, 60);
-    if (p.frameCount % 40 > randomFrameCount) {
-      smallParticle = Bodies.circle(x, y + 3, randomSmall, {
-        friction: 0,
-        density: 0.0001,
-        density: 1,
-        restitution: 0.7,
-        collisionFilter: {
-          group: group,
-          mask: CATEGORY_MOUSE | CATEGORY_RECTANGLE,
-        },
-      });
-      World.add(world, smallParticle);
-      particles.push(smallParticle);
-      spermForce(smallParticle, 0.1);
-    }
-
-    World.add(world, particle);
-    particles.push(particle);
-
-    spermForce(particle, 0.004);
-
-    // Body.applyForce(particle, particle.position, { x: 0, y: 10 });
-    // console.log(particles);
-  }
-
-  function spermForce(particle, f) {
-    // from https://stackoverflow.com/questions/35827012/matter-js-calculating-force-needed
-    let targetAngle = Vector.angle(particle.position, {
-      x: p.mouseX,
-      y: p.mouseY,
-    });
-
-    let force = f;
-
-    Body.applyForce(particle, particle.position, {
-      x: p.cos(targetAngle) * force,
-      y: p.sin(targetAngle) * force,
-    });
-  }
-
   function displayBackground() {
     p.push();
     p.rectMode(p.CORNER);
     p.noStroke();
-    fillHsluv(98.9, 100, 94.7, p);
+    fillHsluv(13.4, 100, 43.6, p);
     p.rect(0, 0, p.width, p.height);
 
     let gradient = p.drawingContext.createLinearGradient(
@@ -665,7 +741,7 @@ function sketch(p) {
       p.height
     ); // Vertical gradient from middle to bottom
 
-    let rgb = hsluv.hsluvToRgb([284.9, 100, 70.1]);
+    let rgb = hsluv.hsluvToRgb([99, 100, 94.7]);
     let colorBottom = `rgba(${rgb[0] * 255}, ${rgb[1] * 255}, ${
       rgb[2] * 255
     }, 1)`; // Fully opaque
@@ -683,38 +759,38 @@ function sketch(p) {
   function addEnclosures() {
     let container = {
       x: 0,
-      y: -50,
+      y: 10,
     };
 
     let bottomEnclosure = new RectangleParticle(
       container.x + p.width / 2,
       container.y + p.height,
-      270,
+      p.width,
       20,
       true,
       world
     );
 
-    let tunnelEnclosureLeft = new RectangleParticle(
-      container.x + 150,
-      container.y + 680,
-      20,
-      240,
-      true,
-      world
-    );
+    // let tunnelEnclosureLeft = new RectangleParticle(
+    //   container.x - 10,
+    //   container.y + 740,
+    //   20,
+    //   100,
+    //   true,
+    //   world
+    // );
 
-    let tunnelEnclosureRight = new RectangleParticle(
-      container.x + 400,
-      container.y + 680,
-      20,
-      240,
-      true,
-      world
-    );
+    // let tunnelEnclosureRight = new RectangleParticle(
+    //   container.x + p.width + 10,
+    //   container.y + 740,
+    //   20,
+    //   100,
+    //   true,
+    //   world
+    // );
 
-    enclosures.push(tunnelEnclosureRight);
-    enclosures.push(tunnelEnclosureLeft);
+    // enclosures.push(tunnelEnclosureRight);
+    // enclosures.push(tunnelEnclosureLeft);
     enclosures.push(bottomEnclosure);
   }
 
@@ -895,3 +971,92 @@ function strokeHsluv(h, s, l, sketch) {
 
 new p5(sketch);
 new p5(sperm);
+
+// let lastCircle = penis.bodies.length - 1;
+// GLAND;
+// p.push();
+// p.noStroke();
+// p.ellipseMode(p.CENTER);
+// p.fill(0, 100, 0);
+// p.ellipse(
+//   penis.bodies[lastCircle].position.x,
+//   penis.bodies[lastCircle].position.y + 15,
+//   40,
+//   0
+// );
+// p.pop();
+
+// noStroke();
+// fill(0, 200, 0);
+// ellipse(bridge.bodies[54].position.x, bridge.bodies[54].position.y, 130, 180);
+// push();
+// noStroke();
+// fill(0, 150, 0);
+// ellipse(
+//   bridge.bodies[54].position.x,
+//   bridge.bodies[54].position.y + 90,
+//   80,
+//   12
+// );
+// pop();
+//renderCloth(cloth, clothOptions.col, clothOptions.row);
+
+// for (let i = 0; i < particles.length; i++) {
+//   p.push();
+//   p.fill(255);
+//   p.noStroke();
+//   p.ellipseMode(p.CENTER);
+
+//   p.ellipse(
+//     particles[i].position.x,
+//     particles[i].position.y,
+//     particles[i].circleRadius * 2
+//   );
+//   p.pop();
+
+//   if (particles[i].position.y > 800) {
+//     World.remove(world, particles[i]);
+//     particles.splice(i, 1);
+//     // prevents the skipping of a box when removed from the array by backing up 1
+//     i--;
+//   }
+// }
+// marchingSquares();
+// console.log(particles);
+
+// for (let box of boxes) {
+//   box.display(p);
+//   for (wall of box.walls) {
+//     let color = 0;
+//     let p5Var = p;
+//     wall.display(color, p5Var);
+//   }
+// }
+// function gooeyEffect() {
+//   s.loadPixels();
+//   for (let i = 0; i < s.width; i++) {
+//     for (let j = 0; j < s.height; j++) {
+//       let index = (i + j * s.width) * 4; // Get pixel index
+//       let r = index;
+//       let g = index + 1;
+//       let b = index + 2;
+//       if (s.pixels[r] < 100) {
+//         // Blob (smoother core)
+//         s.pixels[r] = 135;
+//         s.pixels[g] = 199;
+//         s.pixels[b] = 191;
+//       } else if (s.pixels[r] < borderThreshold) {
+//         // Border (gooey edges)
+//         s.pixels[r] = 22;
+//         s.pixels[g] = 147;
+//         s.pixels[b] = 165;
+//       } else {
+//         // Background
+//         s.pixels[r] = 98;
+//         s.pixels[g] = 182;
+//         s.pixels[b] = 182;
+//       }
+//     }
+//   }
+//   s.updatePixels(); // Apply the pixel changes
+// }

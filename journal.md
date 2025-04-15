@@ -357,6 +357,7 @@ I innocently decided to start working on the mobile version for the penis. I was
 - [This](https://www.youtube.com/watch?v=lEiXBA_xHOQ) completely different technique using marching squares... which made for a cool effect but in the end was lagging even more than the svg even on destop because there are too many calculations going on. Basically drawing outlines around the particles. It worked with small amounts of particles and keeping the lines very geometric. It gave geometric sperm which was interesting, but it lags hard. 
   
   ![marching squares](journal_assets/imgs/marching_squares.png)
+- The gooey effect with [GLSL]([journal_assets/imgs/marching_squares.png](https://mofu-dev.com/en/blog/gooey-shader/))
 
 So I decided to stop thinking about making these things work on mobile for now because its a lot of trouble. I think being on your phone is also a solo experience vs opening up on a computer for other people to see which maybe makes the humour happen a bit more I guess. I guess the title are you alone is about opening these when your alone and on the desktop its harder to be alone? 
 
