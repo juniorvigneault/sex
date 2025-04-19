@@ -55,9 +55,13 @@ let canvasSize = {
   x: 550,
   y: 800,
 };
+let cardNumber = 1;
+let cummingTimeout = null;
+let isDraggingPenis = false;
 let particlesCanvas;
 let infoCard;
 let borderThreshold = 10;
+let infoCardText;
 let pg;
 let keyedImage;
 let rows, cols;
@@ -65,6 +69,8 @@ let size = 30;
 let grid = [];
 let buttonClickable = true;
 let infoCardDivOutline;
+let isDraggingBead = false;
+
 const messages = [
   "les testicules sont particulièrement sensibles pour certaines personnes et peuvent susciter du plaisir si elles sont stimulées doucement.",
   "Cependant, d’autres zones méritent notre attention: le frein (situé à la jonction du gland et de la verge) et le périnée (la zone entre les testicules et l’anus).",
@@ -101,6 +107,26 @@ function sperm(s) {
     //     grid[i][j] = 0;
     //   }
     // }
+
+    particlesCanvas.addEventListener("mouseleave", () => {
+      isCumming = false;
+      clearTimeout(cummingTimeout);
+      cummingTimeout = null;
+      isDraggingPenis = false;
+      if (mouseConstraint) {
+        World.remove(world, mouseConstraint);
+        console.log("Mouse left – interaction disabled");
+      }
+    });
+
+    particlesCanvas.addEventListener("mouseenter", () => {
+      if (!world.constraints.includes(mouseConstraint.constraint)) {
+        Mouse.setElement(mouseConstraint.mouse, particlesCanvas);
+
+        World.add(world, mouseConstraint);
+        console.log("Mouse re-entered – interaction enabled");
+      }
+    });
   };
 
   s.draw = function () {
@@ -180,9 +206,22 @@ function sketch(p) {
     // create engine, gravity, mouse constraint...
     // infoCardDivOutline = document.querySelector("#infoCardDivOutline");
     infoCard = document.querySelector("#infoCardDiv");
+    infoCardText = document.querySelector("#infoCard");
     continueButton.onclick = () => {
       swapCard();
+
+      particles.forEach((p) => {
+        const forceMagnitude = 0.04 * p.mass; // tweak this for drama or subtlety
+        const randomAngle = Math.random() * Math.PI * 2;
+        const force = {
+          x: Math.cos(randomAngle) * forceMagnitude,
+          y: Math.sin(randomAngle) * forceMagnitude,
+        };
+
+        Matter.Body.applyForce(p, p.position, force);
+      });
     };
+    particlesCanvas = document.querySelector("#particles-canvas");
 
     createEngine();
     addPenis();
@@ -207,6 +246,62 @@ function sketch(p) {
     window.addEventListener("resize", () => {
       moveInfoCardX();
       moveInfoCardY();
+    });
+
+    Events.on(mouseConstraint, "startdrag", function (event) {
+      const body = event.body;
+      const penisBodies = Composite.allBodies(penis);
+      const bead1 = analBeads[0].beads[1].body;
+      const bead2 = analBeads[1].beads[1].body;
+      if (penisBodies.includes(body)) {
+        isDraggingPenis = true;
+
+        // Start timeout, but check again before setting isCumming
+        cummingTimeout = setTimeout(() => {
+          if (isDraggingPenis) {
+            isCumming = true;
+          }
+        }, 1000);
+      }
+      isDraggingBead = body === bead1 || body === bead2;
+    });
+
+    Events.on(mouseConstraint, "enddrag", function (event) {
+      const body = event.body;
+      const penisBodies = Composite.allBodies(penis);
+
+      if (penisBodies.includes(body)) {
+        clearTimeout(cummingTimeout);
+        cummingTimeout = null;
+        isDraggingPenis = false;
+        isCumming = false;
+      }
+    });
+
+    // preventing dragging/interacting with bodies when going outside canvas and
+    //  mouse up outside canvas and coming back in (also works with bug when card appears under
+    // cursor while still dragging penis)
+    window.addEventListener("mouseup", () => {
+      if (mouseConstraint.body) {
+        // Force release
+        mouseConstraint.body = null;
+        mouseConstraint.constraint.bodyB = null;
+        mouseConstraint.constraint.pointB = null;
+        mouseConstraint.constraint.angleB = 0;
+
+        console.log("Mouse up outside — forcing release");
+
+        // RESET Matter.Mouse internal state too
+        mouseConstraint.mouse.button = -1;
+
+        // Reset flags
+        isDraggingPenis = false;
+        isDraggingBead = false;
+        isCumming = false;
+
+        clearTimeout(cummingTimeout);
+        cummingTimeout = null;
+      }
     });
   };
 
@@ -233,15 +328,32 @@ function sketch(p) {
     //       CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE;
     //   }
     // }
-    console.log(ejaculationLevel);
+    // console.log(ejaculationLevel);
+
+    // if (
+    //   isDraggingBead &&
+    //   p.mouseY <= p.height / 2 // "0 to half-height zone"
+    // ) {
+    //   mouseConstraint.constraint.stiffness = 0;
+    // } else {
+    //   mouseConstraint.constraint.stiffness = 0.004;
+    // }
+    // release balls when dragged passed mid height
+    if (isDraggingBead && p.mouseY <= p.height / 2) {
+      mouseConstraint.constraint.stiffness = 0;
+    } else {
+      mouseConstraint.constraint.stiffness = 0.004;
+    }
 
     if (ejaculationLevel >= 270 && !hasShownInfoCard && allowInfoCardReveal) {
       // console.log(mouseConstraint);
+      World.remove(world, mouseConstraint);
+
       infoCard.classList.add("visible");
       setTimeout(() => {
-        infoCard.classList.add("opacity"); // Add the opacity transition class
-      }, 100); // Delay in milliseconds
-      infoCardDiv.style.display = "flex";
+        infoCardText.classList.add("opacity"); // Add the opacity transition class
+      }, 200); // Delay in milliseconds
+      // infoCardDiv.style.display = "flex";
       mouseConstraint.constraint.stiffness = 0;
 
       hasShownInfoCard = true;
@@ -387,9 +499,15 @@ function sketch(p) {
   }
 
   function swapCard() {
+    World.add(world, mouseConstraint);
+
     messageItem--;
     ejaculationLevel = 0;
-    infoCard.classList.remove("visible"); // fade out
+    infoCard.classList.remove("visible");
+    infoCardText.classList.remove("opacity"); // Add the opacity transition class
+    cardNumber++;
+    let cardNumberDiv = document.querySelector("#cardNumberText");
+    cardNumberDiv.innerHTML = cardNumber;
     hasShownInfoCard = false;
     allowInfoCardReveal = false; // prevent immediate re-show
 
@@ -397,7 +515,7 @@ function sketch(p) {
     mouseConstraint.constraint.stiffness = 0.004;
 
     setTimeout(() => {
-      // textInfoCard.innerHTML = messages[messageItem];
+      textInfoCard.innerHTML = messages[messageItem];
       addEnclosures();
       buttonClickable = true;
 
@@ -418,7 +536,7 @@ function sketch(p) {
     // engine.world.gravity.scale = 0.01;
     engine.world.gravity.scale = 0.002;
 
-    let mouse = Mouse.create(document.querySelector("#particles-canvas"));
+    let mouse = Mouse.create(particlesCanvas);
     mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
       constraint: {
@@ -428,21 +546,21 @@ function sketch(p) {
     });
 
     World.add(world, mouseConstraint);
-
     // Add event listener for mouse clicks
-    Events.on(mouseConstraint, "mousedown", function (event) {
-      const mousePosition = event.mouse.position;
-      const bodies = Composite.allBodies(penis);
-      const collidedBodies = Matter.Query.point(bodies, mousePosition);
+    // Events.on(mouseConstraint, "mousedown", function (event) {
+    //   const mousePosition = event.mouse.position;
+    //   const bodies = Composite.allBodies(penis);
 
-      if (collidedBodies.length > 0) {
-        setTimeout(() => {
-          isCumming = true;
-        }, 1000);
-      } else {
-        isCumming = false;
-      }
-    });
+    //   const collidedBodies = Matter.Query.point(bodies, mousePosition);
+
+    //   if (collidedBodies.length > 0) {
+    //     setTimeout(() => {
+    //       isCumming = true;
+    //     }, 1000);
+    //   } else {
+    //     isCumming = false;
+    //   }
+    // });
 
     // wrapping plugin
 
@@ -450,6 +568,12 @@ function sketch(p) {
     if (typeof MatterWrap !== "undefined") {
       Matter.use("matter-wrap");
     }
+
+    // Events.on(mouseConstraint, "enddrag", function (event) {
+    //   if (event.body === targetBody) {
+    //     console.log("Target body was released.");
+    //   }
+    // });
   }
 
   function addPenis() {
@@ -562,13 +686,13 @@ function sketch(p) {
       });
       World.add(world, smallParticle);
       particles.push(smallParticle);
-      spermForce(smallParticle, 0.1);
+      spermForce(smallParticle, 0.12);
     }
 
     World.add(world, particle);
     particles.push(particle);
 
-    spermForce(particle, 0.004);
+    spermForce(particle, 0.0045);
 
     // Body.applyForce(particle, particle.position, { x: 0, y: 10 });
     // console.log(particles);

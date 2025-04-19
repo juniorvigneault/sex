@@ -6,12 +6,12 @@ class RectangleParticle {
     this.h = h;
 
     let options = {
-      friction: 0,
-      restitution: 0,
-      isStatic: true,
+      friction: 1,
+      restitution: 1,
+      isStatic: isStatic,
       collisionFilter: {
         category: CATEGORY_RECTANGLE,
-        mask: CATEGORY_CIRCLE_PARTICLE | CATEGORY_BRIDGE, // Collide only with circle particle
+        mask: CATEGORY_MOUSE | CATEGORY_BLOB | CATEGORY_CLAMP | CATEGORY_CHAIN, // Collide only with circle particle
       },
     };
 
@@ -30,7 +30,7 @@ class RectangleParticle {
     rotate(angle);
     // noStroke();
     // fillHsluv(321, 49, 50);
-    fill(r, g, b, a);
+    fill(255, 0, 0, 0);
     rect(0, 0, this.w, this.h);
     pop();
   }

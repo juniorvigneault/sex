@@ -157,7 +157,7 @@ h1 {
   width: fit-content;
   border-radius: 15px;
   border: 1px solid #f4eddb;
-  opacity: 0%;
+  opacity: 0;
   transition: opacity 0.3s cubic-bezier(0, 0, 0.15, 1.01);
   /* padding: 16px; Adds spacing inside the card */
   box-sizing: border-box; /* Includes padding in the width/height */
@@ -166,8 +166,8 @@ h1 {
   border-bottom: 0;
 }
 
-.infoCard.opacity {
-  opacity: 100%;
+#infoCard.opacity {
+  opacity: 1;
 }
 
 #textInfoCard {
@@ -208,7 +208,7 @@ h1 {
   border-width: 1px;
   /* letter-spacing: 0.02rem; */
   /* border: none; */
-
+  user-select: none;
   /* border-color: #7fbc06; */
 }
 
