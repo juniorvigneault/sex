@@ -897,7 +897,7 @@ function positionNextGameContainer() {
   let nextGameWidth = nextGameContainer.offsetWidth / 2;
   let nextGameHeight = nextGameContainer.offsetHeight / 2;
 
-  nextGameContainer.style.left = window.innerWidth / 2 + 100 + "px";
+  nextGameContainer.style.left = window.innerWidth / 2 + 97 + "px";
   nextGameContainer.style.top = window.innerHeight / 2 - 390 + "px";
 }
 
@@ -940,6 +940,8 @@ function addEnclosures() {
 
 function displayBackground() {
   push();
+  noStroke();
+
   fill(219, 255, 61);
   rect(0, 0, width, height);
   let gradient = drawingContext.createLinearGradient(0, height / 2, 0, height); // Vertical gradient from middle to bottom

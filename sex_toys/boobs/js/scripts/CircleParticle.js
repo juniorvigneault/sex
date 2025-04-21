@@ -5,10 +5,10 @@ class CircleParticle {
     this.r = r;
 
     let options = {
-      friction: 0.1,
+      friction: 0.8,
       restitution: 1,
       isStatic: isStatic,
-      density: 0.001,
+      // density: 0.001,
       frictionAir: 0.1,
       mass: 10000,
       collisionFilter: {

@@ -188,7 +188,7 @@ body {
 }
 #logo {
   margin-top: 10px;
-  margin-left: -8px;
+  /* margin-left: -8px; */
   align-self: center;
   width: 210px;
   padding: 10px;

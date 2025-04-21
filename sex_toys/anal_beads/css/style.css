@@ -203,25 +203,63 @@ canvas:active {
 
 #end-message {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 210px;
+  height: auto;
   text-align: center;
   color: white;
   font-family: "GT America Regular";
   font-size: 15px;
-  height: 135px;
-  opacity: 0;
-  pointer-events: none; /* Prevents clicks when hidden */
-  user-select: none;
-}
-
-#end-message.opacity {
   opacity: 1;
-  pointer-events: auto; /* Allow clicks when visible */
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 1s ease;
 }
 
+#end-message-text {
+  opacity: 0;
+  animation: blink 2s infinite;
+}
+
+/* Define the blinking animation */
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 #logo {
-  margin-top: 5px;
-  width: 200px;
+  margin-top: 10px;
+  /* margin-left: -8px; */
+  align-self: center;
+  width: 210px;
   padding: 10px;
   cursor: auto;
   user-select: none;
+}
+
+#nextGameContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 210px;
+  height: auto;
+  text-align: center;
+  color: white;
+  font-family: "GT America Regular";
+  font-size: 15px;
+  opacity: 1;
+  /* pointer-events: none; */
+  user-select: none;
+  /* animation: blink 2s infinite; */
 }

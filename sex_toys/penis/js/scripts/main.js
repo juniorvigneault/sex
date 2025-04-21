@@ -563,7 +563,7 @@ function sketch(p) {
     let nextGameWidth = nextGameContainer.offsetWidth / 2;
     let nextGameHeight = nextGameContainer.offsetHeight / 2;
 
-    nextGameContainer.style.left = window.innerWidth / 2 + 100 + "px";
+    nextGameContainer.style.left = window.innerWidth / 2 + 97 + "px";
     nextGameContainer.style.top = window.innerHeight / 2 - 390 + "px";
   }
 

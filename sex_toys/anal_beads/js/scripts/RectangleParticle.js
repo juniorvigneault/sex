@@ -6,8 +6,8 @@ class RectangleParticle {
     this.h = h;
 
     let options = {
-      friction: 0,
-      restitution: 0,
+      friction: 1,
+      restitution: 1,
       isStatic: isStatic,
       collisionFilter: {
         category: CATEGORY_RECTANGLE,

@@ -14,9 +14,17 @@ let Constraint = Matter.Constraint;
 let engine;
 let world;
 let mouseConstraint;
+let hasRestarted = false;
+let restartScheduled = false;
 let particles = [];
 let enclosures = [];
 let analBeads;
+let lastSwayTime = 0;
+let swayInterval = 5000; // apply sway every 1.5 seconds
+let swayAngle = 0; // phase of the swing
+let swaySpeed = 0.02; // how fast it swings (lower = slower)
+let swayForceAmplitude = 1; // how strong the sideways force is
+let waitingForClick = true;
 let bum;
 let mouse;
 let beads = [];
@@ -89,7 +97,8 @@ function setup() {
   world = engine.world;
   Runner.run(engine);
   // engine.world.gravity.scale = 0.00;
-
+  endMessage = document.querySelector("#end-message");
+  nextGameContainer = document.querySelector("#nextGameContainer");
   (mouse = Mouse.create(document.querySelector("#p5js-canvas"))),
     (mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
@@ -100,7 +109,9 @@ function setup() {
     }));
 
   World.add(world, mouseConstraint);
-  endMessage = document.querySelector("#end-message");
+  lastMousePressedTime = millis(); // Initialize it when game starts
+  centerEndMessage();
+  positionNextGameContainer();
   // getAudioContext().resume(); // Resume the audio context
 
   //bum = new Bum(width / 2, 300, 400);
@@ -108,7 +119,7 @@ function setup() {
   addEnclosures();
   addBridge(); // Add the bridge here
   //addBeads();
-  analBeads = new AnalBeads(gameX + 400, gameY - 1300, 115);
+  analBeads = new AnalBeads(gameX + canvasDimensions.x / 2, gameY - 2150, 115);
   let lastBead = analBeads.beads.length - 1;
   analBeads.beads[lastBead].popped = true;
   // Add event listener for mouse clicks
@@ -128,9 +139,11 @@ function setup() {
       soundMobile.playSound("slap");
     }
   });
-  // createInfoCard();
 
-  centerEndMessage();
+  nextGameContainer.addEventListener("click", () => {
+    window.location.href = "/penis/index.html"; // <-- replace with your file
+  });
+  // createInfoCard();
 }
 
 function draw() {
@@ -144,17 +157,30 @@ function draw() {
   stroke(255);
   pop();
 
+  analBeads.beads[10].inTunnel = false;
+  analBeads.beads[10].body.collisionFilter.mask =
+    CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE | CATEGORY_MOUSE;
+
   for (let bead of analBeads.beads) {
+    let gravity = engine.world.gravity;
+
+    if (bead.body.position.y <= 249) {
+      // 🧠 Cancel gravity manually by applying an opposite force
+      let antiGravityForce = {
+        x: 0,
+        y: -(bead.body.mass * gravity.y * gravity.scale),
+      };
+      Body.applyForce(bead.body, bead.body.position, antiGravityForce);
+    }
+
     if (bead.body.position.y >= 500) {
       bead.inTunnel = false;
       bead.body.collisionFilter.mask =
         CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE | CATEGORY_MOUSE;
     }
 
-    // console.log(bead.popped);
     if (bead.body.position.y >= 250) {
       if (!bead.popped) {
-        // sounds.pop.play();
         soundMobile.playSound("pop");
         bead.popped = true;
         bead.showCard = true;
@@ -201,6 +227,7 @@ function draw() {
   // fill(255, 115, 191);
 
   fillHsluv(339.1, 100, 67.5);
+  // fill(255, 255, 255);
   ellipse(leftCheek.position.x, leftCheek.position.y, buttCheekSize);
   noStroke();
   ellipseMode(CENTER);
@@ -210,8 +237,20 @@ function draw() {
   if (analBeads.beads[0].body.position.y > height + 200) {
     toyIsGone = true;
   }
-  if (toyIsGone) {
-    articleLink();
+
+  if (toyIsGone && !restartScheduled) {
+    restartScheduled = true;
+    setTimeout(() => {
+      restartGame();
+    }, 1500);
+  }
+
+  if (millis() - lastMousePressedTime > 30000) {
+    let anyCardOpen = analBeads.beads.some((bead) => bead.showCard);
+
+    if (!anyCardOpen) {
+      restartGame();
+    }
   }
 
   // createInfoCard();
@@ -228,6 +267,22 @@ function draw() {
   // fill(0, 0, 0, 100);
   // ellipse(gameX - 30, -120, 320);
   // pop();
+  swayHandle();
+}
+
+function swayHandle() {
+  if (analBeads.beads[10]) {
+    let bead = analBeads.beads[10];
+
+    swayAngle += swaySpeed; // Update the swing over time
+
+    let swayForce = {
+      x: Math.sin(swayAngle) * swayForceAmplitude,
+      y: 0,
+    };
+
+    Body.applyForce(bead.body, bead.body.position, swayForce);
+  }
 }
 
 // function displayCard() {
@@ -240,6 +295,65 @@ function draw() {
 //     // infoCardDiv.style.display = "none";
 //     // console.log("clicked");
 //   };
+// }
+
+function restartGame() {
+  console.log("Restarting game...");
+
+  // 🧹 Reset everything
+  if (analBeads) {
+    for (let bead of analBeads.beads) {
+      World.remove(world, bead.body);
+      bead.infoCardDiv.remove();
+    }
+  }
+
+  analBeads = new AnalBeads(gameX + canvasDimensions.x / 2, gameY - 2150, 115);
+  let lastBead = analBeads.beads.length - 1;
+  analBeads.beads[lastBead].popped = true;
+
+  World.remove(world, mouseConstraint);
+  let mouse = Mouse.create(document.querySelector("#p5js-canvas"));
+  mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: { stiffness: 0.08 },
+    collisionFilter: { category: CATEGORY_MOUSE },
+  });
+  World.add(world, mouseConstraint);
+
+  // Reset states
+  toyIsGone = false; // 🔥 RESET
+  restartScheduled = false; // 🔥 RESET
+  messageItem = 0;
+  cardNumber = 1;
+  hasShownInfoCard = false;
+  allowInfoCardReveal = true;
+  waitingForClick = true;
+  startGame = false;
+  endGame = false;
+
+  endMessage.style.opacity = 1;
+  lastMousePressedTime = millis();
+}
+
+function positionNextGameContainer() {
+  nextGameContainer.style.left = window.innerWidth / 2 + 97 + "px";
+  nextGameContainer.style.top = window.innerHeight / 2 - 390 + "px";
+}
+
+function mousePressed() {
+  if (waitingForClick) {
+    waitingForClick = false;
+    startGame = true;
+    endMessage.style.opacity = 0; // ⬅️ FADE OUT MANUALLY LIKE CLAMPS
+  }
+  lastMousePressedTime = millis();
+}
+
+// function articleLink() {
+//   // setTimeout(() => {
+//   // endMessage.style.opacity = 0;
+//   // }, 1000);
 // }
 
 function addEnclosures() {
@@ -258,7 +372,7 @@ function addEnclosures() {
     gameX - 30,
     gameY + 300,
     500,
-    3000,
+    4000,
     true,
     world
   );
@@ -266,7 +380,7 @@ function addEnclosures() {
     gameX + 580,
     gameY + 300,
     500,
-    3000,
+    4000,
     true,
     world
   );
@@ -275,13 +389,13 @@ function addEnclosures() {
   enclosures.push(tunnelEnclosureLeft);
 }
 
-function mousePressed() {
-  mouseIsPressed = true;
-}
+// function mousePressed() {
+//   mouseIsPressed = true;
+// }
 
-function mouseReleased() {
-  mouseIsPressed = false;
-}
+// function mouseReleased() {
+//   mouseIsPressed = false;
+// }
 
 // function addBeads() {
 //   // Create a composite to hold the beads and constraints
@@ -320,6 +434,7 @@ function mouseReleased() {
 
 function displayBackground() {
   push();
+  noStroke();
   fill(255, 51, 0);
   rect(0, 0, width, height);
   let gradient = drawingContext.createLinearGradient(0, height / 2, 0, height); // Vertical gradient from middle to bottom
@@ -336,6 +451,14 @@ function displayBackground() {
   drawingContext.fillStyle = gradient;
   rect(0, height / 2, width, height / 2); // Draw the gradient
   pop();
+}
+
+function centerEndMessage() {
+  let endMessageWidth = endMessage.offsetWidth / 2;
+  let endMessageHeight = endMessage.offsetHeight / 2;
+
+  endMessage.style.left = window.innerWidth / 2 - endMessageWidth + "px";
+  endMessage.style.top = window.innerHeight / 2 - endMessageHeight + 265 + "px";
 }
 
 function addBridge() {
@@ -556,26 +679,14 @@ function strokeHsluv(h, s, l) {
   stroke(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
 }
 
-function articleLink() {
-  setTimeout(() => {
-    endMessage.classList.add("opacity");
-  }, 500);
-}
+// function articleLink() {
+//   setTimeout(() => {
+//     endMessage.classList.add("opacity");
+//   }, 500);
+// }
 
 window.addEventListener("resize", () => {
   centerEndMessage();
+  positionNextGameContainer();
 });
-
 // position info card in the middle of the canvas even if user resizes
-function centerEndMessage() {
-  // Get the current position of the canvas in the viewport
-  let canvasRect = p5jsCanvas.getBoundingClientRect();
-  // let infoCard = document.querySelector("#infoCardDiv");
-  // card with is 240px (220+ 40 padding)
-  let endMessageWidth = 200 / 2;
-  endMessage.style.left =
-    canvasRect.left + canvasDimensions.x / 2 - endMessageWidth + "px"; // Center by subtracting 125 (half of 250px)
-  let endMessageHeight = 135 / 2;
-  endMessage.style.top =
-    canvasRect.top + canvasDimensions.y / 2 - endMessageHeight + "px"; // Center by subtracting 125 (half of 250px)
-}

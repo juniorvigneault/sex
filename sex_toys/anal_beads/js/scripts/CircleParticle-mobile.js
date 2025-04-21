@@ -43,9 +43,10 @@ class CircleParticle {
         mask:
           CATEGORY_BRIDGE |
           CATEGORY_RECTANGLE |
-          CATEGORY_CIRCLE_PARTICLE |
+          // CATEGORY_CIRCLE_PARTICLE |
           CATEGORY_MOUSE, // Collide with bridge and rectangle
       },
+      // isStatic: true,
     };
 
     this.body = Bodies.circle(this.x, this.y, this.r / 2, options);
@@ -67,7 +68,7 @@ class CircleParticle {
     this.textInfoCard.innerText = this.text;
     this.infoCardDiv.append(this.cardButton);
     this.cardButton.classList.add("continueButton");
-    this.cardButton.innerText = "CONTINUER";
+    this.cardButton.innerText = "CONTINUE";
 
     this.cardButton.addEventListener("touchstart", () => {
       this.cardButton.style.backgroundColor = "#E2DBCC"; // Change to desired color

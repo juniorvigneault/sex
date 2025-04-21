@@ -30,7 +30,7 @@ class RectangleParticle {
     rotate(angle);
     // noStroke();
     // fillHsluv(321, 49, 50);
-    fill(255, 0, 0, 0);
+    fill(255, 0, 0);
     rect(0, 0, this.w, this.h);
     pop();
   }

@@ -5,11 +5,12 @@ class AnalBeads {
     this.beadConstraints = [];
     this.startX = sX;
     this.startY = sY;
-    this.constraintLength = 250;
-    this.toyLength = 1400;
+    this.constraintLength = 235;
+    this.toyLength = 2700;
     this.beadSize = beadSize;
-    this.spaceBetweenBeads = this.beadSize + 40;
+    this.spaceBetweenBeads = this.beadSize + 150;
     this.makeChain();
+    this.cardNumber2 = 1;
     // this.numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     // this.cardNumber;
@@ -61,7 +62,7 @@ class AnalBeads {
   makeChain() {
     let handle = false;
     let prev = null;
-
+    let cardNumber2 = 9;
     // Array of unique messages for each bead
 
     //fr
@@ -87,8 +88,8 @@ class AnalBeads {
       "Anal beads are a sex toy made of spherical or oval beads aligned along a string. The size of the beads can sometimes gradually increases, allowing for progressive insertion and customizable levels of sensation.",
     ];
 
-    let beadIndex = 0; // Track bead numbers
-    let cardCounter = 1; // Track card numbers starting at 1
+    let beadIndex = 0; // Track bead index
+    let cardCounter = 1; // Start card counter at 1
 
     for (
       let y = this.startY;
@@ -98,11 +99,11 @@ class AnalBeads {
       let message = null;
       let cardNumber = null;
 
-      // Assign messages and card numbers only for beads 1 to 8
-      if (beadIndex > 0 && beadIndex < 9) {
-        message = messages[cardCounter - 1]; // Get correct message
-        cardNumber = cardCounter; // Assign correct card number
-        cardCounter++; // Increase card counter
+      if (beadIndex > 0 && beadIndex < 10) {
+        // Beads starting from 2 (index 2, the third bead)
+        message = messages[cardCounter - 1];
+        cardNumber = cardCounter;
+        cardCounter++;
       }
 
       let p = new CircleParticle(
@@ -112,8 +113,13 @@ class AnalBeads {
         false,
         world,
         message,
-        cardNumber
+        cardNumber2
       );
+
+      if (beadIndex === 9) {
+        // 🧠 If it's the first bead after the handle, mark it as popped right away
+        p.popped = true;
+      }
 
       this.beads.push(p);
 
@@ -130,6 +136,9 @@ class AnalBeads {
       }
       prev = p;
       beadIndex++;
+      cardNumber2--;
+      // this.cardNumber
+      // console.log(this.cardNumber2);
     }
   }
 }
