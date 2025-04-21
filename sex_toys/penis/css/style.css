@@ -310,5 +310,5 @@ h1 {
   opacity: 1;
   /* pointer-events: none; */
   user-select: none;
-  animation: blink 2s infinite;
+  /* animation: blink 2s infinite; */
 }

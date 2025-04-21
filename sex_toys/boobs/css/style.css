@@ -146,3 +146,70 @@ body {
   user-select: none; /* Prevent text selection */
   align-items: center;
 }
+
+#end-message {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 210px;
+  height: auto;
+  text-align: center;
+  color: white;
+  font-family: "GT America Regular";
+  font-size: 15px;
+  opacity: 1;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 1s ease; /* Smooth fade over 1 second */
+}
+
+.hidden {
+  opacity: 0;
+}
+
+#end-message-text {
+  opacity: 0;
+  animation: blink 2s infinite;
+}
+
+/* Define the blinking animation */
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+#logo {
+  margin-top: 10px;
+  margin-left: -8px;
+  align-self: center;
+  width: 210px;
+  padding: 10px;
+  cursor: auto;
+  user-select: none;
+}
+
+#nextGameContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 210px;
+  height: auto;
+  text-align: center;
+  color: white;
+  font-family: "GT America Regular";
+  font-size: 15px;
+  opacity: 1;
+  /* pointer-events: none; */
+  user-select: none;
+  /* animation: blink 2s infinite; */
+}

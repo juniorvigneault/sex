@@ -17,6 +17,13 @@ let particles = [];
 let enclosures = [];
 let analBeads = [];
 let nipples = [];
+let hasShownInfoCard = false;
+let allowInfoCardReveal = true;
+let startGame = false;
+let waitingForClick = true;
+let endGame = false;
+let inactivityTimeout = 30000; // 30 seconds
+let lastMousePressedTime;
 let nippleWidth = 40;
 let nippleHeight = 40;
 let bum;
@@ -48,6 +55,8 @@ let tassle0StuckBlob = null; // ⬅️ Will be a centerNode
 let tassle1StuckBlob = null;
 let stickyConstraints = [];
 let isDraggingTassle = false;
+let endMessage;
+let nextGameContainer;
 let flashOffCounter = 0;
 let allowTassleSticking = true;
 let tassleCooldownEndTime = 0;
@@ -107,13 +116,15 @@ function setup() {
   });
 
   World.add(world, mouseConstraint);
+  lastMousePressedTime = millis(); // Initialize it when game starts
 
   //bum = new Bum(width / 2, 300, 400);
 
   infoCardDiv = document.querySelector("#infoCardDiv");
   infoCard = document.querySelector("#infoCard");
   cardNumberDiv = document.querySelector("#cardNumberText");
-
+  endMessage = document.querySelector("#end-message");
+  nextGameContainer = document.querySelector("#nextGameContainer");
   textInfoCard = document.querySelector("#textInfoCard");
   continueButton = document.querySelector("#continueButton");
   messages.reverse();
@@ -172,7 +183,7 @@ function setup() {
 
   // 🧠 Set custom position for the static middle link
   let staticMiddleLinkX = width / 2; // your custom X
-  let staticMiddleLinkY = height / 2; // your custom Y
+  let staticMiddleLinkY = 0; // your custom Y
 
   let staticLinkIndex = Math.floor(numChainLinks / 2);
 
@@ -240,6 +251,13 @@ function setup() {
 
   createBlobs();
 
+  window.addEventListener("resize", () => {
+    moveInfoCardX();
+    moveInfoCardY();
+    centerEndMessage();
+    positionNextGameContainer();
+  });
+
   Events.on(mouseConstraint, "startdrag", function (event) {
     let body = event.body;
 
@@ -276,6 +294,12 @@ function setup() {
 
   moveInfoCardX();
   moveInfoCardY();
+  centerEndMessage();
+  positionNextGameContainer();
+
+  nextGameContainer.addEventListener("click", () => {
+    window.location.href = "/anal_beads/index.html"; // <-- replace with your file
+  });
 }
 function draw() {
   // background(255, 0, 0);
@@ -437,37 +461,67 @@ function draw() {
   //   electrocution = false;
   // }
   // strobe(100, 500); // flash for 100ms every 600ms
+  // if (messageItem === -1) {
+  //   endGame = true;
+  // }
+
+  if (endGame) {
+    // setTimeout(() => {
+    restartGame();
+    endgame = false;
+    // }, 1000);
+  }
+
+  if (
+    millis() - lastMousePressedTime > inactivityTimeout &&
+    !waitingForClick &&
+    !hasShownInfoCard
+  ) {
+    console.log("Restarting game due to inactivity...");
+    // setTimeout(() => {
+    restartGame();
+    // }, 1000);
+  }
 
   drawStrobe((backgroundStrobe = false));
+
+  if (waitingForClick) {
+    // Do nothing, wait for click
+  } else if (startGame) {
+    articleLink();
+  }
 }
 
-window.addEventListener("resize", () => {
-  moveInfoCardX();
-  moveInfoCardY();
-});
 function swapCard() {
   World.add(world, mouseConstraint);
 
   messageItem++;
-  // ejaculationLevel = 0;
-  infoCardDiv.classList.remove("visible");
-  infoCard.classList.remove("opacity"); // Add the opacity transition class
   cardNumber++;
-  cardNumberDiv.innerHTML = cardNumber;
-  hasShownInfoCard = false;
-  allowInfoCardReveal = false; // prevent immediate re-show
 
-  // enclosures.forEach((enclosure) => removeFromWorld(enclosure.body));
+  if (messageItem >= messages.length) {
+    // 🧠 BEFORE ending: HIDE the info card cleanly
+    infoCardDiv.classList.remove("visible");
+    infoCard.classList.remove("opacity");
+
+    endGame = true;
+    return;
+  }
+
+  infoCardDiv.classList.remove("visible");
+  infoCard.classList.remove("opacity");
+
+  cardNumberDiv.innerHTML = cardNumber;
+
+  hasShownInfoCard = false;
+  allowInfoCardReveal = false;
+
   mouseConstraint.constraint.stiffness = 0.004;
 
   setTimeout(() => {
     textInfoCard.innerHTML = messages[messageItem];
-    // addEnclosures();
     buttonClickable = true;
-
-    // ✅ Re-enable reveal *after* fade is done and particles can build back up
     allowInfoCardReveal = true;
-  }, 1000); // Match the CSS transition duration
+  }, 1000);
 }
 
 function updateElectrocution() {
@@ -522,8 +576,6 @@ function updateElectrocution() {
     electrocutionStartTime = null;
   }
 }
-
-function endGame() {}
 
 function destroyElectrocutedBlobs() {
   electrocutedNodes.forEach((stuckNode) => {
@@ -751,6 +803,102 @@ function snapTassleToBlob(particle, stuckBlob, isStuckSetter) {
     // Far enough: unstick
     isStuckSetter(false);
   }
+}
+
+function centerEndMessage() {
+  let endMessageWidth = endMessage.offsetWidth / 2;
+  let endMessageHeight = endMessage.offsetHeight / 2;
+
+  endMessage.style.left = window.innerWidth / 2 - endMessageWidth + "px";
+  endMessage.style.top = window.innerHeight / 2 - endMessageHeight + 265 + "px";
+}
+
+function restartGame() {
+  console.log("Restarting game...");
+
+  messageItem = 0;
+  cardNumber = 1;
+  hasShownInfoCard = false;
+  allowInfoCardReveal = true;
+  ejaculationLevel = 0;
+  waitingForClick = true;
+  startGame = false;
+  endGame = false;
+  endMessage.style.opacity = 1;
+  cardNumberDiv.innerHTML = "1";
+
+  // ✅ Remove existing mouse constraint (and re-create later)
+  World.remove(world, mouseConstraint);
+
+  // ✅ Reset tassle states (unstick)
+  isTassle0Stuck = false;
+  isTassle1Stuck = false;
+  tassle0StuckBlob = null;
+  tassle1StuckBlob = null;
+  isDraggingTassle0 = false;
+  isDraggingTassle1 = false;
+  if (mouseConstraint.body) mouseConstraint.body = null;
+
+  // ✅ Remove old blobs
+  for (let blob of blobs) {
+    for (let node of blob.nodes) {
+      World.remove(world, node.body);
+    }
+  }
+  blobs = [];
+
+  // ✅ Recreate new blobs
+  createBlobs();
+
+  // ✅ Recreate mouse constraint fresh
+  let mouse = Mouse.create(document.querySelector("#p5js-canvas"));
+  mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: {
+      stiffness: 0.004,
+    },
+    collisionFilter: { category: CATEGORY_MOUSE },
+  });
+  World.add(world, mouseConstraint);
+
+  // ✅ Rebind dragging events
+  Events.on(mouseConstraint, "startdrag", function (event) {
+    let body = event.body;
+    if (body === particles[0]) isDraggingTassle0 = true;
+    else if (body === particles[particles.length - 1]) isDraggingTassle1 = true;
+    else if (particles.includes(body)) isDraggingChain = true;
+  });
+
+  Events.on(mouseConstraint, "enddrag", function (event) {
+    let body = event.body;
+    if (body === particles[0] && !isTassle0Stuck) isDraggingTassle0 = false;
+    else if (body === particles[particles.length - 1] && !isTassle1Stuck)
+      isDraggingTassle1 = false;
+    else if (particles.includes(body)) isDraggingChain = false;
+  });
+}
+
+mousePressed = function () {
+  if (waitingForClick) {
+    waitingForClick = false;
+    startGame = true;
+    endMessage.classList.add("hidden");
+  }
+  lastMousePressedTime = millis(); // 🧹 Reset inactivity timer on any click
+};
+
+function articleLink() {
+  // setTimeout(() => {
+  endMessage.style.opacity = 0;
+  // }, 1000);
+}
+
+function positionNextGameContainer() {
+  let nextGameWidth = nextGameContainer.offsetWidth / 2;
+  let nextGameHeight = nextGameContainer.offsetHeight / 2;
+
+  nextGameContainer.style.left = window.innerWidth / 2 + 100 + "px";
+  nextGameContainer.style.top = window.innerHeight / 2 - 390 + "px";
 }
 
 function addEnclosures() {

@@ -256,6 +256,10 @@ function sketch(p) {
     centerEndMessage();
     positionNextGameContainer();
 
+    nextGameContainer.addEventListener("click", () => {
+      window.location.href = "/boobs/index.html"; // <-- replace with your file
+    });
+
     // Add the bridge here
     //addBeads();
     analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 100, 115, 50));
