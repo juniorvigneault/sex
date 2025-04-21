@@ -129,6 +129,8 @@ function setup() {
     }
   });
   // createInfoCard();
+
+  centerEndMessage();
 }
 
 function draw() {
@@ -555,13 +557,17 @@ function strokeHsluv(h, s, l) {
 }
 
 function articleLink() {
-  endMessage.style.opacity = "1";
-  moveInfoCardX();
-  moveInfoCardY();
+  setTimeout(() => {
+    endMessage.classList.add("opacity");
+  }, 500);
 }
 
+window.addEventListener("resize", () => {
+  centerEndMessage();
+});
+
 // position info card in the middle of the canvas even if user resizes
-function moveInfoCardX() {
+function centerEndMessage() {
   // Get the current position of the canvas in the viewport
   let canvasRect = p5jsCanvas.getBoundingClientRect();
   // let infoCard = document.querySelector("#infoCardDiv");
@@ -569,11 +575,6 @@ function moveInfoCardX() {
   let endMessageWidth = 200 / 2;
   endMessage.style.left =
     canvasRect.left + canvasDimensions.x / 2 - endMessageWidth + "px"; // Center by subtracting 125 (half of 250px)
-}
-
-function moveInfoCardY() {
-  let canvasRect = p5jsCanvas.getBoundingClientRect();
-  // card height is 280px + 40 padd
   let endMessageHeight = 135 / 2;
   endMessage.style.top =
     canvasRect.top + canvasDimensions.y / 2 - endMessageHeight + "px"; // Center by subtracting 125 (half of 250px)

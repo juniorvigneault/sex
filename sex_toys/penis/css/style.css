@@ -14,7 +14,7 @@ body {
   height: 100%;
   overflow: hidden;
   font-family: "GT America Regular";
-
+  font-size: 15px;
   /* filter: url("#gooey"); */
 }
 body {
@@ -137,6 +137,7 @@ h1 {
   /* display: none; */
   opacity: 0;
   transition: height 0.4s cubic-bezier(0, 0, 0.15, 1.01); /* Smooth size change */
+  pointer-events: none;
 }
 
 #infoCardDiv.visible {
@@ -144,6 +145,7 @@ h1 {
   width: 220px; /* Full width of the card */
   height: 280px; /* Full height of the card */
   opacity: 1;
+  pointer-events: all;
 }
 
 #infoCard {
@@ -173,7 +175,7 @@ h1 {
 #textInfoCard {
   font-family: "GT America Regular";
   /* font-size: 14px; */
-  font-size: 16px;
+  /* font-size: 15px; */
   color: #f2eedf;
   /* padding-top: 15px; */
   user-select: none; /* Prevent text selection */
@@ -192,7 +194,7 @@ h1 {
   text-align: center;
   /* font-family: "Club Sexu_Regular"; */
   /* font-family: "Club Sexu_Regular"; */
-  font-size: 16px;
+  /* font-size: 15px; */
   width: 100%;
   padding: 5px;
   height: 40px;
@@ -236,11 +238,77 @@ h1 {
 
 #cardNumberText {
   /* position: absolute; */
-  font-size: 16px;
+  /* font-size: 15px; */
   /* display: flex; */
   color: #f2eedf;
   font-family: "GT America Regular";
-  font-size: 16px;
   user-select: none; /* Prevent text selection */
   align-items: center;
+}
+
+#end-message {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 210px;
+  height: auto;
+  text-align: center;
+  color: white;
+  font-family: "GT America Regular";
+  font-size: 15px;
+  opacity: 1;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 1s ease; /* Smooth fade over 1 second */
+}
+
+.hidden {
+  opacity: 0;
+}
+
+#end-message-text {
+  opacity: 0;
+  animation: blink 2s infinite;
+}
+
+/* Define the blinking animation */
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+#logo {
+  margin-top: 10px;
+  margin-left: -8px;
+  align-self: center;
+  width: 210px;
+  padding: 10px;
+  cursor: auto;
+  user-select: none;
+}
+
+#nextGameContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 210px;
+  height: auto;
+  text-align: center;
+  color: white;
+  font-family: "GT America Regular";
+  font-size: 15px;
+  opacity: 1;
+  /* pointer-events: none; */
+  user-select: none;
+  animation: blink 2s infinite;
 }

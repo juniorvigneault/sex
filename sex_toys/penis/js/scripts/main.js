@@ -14,6 +14,7 @@ let Constraint = Matter.Constraint;
 let engine;
 let world;
 let mouseConstraint;
+let nextGameContainer;
 let particles = [];
 let enclosures = [];
 let analBeads = [];
@@ -22,6 +23,7 @@ let spermImage;
 let bum;
 let allBodies;
 let beads = [];
+let waitingForClick = true;
 let numBeads = 6;
 let cloth;
 let isCumming = false;
@@ -30,9 +32,14 @@ let canvasS;
 let penis;
 let peeSound;
 let gameX = 200;
+let lastMousePressedTime;
+const inactivityTimeout = 30000; // 30 seconds in milliseconds
+
 let gameY = 100;
 let ejaculationLevel = 0;
 let ellipseRadius = 200;
+let endGame = false;
+let startGame = false;
 const CATEGORY_PENIS = 0x0001;
 const CATEGORY_SPERM = 0x0003;
 const CATEGORY_CIRCLE_PARTICLE = 0x0002;
@@ -58,6 +65,7 @@ let canvasSize = {
 let cardNumber = 1;
 let cummingTimeout = null;
 let isDraggingPenis = false;
+let endMessage;
 let particlesCanvas;
 let infoCard;
 let borderThreshold = 10;
@@ -71,15 +79,28 @@ let buttonClickable = true;
 let infoCardDivOutline;
 let isDraggingBead = false;
 
+// const messages = [
+//   "Le gland contient une concentration de terminaisons nerveuses qui en fait LA zone de stimulation du pénis.",
+//   "Cependant, d’autres zones méritent notre attention: le frein (situé à la jonction du gland et de la verge), le périnée (entre les testicules et l’anus) et les testicules peuvent aussi être très sensibles.",
+//   "Ces zones peuvent susciter du plaisir si elles sont stimulées doucement, avec attention. Chaque personne peut avoir des sensibilités différentes, et explorer ces zones peut enrichir les expériences sexuelles.",
+//   "Le lubrifiant est un allié sous-estimé du pénis. Il favorise la glisse et réduit la friction, rendant la stimulation plus agréable, confortable et parfois plus intense selon les préférences.",
+//   "Un pénis peut perdre son érection pendant une relation sexuelle. Ce phénomène est commun et peut survenir pour plusieurs raisons sans remettre en cause l’attirance ou le plaisir.",
+//   "Cela peut créer des insécurités, même si cela arrive fréquemment: une stimulation est interrompue ou modifiée, on ressent du stress, de l’anxiété liée à la performance, ou simplement de la fatigue.",
+//   "Est-ce qu’un pénis peut être désensibilisé si on le stimule trop? Pas d’inquiétude: les séances de masturbation fréquentes ne posent généralement pas de problème pour la sensibilité du pénis.",
+//   "Cependant, une surstimulation intense peut causer une irritation ou une désensibilisation temporaire. La clé est de reconnaître ses limites et d’écouter son corps pendant la stimulation.",
+// ];
+
 const messages = [
-  "les testicules sont particulièrement sensibles pour certaines personnes et peuvent susciter du plaisir si elles sont stimulées doucement.",
-  "Cependant, d’autres zones méritent notre attention: le frein (situé à la jonction du gland et de la verge) et le périnée (la zone entre les testicules et l’anus).",
-  "Le gland contient une concentration de terminaisons nerveuses qui en fait LA zone de stimulation du pénis.",
-  "Le lubrifiant est un allié sous-estimé du pénis. Il permet de favoriser la glisse et réduire la friction, ce qui crée une stimulation plus agréable et confortable.",
-  "Ça crée des insécurité, même si ça arrive relativement souvent et pour plusieurs raisons: une stimulation est interrompue ou modifiée, on vit un stress ou une anxiété liée à la performance, on est fatigué·e.",
-  "Un pénis peut perdre son érection  pendant une relation sexuelle.",
-  "Par contre, une surstimulation pourrait causer une irritation et une désensibilisation temporaire. La clé c’est de reconnaître ses limites.",
+  "These areas can create pleasure if gently stimulated with care. Every person may have different sensitivities, and exploring these zones can enhance sexual experiences.",
+  "However, other zones also deserve attention: the frenulum (at the junction of the glans and shaft), the perineum (between the testicles and anus), and the testicles can also be very sensitive.",
+  "The glans contains a concentration of nerve endings, making it THE main stimulation zone of the penis.",
+  "Lubricant is an underrated ally of the penis. It enhances glide and reduces friction, making stimulation more pleasant, comfortable, and sometimes even more intense depending on preferences.",
+  "It can create insecurities, even though it’s common: stimulation might be interrupted or changed, stress or performance anxiety may occur, or simply fatigue can affect the erection.",
+  "A penis can lose its erection during sexual activity. This is common and can happen for many reasons, without it meaning there is a lack of attraction or pleasure.",
+  "However, intense overstimulation may cause irritation or temporary desensitization. The key is to recognize your limits and listen to your body during stimulation.",
+  "Can a penis become desensitized from too much stimulation?<br>No need to worry— frequent masturbation sessions usually do not cause lasting issues with penile sensitivity.",
 ];
+
 let messageItem = 7;
 
 let hasShownInfoCard = false;
@@ -193,6 +214,8 @@ function sketch(p) {
     canvasP = p.createCanvas(canvasSize.x, canvasSize.y);
     // Move the canvas within the HTML into the appropriate section
     canvasP.parent("p5js-canvas");
+    lastMousePressedTime = p.millis(); // Initialize it when game starts
+
     // p.frameRate(30);
     // cols = p.width / size + 1;
     // rows = p.height / size + 1;
@@ -205,8 +228,11 @@ function sketch(p) {
     // }
     // create engine, gravity, mouse constraint...
     // infoCardDivOutline = document.querySelector("#infoCardDivOutline");
+    endMessage = document.querySelector("#end-message");
     infoCard = document.querySelector("#infoCardDiv");
     infoCardText = document.querySelector("#infoCard");
+    nextGameContainer = document.querySelector("#nextGameContainer");
+    infoCardText.innerHTML = messages[messageItem];
     continueButton.onclick = () => {
       swapCard();
 
@@ -227,10 +253,13 @@ function sketch(p) {
     addPenis();
     //bum = new Bum(width / 2, 300, 400);
     addEnclosures();
+    centerEndMessage();
+    positionNextGameContainer();
+
     // Add the bridge here
     //addBeads();
-    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 120, 115));
-    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 120, 115));
+    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 100, 115, 50));
+    analBeads.push(new AnalBeads(p.width / 2, p.height / 2 - 100, 115, -50));
 
     let ballConstraint = Constraint.create({
       bodyA: analBeads[0].beads[1].body,
@@ -246,6 +275,8 @@ function sketch(p) {
     window.addEventListener("resize", () => {
       moveInfoCardX();
       moveInfoCardY();
+      centerEndMessage();
+      positionNextGameContainer();
     });
 
     Events.on(mouseConstraint, "startdrag", function (event) {
@@ -345,7 +376,30 @@ function sketch(p) {
       mouseConstraint.constraint.stiffness = 0.004;
     }
 
-    if (ejaculationLevel >= 270 && !hasShownInfoCard && allowInfoCardReveal) {
+    if (messageItem === -1) {
+      endGame = true;
+    }
+
+    if (endGame) {
+      restartGame();
+      endgame = false;
+    }
+
+    if (
+      p.millis() - lastMousePressedTime > inactivityTimeout &&
+      !waitingForClick &&
+      !hasShownInfoCard
+    ) {
+      console.log("Restarting game due to inactivity...");
+      restartGame();
+    }
+
+    if (
+      ejaculationLevel >= 270 &&
+      !hasShownInfoCard &&
+      allowInfoCardReveal &&
+      !endGame
+    ) {
       // console.log(mouseConstraint);
       World.remove(world, mouseConstraint);
 
@@ -435,7 +489,79 @@ function sketch(p) {
       enclosure.display(200, p);
       // console.log("color");
     }
+
+    // console.log({
+    //   isDraggingPenis: isDraggingPenis,
+    //   mouseConstraintBody: mouseConstraint.body,
+    //   constraintBodyB: mouseConstraint.constraint.bodyB,
+    //   cumming: isCumming,
+    // });
+
+    if (waitingForClick) {
+      // Do nothing, wait for click
+    } else if (startGame) {
+      articleLink();
+    }
   };
+
+  p.mousePressed = function () {
+    if (waitingForClick) {
+      waitingForClick = false;
+      startGame = true;
+      endMessage.classList.add("hidden");
+    }
+    lastMousePressedTime = p.millis(); // 🧹 Reset inactivity timer on any click
+  };
+
+  function articleLink() {
+    // setTimeout(() => {
+    endMessage.style.opacity = 0;
+    // }, 1000);
+  }
+
+  function restartGame() {
+    console.log("Restarting game...");
+
+    messageItem = 7;
+    cardNumber = 1;
+    hasShownInfoCard = false;
+    allowInfoCardReveal = true;
+    ejaculationLevel = 0;
+
+    // Make sure the "Touch to start" is visible again
+    endMessage.style.opacity = 1;
+
+    // Restart waiting for click
+    waitingForClick = true;
+    startGame = false;
+    endGame = false;
+
+    let cardNumberDiv = document.querySelector("#cardNumberText");
+    cardNumberDiv.innerHTML = "1";
+
+    //  if (!world.constraints.includes(mouseConstraint.constraint)) {
+    //    World.add(world, mouseConstraint);
+    //  }
+  }
+
+  function centerEndMessage() {
+    let endMessage = document.querySelector("#end-message");
+
+    let endMessageWidth = endMessage.offsetWidth / 2;
+    let endMessageHeight = endMessage.offsetHeight / 2;
+
+    endMessage.style.left = window.innerWidth / 2 - endMessageWidth + "px";
+    endMessage.style.top =
+      window.innerHeight / 2 - endMessageHeight + 265 + "px";
+  }
+
+  function positionNextGameContainer() {
+    let nextGameWidth = nextGameContainer.offsetWidth / 2;
+    let nextGameHeight = nextGameContainer.offsetHeight / 2;
+
+    nextGameContainer.style.left = window.innerWidth / 2 + 100 + "px";
+    nextGameContainer.style.top = window.innerHeight / 2 - 390 + "px";
+  }
 
   //MASK CLIP FOR EMPTYING BALLS
   function emptyBalls() {
@@ -456,7 +582,6 @@ function sketch(p) {
     // );
     // p.blendMode(p.REMOVE);
     p.clip(mask);
-    // p.rotate(angle + 0.223);
 
     let staticBodyPos = analBeads[0].beads[0].body.position;
     let posLeftBall = analBeads[0].beads[1].body.position;
@@ -515,7 +640,7 @@ function sketch(p) {
     mouseConstraint.constraint.stiffness = 0.004;
 
     setTimeout(() => {
-      textInfoCard.innerHTML = messages[messageItem];
+      infoCardText.innerHTML = messages[messageItem];
       addEnclosures();
       buttonClickable = true;
 
@@ -540,7 +665,7 @@ function sketch(p) {
     mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
       constraint: {
-        stiffness: 0.004,
+        stiffness: 1,
       },
       collisionFilter: { category: CATEGORY_MOUSE },
     });
@@ -579,33 +704,42 @@ function sketch(p) {
   function addPenis() {
     let group = Body.nextGroup(true);
 
-    penis = Composites.stack(0, 10, 20, 1, 0, 0, function (x, y) {
-      return Bodies.circle(p.width / 2 - penisBeadsSize, 130, penisBeadsSize, {
+    let x = p.width / 2; // CENTER horizontally
+    let yStart = p.height / 2 - 103; // a bit above middle (you can adjust the -200)
+    let spacing = 10; // spacing between beads
+
+    penis = Composite.create({ label: "Penis" });
+
+    for (let i = 0; i < 20; i++) {
+      let isFirst = i === 0;
+      let body = Bodies.circle(x, yStart + i * spacing, penisBeadsSize, {
         collisionFilter: {
           group: group,
-          mask: CATEGORY_MOUSE | 1, // Collide with mouse
+          mask: CATEGORY_MOUSE | 1,
         },
-        // density: 0.0001,
-
-        // isStatic: true,
         frictionAir: 0.03,
+        isStatic: isFirst,
       });
-    });
+      Composite.add(penis, body);
 
-    Composites.chain(penis, 0, 0, 0, 0, {
-      stiffness: 1,
-      length: 10,
-      // mass: 500,
-    });
+      if (i > 0) {
+        let constraint = Constraint.create({
+          bodyA: penis.bodies[i - 1],
+          bodyB: penis.bodies[i],
+          length: spacing,
+          stiffness: 1,
+        });
+        Composite.add(penis, constraint);
+      }
+    }
 
     Composite.add(world, [
       penis,
       Constraint.create({
-        pointA: { x: p.width / 2, y: p.height / 2 - 125 },
+        pointA: { x: x, y: yStart }, // Attach to very first body's position!
         bodyB: penis.bodies[0],
         pointB: { x: 0, y: 0 },
         length: 0,
-        // stiffness: 1,
       }),
     ]);
   }

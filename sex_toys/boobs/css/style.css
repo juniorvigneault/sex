@@ -76,7 +76,7 @@ body {
 #textInfoCard {
   font-family: "GT America Regular";
   /* font-size: 14px; */
-  font-size: 16px;
+  font-size: 15px;
   color: #f2eedf;
   /* padding-top: 15px; */
   user-select: none; /* Prevent text selection */
@@ -95,7 +95,7 @@ body {
   text-align: center;
   /* font-family: "Club Sexu_Regular"; */
   /* font-family: "Club Sexu_Regular"; */
-  font-size: 16px;
+  font-size: 15px;
   width: 100%;
   padding: 5px;
   height: 40px;
@@ -139,11 +139,10 @@ body {
 
 #cardNumberText {
   /* position: absolute; */
-  font-size: 16px;
+  font-size: 15px;
   /* display: flex; */
   color: #f2eedf;
   font-family: "GT America Regular";
-  font-size: 16px;
   user-select: none; /* Prevent text selection */
   align-items: center;
 }

@@ -14,12 +14,13 @@ class Blob {
     this.group = Body.nextGroup(true); // negative group = no collision between group members
     this.strobeSpeed = 80;
     this.strobeColor;
+    this.randomNippleNode = floor(random(0, this.steps));
   }
 
   init(world) {
     const totalCircumference = Math.PI * 2 * this.radius;
     const segmentLength = (totalCircumference / this.steps) * 0.95;
-
+    // console.log(randomNippleNode);
     // Create nodes
     for (let i = 0; i < this.steps; i++) {
       let angle = (i / this.steps) * Math.PI * 2;
@@ -30,7 +31,7 @@ class Blob {
       // let isStatic = i >= 17 && i <= 18;
       let isStatic;
       let node;
-      if (i === 10) {
+      if (i === this.randomNippleNode) {
         // or any index you want
         node = new BlobNode(px, py, this.nodeSize, this.group, "rectangle");
       } else {
@@ -46,6 +47,8 @@ class Blob {
 
     // Close the loop
     this.nodes[0].link(this.nodes[this.steps - 1], world, segmentLength);
+
+    this.alignRectangleNode(this.randomNippleNode);
 
     // Cross-link for squishiness
     const spacing = 10;
@@ -149,63 +152,83 @@ class Blob {
     return { x: cx, y: cy };
   }
 
-  draw(showNodes = true) {
-    // Determine if THIS blob is being electrocuted
+  draw(showNodes = false, debug = false) {
     let isElectrocuted = electrocutedNodes.some((node) => {
       return this.nodes.includes(node);
     });
 
     // Color setup
-    const normalBlobColor = color(255, 115, 191); // Pink for blob path
-    const normalEllipseColor = color(255, 51, 0); // Orange for ellipse
-    const normalRectColor = color(255, 51, 0); // Orange for rectangle
-    const nodeNormalColor = color(0, 200, 255, 50); // Light blue nodes
+    const normalBlobColor = color(255, 115, 191, debug ? 80 : 255);
+    const normalEllipseColor = color(255, 51, 0);
+    const normalRectColor = color(255, 51, 0);
+    const nodeNormalColor = color(0, 200, 255, 120);
 
-    // Calculate strobe flashing
     let flashing = false;
     if (isElectrocuted && electrocution) {
-      let cycle = millis() % (this.strobeSpeed * 2); // full cycle duration (normal + black)
-      flashing = cycle >= this.strobeSpeed; // flashing is ON during second half
+      let cycle = millis() % (this.strobeSpeed * 2);
+      flashing = cycle >= this.strobeSpeed;
     }
 
-    // Draw nodes if requested
-    if (showNodes) {
-      noStroke();
-      for (let node of this.nodes) {
-        if (!node.body) continue;
-        let r = node.radius;
+    noStroke();
+    for (let node of this.nodes) {
+      if (!node.body) continue;
+      let r = node.radius;
 
-        if (node.shape === "circle") {
-          fill(flashing ? color(255) : nodeNormalColor);
+      if (node.shape === "circle") {
+        if (showNodes || debug) {
+          if (debug) {
+            fill(0, 150, 255, 200); // bright blue for debug
+          } else {
+            fill(flashing ? color(255) : nodeNormalColor);
+          }
           circle(node.pos.x, node.pos.y, r * 2);
-        } else if (node.shape === "rectangle") {
-          push();
-          fill(flashing ? color(255) : normalRectColor);
-          translate(node.pos.x, node.pos.y);
-          rotate(node.body.angle);
-          rectMode(CENTER);
-          rect(0, 0, r * 4, r * 2 + 12, r / 1.5);
-          pop();
         }
+      } else if (node.shape === "rectangle") {
+        // ⬇️ Rectangle is ALWAYS drawn, independently of showNodes/debug
+        push();
+        if (debug) {
+          fill(255, 100, 100, 220); // bright red-ish for debug
+        } else {
+          fill(flashing ? color(255) : normalRectColor);
+        }
+        translate(node.pos.x, node.pos.y);
+        rotate(node.body.angle);
+        rectMode(CENTER);
+        rect(0, 0, r * 4, r * 2 + 12, r / 1.5);
+        pop();
       }
     }
 
-    // Draw the blob path
+    // Draw blob path
     noStroke();
     fill(flashing ? color(255) : normalBlobColor);
     this.toPath().draw();
 
-    // Clip inside blob and draw the center ellipse
+    // Clip inside blob and draw center ellipse
     push();
     this.toPath().clip();
 
     fill(flashing ? color(255) : normalEllipseColor);
     ellipseMode(CENTER);
     ellipse(
-      this.nodes[10].body.position.x,
-      this.nodes[10].body.position.y,
-      this.nodes[0].radius * 5
+      this.nodes[this.randomNippleNode].body.position.x,
+      this.nodes[this.randomNippleNode].body.position.y,
+      this.nodes[this.randomNippleNode].radius * 5
     );
     pop();
+  }
+
+  alignRectangleNode(i) {
+    let prevNode = this.nodes[(i - 1 + this.steps) % this.steps];
+    let nextNode = this.nodes[(i + 1) % this.steps];
+
+    let dx = nextNode.pos.x - prevNode.pos.x;
+    let dy = nextNode.pos.y - prevNode.pos.y;
+    let angle = Math.atan2(dy, dx);
+
+    let rectNode = this.nodes[i];
+    if (rectNode && rectNode.body) {
+      Body.setAngle(rectNode.body, angle + Math.PI / 2); // <-- 🔥 add 90 degrees
+    }
   }
 }

@@ -131,7 +131,7 @@ canvas:active {
 .textInfoCard {
   font-family: "GT America Regular";
   /* font-size: 14px; */
-  font-size: 16px;
+  font-size: 15px;
   color: #f2eedf;
   /* padding-top: 15px; */
   user-select: none; /* Prevent text selection */
@@ -151,7 +151,7 @@ canvas:active {
   text-align: center;
   /* font-family: "Club Sexu_Regular"; */
   /* font-family: "Club Sexu_Regular"; */
-  font-size: 16px;
+  font-size: 15px;
   width: 100%;
   padding: 5px;
 
@@ -193,29 +193,35 @@ canvas:active {
 
 .cardNumberText {
   /* position: absolute; */
-  font-size: 16px;
+  font-size: 15px;
   /* display: flex; */
   color: #f2eedf;
   font-family: "GT America Regular";
-  font-size: 16px;
   user-select: none; /* Prevent text selection */
   align-items: center;
 }
 
 #end-message {
-  /* width: 200px; */
   position: absolute;
   text-align: center;
   color: white;
   font-family: "GT America Regular";
-  font-size: 16px;
+  font-size: 15px;
   height: 135px;
-  /* border-style: solid; */
-  /* display: none; */
   opacity: 0;
+  pointer-events: none; /* Prevents clicks when hidden */
+  user-select: none;
+}
+
+#end-message.opacity {
+  opacity: 1;
+  pointer-events: auto; /* Allow clicks when visible */
 }
 
 #logo {
+  margin-top: 5px;
   width: 200px;
   padding: 10px;
+  cursor: auto;
+  user-select: none;
 }

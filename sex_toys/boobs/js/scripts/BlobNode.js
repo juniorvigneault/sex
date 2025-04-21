@@ -15,15 +15,17 @@ class BlobNode {
     this.group = group;
     this.shape = shape;
     this.parentBlob = parentBlob; // 🔥 Reference to parent Blob
+    this.isStatic = false;
   }
 
   init(world) {
     let randomDensity = random(0.0001, 0.005);
     if (this.shape === "circle") {
       this.body = Bodies.circle(this.x, this.y, this.radius, {
-        density: 0.0012,
+        density: 0.006,
         frictionAir: 0.1,
         restitution: 0.8,
+        isStatic: this.isStatic,
         collisionFilter: {
           category: CATEGORY_BLOB,
           mask: CATEGORY_RECTANGLE | CATEGORY_MOUSE | CATEGORY_BLOB,
@@ -40,6 +42,7 @@ class BlobNode {
           density: randomDensity,
           frictionAir: 0.1,
           restitution: 0.8,
+          isStatic: this.isStatic,
           collisionFilter: {
             category: CATEGORY_BLOB,
             mask:
@@ -77,7 +80,7 @@ class BlobNode {
     let constraint = Constraint.create({
       bodyA: this.body,
       bodyB: other.body,
-      stiffness: 0.05,
+      stiffness: 0.01,
     });
     World.add(world, constraint);
   }

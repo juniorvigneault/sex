@@ -22,13 +22,14 @@ let nippleHeight = 40;
 let bum;
 let beads = [];
 let numBeads = 6;
+let cardNumberDiv;
 let cloth;
 let gameX = 200;
 let gameY = 100;
 let infoCard;
 let infoCardDiv;
 let cardNumber = 1;
-let messageItem = 7;
+let messageItem = 0;
 let continueButton;
 let ellipseRadius = 100;
 let boobSize = 130;
@@ -55,7 +56,7 @@ let electrocutionStartTime = null;
 let canvas;
 let electrocution = false;
 let isDraggingChain = false;
-
+let textInfoCard;
 let tassleSize = 20;
 let lastFlash = 0; // timestamp of when the last flash began
 let flashDuration = 100; // how long each flash lasts (ms)
@@ -75,13 +76,11 @@ let areola = {
 };
 
 const messages = [
-  "les testicules sont particulièrement sensibles pour certaines personnes et peuvent susciter du plaisir si elles sont stimulées doucement.",
-  "Cependant, d’autres zones méritent notre attention: le frein (situé à la jonction du gland et de la verge) et le périnée (la zone entre les testicules et l’anus).",
-  "Le gland contient une concentration de terminaisons nerveuses qui en fait LA zone de stimulation du pénis.",
-  "Le lubrifiant est un allié sous-estimé du pénis. Il permet de favoriser la glisse et réduire la friction, ce qui crée une stimulation plus agréable et confortable.",
-  "Ça crée des insécurité, même si ça arrive relativement souvent et pour plusieurs raisons: une stimulation est interrompue ou modifiée, on vit un stress ou une anxiété liée à la performance, on est fatigué·e.",
-  "Un pénis peut perdre son érection  pendant une relation sexuelle.",
-  "Par contre, une surstimulation pourrait causer une irritation et une désensibilisation temporaire. La clé c’est de reconnaître ses limites.",
+  "Nipple clamps can cause injuries if precautions aren't taken. It’s recommended to take breaks and maintain clear communication during a BDSM scene to keep pain enjoyable.",
+  "Nipple clamps are often used in BDSM dynamics to control, limit, or intensify sensations. Under strong pressure, they can trigger an endorphin release, leading to a powerful rush of pleasure.",
+  "Some nipple clamps are electric and equipped with electrodes that deliver light electrical pulses, stimulating nerve endings and creating a tingling or throbbing sensation that can vary in intensity.",
+  "When nipple clamps are applied, they restrict blood flow, increasing sensitivity. The nipple becomes more responsive to touch, which can heighten sensations and intensify the pleasure experienced during stimulation.",
+  "Nipple clamps create sensations through applied pressure. Intensity varies depending on the type, with some being adjustable. Clamps can be made from silicone, plastic, or metal to vary the feeling and grip strength.",
 ];
 
 let canvasDimensions = {
@@ -113,8 +112,12 @@ function setup() {
 
   infoCardDiv = document.querySelector("#infoCardDiv");
   infoCard = document.querySelector("#infoCard");
-  continueButton = document.querySelector("#continueButton");
+  cardNumberDiv = document.querySelector("#cardNumberText");
 
+  textInfoCard = document.querySelector("#textInfoCard");
+  continueButton = document.querySelector("#continueButton");
+  messages.reverse();
+  textInfoCard.innerHTML = messages[0];
   continueButton.onclick = () => {
     swapCard();
   };
@@ -235,84 +238,7 @@ function setup() {
 
   World.add(world, cord);
 
-  let blob = new Blob({
-    x: 120,
-    y: 120,
-    radius: 100,
-    steps: 20,
-    nodeSize: 15,
-  });
-  let blob2 = new Blob({
-    x: 400,
-    y: 120,
-    radius: 100,
-    steps: 20,
-    nodeSize: 15,
-  });
-  blob.init(world);
-  blobs.push(blob);
-  blob2.init(world);
-  blobs.push(blob2);
-
-  let blob3 = new Blob({
-    x: 120,
-    y: 340,
-    radius: 100,
-    steps: 20,
-    nodeSize: 15,
-  });
-  let blob4 = new Blob({
-    x: 300,
-    y: 500,
-    radius: 100,
-    steps: 20,
-    nodeSize: 15,
-  });
-  blob3.init(world);
-  blobs.push(blob3);
-  blob4.init(world);
-  blobs.push(blob4);
-  400, 650, 170, 20, 25;
-  let blob5 = new Blob({
-    x: 120,
-    y: 600,
-    radius: 100,
-    steps: 20,
-    nodeSize: 15,
-  });
-  let blob6 = new Blob({
-    x: 450,
-    y: 250,
-    radius: 100,
-    steps: 20,
-    nodeSize: 15,
-  });
-  blob5.init(world);
-  blobs.push(blob5);
-  blob6.init(world);
-  blobs.push(blob6);
-
-  let blob7 = new Blob({
-    x: 480,
-    y: 680,
-    radius: 100,
-    steps: 20,
-    nodeSize: 15,
-  });
-
-  blob7.init(world);
-  blobs.push(blob7);
-
-  let blob8 = new Blob({
-    x: 480,
-    y: 500,
-    radius: 100,
-    steps: 20,
-    nodeSize: 15,
-  });
-
-  blob8.init(world);
-  blobs.push(blob8);
+  createBlobs();
 
   Events.on(mouseConstraint, "startdrag", function (event) {
     let body = event.body;
@@ -413,6 +339,8 @@ function draw() {
   // Then in your loop
   for (let blob of blobs) {
     blob.draw();
+
+    // blob.draw(true, true);
     blob.neutralizeGravity();
 
     if (!anyBlobElectrocuted) {
@@ -513,15 +441,18 @@ function draw() {
   drawStrobe((backgroundStrobe = false));
 }
 
+window.addEventListener("resize", () => {
+  moveInfoCardX();
+  moveInfoCardY();
+});
 function swapCard() {
   World.add(world, mouseConstraint);
 
-  messageItem--;
+  messageItem++;
   // ejaculationLevel = 0;
   infoCardDiv.classList.remove("visible");
   infoCard.classList.remove("opacity"); // Add the opacity transition class
   cardNumber++;
-  let cardNumberDiv = document.querySelector("#cardNumberText");
   cardNumberDiv.innerHTML = cardNumber;
   hasShownInfoCard = false;
   allowInfoCardReveal = false; // prevent immediate re-show
@@ -582,7 +513,7 @@ function updateElectrocution() {
   if (
     electrocution &&
     electrocutionStartTime &&
-    now - electrocutionStartTime > 3000
+    now - electrocutionStartTime > 2000
   ) {
     destroyElectrocutedBlobs();
     electrocution = false;
@@ -591,6 +522,8 @@ function updateElectrocution() {
     electrocutionStartTime = null;
   }
 }
+
+function endGame() {}
 
 function destroyElectrocutedBlobs() {
   electrocutedNodes.forEach((stuckNode) => {
@@ -665,6 +598,40 @@ function cardAppear() {
   mouseConstraint.constraint.stiffness = 0;
 
   hasShownInfoCard = true;
+}
+
+function createBlobs() {
+  const blobPositions = [
+    { x: 120, y: 120 },
+    { x: 310, y: 100 },
+    { x: 120, y: 300 },
+    { x: 450, y: 215 },
+    { x: 305, y: 320 },
+    { x: 460, y: 410 },
+    { x: 100, y: 480 },
+    { x: 300, y: 500 },
+    { x: 150, y: 660 },
+    { x: 430, y: 640 },
+  ];
+
+  const commonSettings = {
+    radius: 80,
+    steps: 20,
+    nodeSize: 12,
+  };
+
+  for (let pos of blobPositions) {
+    let blob = new Blob({
+      x: pos.x,
+      y: pos.y,
+      radius: commonSettings.radius,
+      steps: commonSettings.steps,
+      nodeSize: commonSettings.nodeSize,
+    });
+
+    blob.init(world);
+    blobs.push(blob);
+  }
 }
 
 function drawStrobe(backgroundStrobe) {
@@ -743,7 +710,7 @@ function setAllBlobsDynamic() {
 
 function tryStickTassle(particle, blobs, isStuckSetter, setBlob) {
   for (let blob of blobs) {
-    let centerNode = blob.nodes[10];
+    let centerNode = blob.nodes[blob.randomNippleNode];
     let center = centerNode.body.position;
 
     let distance = dist(

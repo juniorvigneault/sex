@@ -52,6 +52,8 @@ class CircleParticle {
 
     Composite.add(composite, this.body);
     this.createInfoCard();
+    this.moveInfoCardX();
+    this.moveInfoCardY();
   }
 
   createInfoCard() {
@@ -95,6 +97,11 @@ class CircleParticle {
       this.infoCardDiv.style.display = "none";
       mouseConstraint.constraint.stiffness = 0.08;
     };
+
+    window.addEventListener("resize", () => {
+      this.moveInfoCardX();
+      this.moveInfoCardY();
+    });
   }
 
   // position info card in the middle of the canvas even if user resizes
@@ -125,10 +132,9 @@ class CircleParticle {
     rotate(angle);
     ellipseMode(CENTER);
     // keep cards in the middle x axis
-    this.moveInfoCardX();
-    this.moveInfoCardY();
+
     // show card when bead is popped but prevent last card from opening
-    if (this.showCard && this.cardNumber !== 10) {
+    if (this.showCard && this.cardNumber !== null && this.text !== null) {
       this.infoCardDiv.classList.add("visible"); // Add visible class for animation
 
       // Add a delay before applying opacity

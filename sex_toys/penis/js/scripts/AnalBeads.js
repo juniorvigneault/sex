@@ -1,14 +1,15 @@
 class AnalBeads {
-  constructor(sX, sY, beadSize) {
+  constructor(sX, sY, beadSize, ballOffset) {
     this.beads = [];
 
     this.beadConstraints = [];
     this.startX = sX;
     this.startY = sY;
-    this.constraintLength = 210;
+    this.constraintLength = 205;
     this.toyLength = 230;
     this.beadSize = beadSize;
     this.spaceBetweenBeads = this.beadSize + 0;
+    this.ballOffset = ballOffset;
     this.makeChain();
   } //constructor
 
@@ -38,35 +39,34 @@ class AnalBeads {
     let counter = 0;
     let x = this.startX;
 
-    for (
-      let y = this.startY;
-      y < this.startY + this.toyLength;
-      y += this.spaceBetweenBeads
-    ) {
-      if (prev === null) {
+    for (let i = 0; i < 2; i++) {
+      let y;
+      if (i === 0) {
+        // First bead (fixed)
         fixed = true;
+        y = this.startY;
       } else {
+        // Second bead (NOT fixed), CUSTOM position
         fixed = false;
+        y = this.startY + 150; // 👈 change 100 to whatever offset you want
+        x = this.startX + this.ballOffset; // 👈 you can even change X if you want
       }
 
       let p = new CircleParticle(x, y, this.beadSize, fixed, world);
       this.beads.push(p);
+
       if (prev !== null) {
         let options = {
           bodyA: prev.body,
           bodyB: p.body,
-          pointA: {
-            x: 0,
-            y: 0,
-          },
+          pointA: { x: 0, y: 0 },
           length: this.constraintLength,
           stiffness: 0.04,
         };
-        //see doc
         let constraint = Constraint.create(options);
         World.add(world, constraint);
       }
       prev = p;
-    } //for
+    }
   }
 } //class
