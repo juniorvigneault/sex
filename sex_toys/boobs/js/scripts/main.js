@@ -19,6 +19,7 @@ let analBeads = [];
 let nipples = [];
 let hasShownInfoCard = false;
 let allowInfoCardReveal = true;
+let mouse;
 let startGame = false;
 let waitingForClick = true;
 let endGame = false;
@@ -116,6 +117,7 @@ function setup() {
   });
 
   World.add(world, mouseConstraint);
+
   lastMousePressedTime = millis(); // Initialize it when game starts
 
   //bum = new Bum(width / 2, 300, 400);
@@ -303,7 +305,10 @@ function setup() {
 }
 function draw() {
   // background(255, 0, 0);
-
+  // push();
+  // translate(width / 2, height / 2);
+  // rotate(-HALF_PI); // -90 degrees in radians
+  // translate(-height / 2, -width / 2); // swap width and height
   // if (flashing) {
   //   background(0); // DARK when flashing
   // } else {
@@ -490,6 +495,8 @@ function draw() {
   } else if (startGame) {
     articleLink();
   }
+
+  // pop();
 }
 
 function swapCard() {
@@ -851,7 +858,13 @@ function restartGame() {
   createBlobs();
 
   // ✅ Recreate mouse constraint fresh
-  let mouse = Mouse.create(document.querySelector("#p5js-canvas"));
+  mouse = Mouse.create(document.querySelector("#p5js-canvas"));
+  mouse.pixelRatio = 1; // important
+
+  // 🧠 Correct the mouse position manually
+  mouse.absolute = { x: 0, y: 0 }; // Create a placeholder if needed
+  mouse.offset = { x: 0, y: 0 };
+
   mouseConstraint = MouseConstraint.create(engine, {
     mouse: mouse,
     constraint: {
