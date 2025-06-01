@@ -44,11 +44,11 @@ h1 {
 }
 
 /* Gooey effect applied to the particles canvas */
-#particles-canvas canvas {
-  filter: url("#gooey");
+/* #particles-canvas canvas { */
+/* filter: url("#gooey"); */
 
-  /* transform: translate3d(0, 0, 0); */
-}
+/* transform: translate3d(0, 0, 0); */
+/* } */
 
 .infoBubble {
   position: absolute;

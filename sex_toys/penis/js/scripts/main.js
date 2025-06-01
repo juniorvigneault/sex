@@ -21,6 +21,7 @@ let analBeads = [];
 let particleImage;
 let spermImage;
 let bum;
+
 let allBodies;
 let beads = [];
 let waitingForClick = true;
@@ -59,8 +60,8 @@ let clothOptions = {
 let GTAmericaFont;
 let boxes = [];
 let canvasSize = {
-  x: 550,
-  y: 800,
+  x: 350,
+  y: 650,
 };
 let cardNumber = 1;
 let cummingTimeout = null;
@@ -70,7 +71,10 @@ let particlesCanvas;
 let infoCard;
 let borderThreshold = 10;
 let infoCardText;
-let pg;
+let pg, pgBlur;
+let pgBlurH, pgBlurV, pgFinal;
+let blurShader, outputShader;
+let blurShaderH, blurShaderV, outputShaderFinal;
 let keyedImage;
 let rows, cols;
 let size = 30;
@@ -107,58 +111,47 @@ let hasShownInfoCard = false;
 let allowInfoCardReveal = true;
 
 function sperm(s) {
+  let blurShader, outputShader;
+  let fbo1, fbo2, fbo3; // Frame buffer objects
+  let blurWeights = [];
+  let blurRadius = 15;
+
   s.preload = function () {
     // GTAmericaFont = s.loadFont("/penis/css/GT-America-Regular.otf");
+    blurShader = s.loadShader(
+      "/penis/js/scripts/shaders/blur.vert",
+      "/penis/js/scripts/shaders/blur.frag"
+    );
+    outputShader = s.loadShader(
+      "/penis/js/scripts/shaders/output.vert",
+      "/penis/js/scripts/shaders/output.frag"
+    );
   };
 
   s.setup = function () {
-    canvasS = s.createCanvas(canvasSize.x, canvasSize.y);
-    // Move the canvas within the HTML into the appropriate section
+    canvasS = s.createCanvas(canvasSize.x, canvasSize.y, s.WEBGL);
     canvasS.parent("particles-canvas");
 
-    // canvasS.style("filter", "blur(20px) contrast(2000%)");
-    // s.pixelDensity(0.5);
-    // s.frameRate(10); // Cap to 30 FPS
-    // cols = s.width / size + 1;
-    // rows = s.height / size + 1;
+    // Créer les frame buffers
+    fbo1 = s.createFramebuffer({ width: canvasSize.x, height: canvasSize.y });
+    fbo2 = s.createFramebuffer({ width: canvasSize.x, height: canvasSize.y });
+    fbo3 = s.createFramebuffer({ width: canvasSize.x, height: canvasSize.y });
 
-    // for (let i = 0; i < cols; i++) {
-    //   grid[i] = [];
-    //   for (let j = 0; j < rows; j++) {
-    //     grid[i][j] = 0;
-    //   }
-    // }
-
-    particlesCanvas.addEventListener("mouseleave", () => {
-      isCumming = false;
-      clearTimeout(cummingTimeout);
-      cummingTimeout = null;
-      isDraggingPenis = false;
-      if (mouseConstraint) {
-        World.remove(world, mouseConstraint);
-        console.log("Mouse left – interaction disabled");
-      }
-    });
-
-    particlesCanvas.addEventListener("mouseenter", () => {
-      if (!world.constraints.includes(mouseConstraint.constraint)) {
-        Mouse.setElement(mouseConstraint.mouse, particlesCanvas);
-
-        World.add(world, mouseConstraint);
-        console.log("Mouse re-entered – interaction enabled");
-      }
-    });
+    setupBlurWeights();
   };
 
   s.draw = function () {
-    // s.background(0); // Black background
-    s.clear();
-    // s.blendMode(s.SCREEN);
+    // Étape 1: Rendre la scène dans fbo1 avec fond transparent
+    fbo1.begin();
+    s.clear(); // Fond transparent
+    s.translate(-canvasSize.x / 2, -canvasSize.y / 2);
+    s.scale(1, -1); // Inverser l'axe Y pour corriger l'orientation
+    s.translate(0, -canvasSize.y); // Ajuster la position après l'inversion
 
-    // Draw white particles
+    // Dessiner les particules blanches
     for (let i = 0; i < particles.length; i++) {
       s.push();
-      s.fill(255);
+      s.fill(255, 255, 255, 255);
       s.noStroke();
       s.ellipseMode(s.CENTER);
       s.ellipse(
@@ -168,66 +161,140 @@ function sperm(s) {
       );
       s.pop();
 
+      // Nettoyage des particules hors écran
       if (particles[i].position.y > 800) {
         World.remove(world, particles[i]);
         particles.splice(i, 1);
         i--;
       }
     }
+    fbo1.end();
 
-    // s.push();
-    // s.rectMode(s.CENTER);
-    // s.textSize(15);
-    // s.textFont(GTAmericaFont);
-    // // p.rect(275, 610, 180, 155);
-    // s.text(
-    //   "Est-ce qu’un pénis peut être désensibilisé si on le stimule trop? N’ayez crainte, les séances de masturbation récurrentes ne sont pas problématiques pour la sensibilité du pénis.",
-    //   275,
-    //   650,
-    //   185,
-    //   200
-    // );
-    // s.pop();
+    // Étape 2: Appliquer le blur gaussien
+    applyGaussianBlur();
 
-    // // Process pixels to key out black
-    // s.loadPixels();
-    // for (let i = 0; i < s.pixels.length; i += 4) {
-    //   let r = s.pixels[i]; // Red
-    //   let g = s.pixels[i + 1]; // Green
-    //   let b = s.pixels[i + 2]; // Blue
-
-    //   // Check if the pixel is black (or close to black)
-    //   if (r === 0 && g === 0 && b === 0) {
-    //     s.pixels[i + 3] = 0; // Set alpha to 0 (transparent)
-    //   }
-    // }
-    // s.updatePixels();
+    // Étape 3: Appliquer le contraste et rendre le résultat final
+    applyContrastAndRender();
   };
+
+  function setupBlurWeights() {
+    const weight = [];
+    let t = 0.0;
+
+    for (let i = blurRadius - 1; i >= 0; i--) {
+      let r = 1.0 + 2.0 * i;
+      let w = Math.exp((-0.5 * (r * r)) / (blurRadius * blurRadius));
+      weight.push(w);
+      if (i > 0) {
+        w *= 2.0;
+      }
+      t += w;
+    }
+
+    for (let i = 0; i < weight.length; i++) {
+      weight[i] /= t;
+    }
+
+    blurWeights = weight;
+  }
+
+  function applyGaussianBlur() {
+    // Blur vertical (fbo1 -> fbo2)
+    fbo2.begin();
+    s.clear();
+    s.shader(blurShader);
+
+    // Uniformes pour le blur vertical
+    blurShader.setUniform("uDiffuse", fbo1.color);
+    blurShader.setUniform("uStep", [1.0 / canvasSize.x, 1.0 / canvasSize.y]);
+    blurShader.setUniform("uStepSize", [0.0, 1.0]); // Vertical
+    blurShader.setUniform("uWeight", blurWeights);
+
+    s.push();
+    s.translate(-canvasSize.x / 2, -canvasSize.y / 2);
+    s.noStroke();
+    s.rect(0, 0, canvasSize.x, canvasSize.y);
+    s.pop();
+    fbo2.end();
+
+    // Blur horizontal (fbo2 -> fbo3)
+    fbo3.begin();
+    s.clear();
+    s.shader(blurShader);
+
+    // Uniformes pour le blur horizontal
+    blurShader.setUniform("uDiffuse", fbo2.color);
+    blurShader.setUniform("uStep", [1.0 / canvasSize.x, 1.0 / canvasSize.y]);
+    blurShader.setUniform("uStepSize", [1.0, 0.0]); // Horizontal
+    blurShader.setUniform("uWeight", blurWeights);
+
+    s.push();
+    s.translate(-canvasSize.x / 2, -canvasSize.y / 2);
+    s.noStroke();
+    s.rect(0, 0, canvasSize.x, canvasSize.y);
+    s.pop();
+    fbo3.end();
+  }
+
+  function applyContrastAndRender() {
+    // Rendre le résultat final avec fond transparent
+    s.clear(); // Fond transparent au lieu de la couleur lilas
+
+    s.shader(outputShader);
+    outputShader.setUniform("uDiffuse", fbo3.color);
+
+    s.push();
+    s.translate(-canvasSize.x / 2, -canvasSize.y / 2);
+    s.noStroke();
+    s.rect(0, 0, canvasSize.x, canvasSize.y);
+    s.pop();
+
+    s.resetShader();
+  }
 }
 
 function sketch(p) {
   p.preload = function () {
     // peeSound = p.loadSound("assets/sounds/peeSound.mp3");
+    // blurShader = p.loadShader(
+    //   "/penis/js/scripts/shaders/blur.vert",
+    //   "/penis/js/scripts/shaders/blur.frag"
+    // );
+    // outputShader = p.loadShader(
+    //   "/penis/js/scripts/shaders/output.vert",
+    //   "/penis/js/scripts/shaders/output.frag"
+    // );
   };
 
   p.setup = function () {
     canvasP = p.createCanvas(canvasSize.x, canvasSize.y);
+
     // Move the canvas within the HTML into the appropriate section
     canvasP.parent("p5js-canvas");
+    // pg = p.createGraphics(canvasSize.x, canvasSize.y, p.WEBGL);
+    // gooey buffers
+    // pgBlur = p.createGraphics(canvasSize.x, canvasSize.y, p.WEBGL);
+    // pgBlurV = p.createGraphics(canvasSize.x, canvasSize.y, p.WEBGL);
+    // pgFinal = p.createGraphics(canvasSize.x, canvasSize.y, p.WEBGL);
+
+    // Charger les shaders pour chaque contexte
+    // blurShaderH = pgBlurH.loadShader(
+    //   "/penis/js/scripts/shaders/blur.vert",
+    //   "/penis/js/scripts/shaders/blur.frag"
+    // );
+    // blurShaderV = pgBlurV.loadShader(
+    //   "/penis/js/scripts/shaders/blur.vert",
+    //   "/penis/js/scripts/shaders/blur.frag"
+    // );
+    // outputShaderFinal = pgFinal.loadShader(
+    //   "/penis/js/scripts/shaders/output.vert",
+    //   "/penis/js/scripts/shaders/output.frag"
+    // );
+    // // Paramètres du blur gaussien
+
     lastMousePressedTime = p.millis(); // Initialize it when game starts
+    // particlesCanvas = document.querySelector("#particles-canvas");
 
-    // p.frameRate(30);
-    // cols = p.width / size + 1;
-    // rows = p.height / size + 1;
-
-    // for (let i = 0; i < cols; i++) {
-    //   grid[i] = [];
-    //   for (let j = 0; j < rows; j++) {
-    //     grid[i][j] = 0;
-    //   }
-    // }
-    // create engine, gravity, mouse constraint...
-    // infoCardDivOutline = document.querySelector("#infoCardDivOutline");
     endMessage = document.querySelector("#end-message");
     infoCard = document.querySelector("#infoCardDiv");
     infoCardText = document.querySelector("#infoCard");
@@ -338,41 +405,11 @@ function sketch(p) {
         cummingTimeout = null;
       }
     });
-  };
+  }; // end of setup
 
   p.draw = function () {
-    // p.background(0); // Transparent background to keep the gooey effect
-    displayBackground();
-
-    //marchingSquares();
-    // console.log(particles.length);
-
-    // if (particles.length >= 350) {
-    //   infoCard.style.opacity = 1;
-    // }
-    // Clear the particles canvas
-    // p.clear(canvasP);
-
-    // if the beads go low enough, change the collision filter so
-    // they don't collide with the the tunnel enclosure
-    // this is in place to make the beads stay
-    // for (let bead of analBeads.beads) {
-    //   console.log(bead);
-    //   if (bead.body.position.y >= 600) {
-    //     bead.body.collisionFilter.mask =
-    //       CATEGORY_BRIDGE | CATEGORY_CIRCLE_PARTICLE;
-    //   }
-    // }
-    // console.log(ejaculationLevel);
-
-    // if (
-    //   isDraggingBead &&
-    //   p.mouseY <= p.height / 2 // "0 to half-height zone"
-    // ) {
-    //   mouseConstraint.constraint.stiffness = 0;
-    // } else {
-    //   mouseConstraint.constraint.stiffness = 0.004;
-    // }
+    p.background(200); // Transparent background to keep the gooey effect
+    // p.translate(-p.width / 2, -p.height / 2);
     // release balls when dragged passed mid height
     if (isDraggingBead && p.mouseY <= p.height / 2) {
       mouseConstraint.constraint.stiffness = 0;
@@ -506,7 +543,75 @@ function sketch(p) {
     } else if (startGame) {
       articleLink();
     }
+
+    // p.push();
+    // p.translate(-p.width / 2, -p.height / 2);
+    // p.noStroke();
+    // p.fill(255);
+
+    // for (let i = 0; i < particles.length; i++) {
+    //   p.ellipse(
+    //     particles[i].position.x,
+    //     particles[i].position.y,
+    //     p.floor(particles[i].circleRadius * 2)
+    //   );
+
+    //   if (particles[i].position.y > 800) {
+    //     World.remove(world, particles[i]);
+    //     particles.splice(i, 1);
+    //     i--;
+    //   }
+    // }
+    // p.pop();
+
+    // NOUVEAU: Appliquer le blur
+    // applySimpleBlur();
+    // Test simple: juste afficher pg sans effet pour voir si ça marche
+    // p.image(pg, 0, 0);
   };
+
+  function applyGooeyEffect() {
+    const stepX = 1.0 / canvasSize.x;
+    const stepY = 1.0 / canvasSize.y;
+
+    // Étape 1: Blur horizontal
+    pgBlurH.shader(blurShaderH);
+    blurShaderH.setUniform("uTexture", pg);
+    blurShaderH.setUniform("uStep", [stepX, stepY]);
+    blurShaderH.setUniform("uDirection", [1.0, 0.0]);
+    blurShaderH.setUniform("uWeight", window.blurWeights);
+
+    pgBlurH.push();
+    pgBlurH.translate(-pgBlurH.width / 2, -pgBlurH.height / 2);
+    pgBlurH.noStroke();
+    pgBlurH.rect(0, 0, pgBlurH.width, pgBlurH.height);
+    pgBlurH.pop();
+
+    // Étape 2: Blur vertical
+    pgBlurV.shader(blurShaderV);
+    blurShaderV.setUniform("uTexture", pgBlurH);
+    blurShaderV.setUniform("uStep", [stepX, stepY]);
+    blurShaderV.setUniform("uDirection", [0.0, 1.0]);
+    blurShaderV.setUniform("uWeight", window.blurWeights);
+
+    pgBlurV.push();
+    pgBlurV.translate(-pgBlurV.width / 2, -pgBlurV.height / 2);
+    pgBlurV.noStroke();
+    pgBlurV.rect(0, 0, pgBlurV.width, pgBlurV.height);
+    pgBlurV.pop();
+
+    // Étape 3: Appliquer le contraste final
+    pgFinal.shader(outputShaderFinal);
+    outputShaderFinal.setUniform("uTexture", pgBlurV);
+    outputShaderFinal.setUniform("uContrast", 80.0);
+    outputShaderFinal.setUniform("uSubtract", 10.0);
+
+    pgFinal.push();
+    pgFinal.translate(-pgFinal.width / 2, -pgFinal.height / 2);
+    pgFinal.noStroke();
+    pgFinal.rect(0, 0, pgFinal.width, pgFinal.height);
+    pgFinal.pop();
+  }
 
   p.mousePressed = function () {
     if (waitingForClick) {
@@ -664,6 +769,7 @@ function sketch(p) {
     Runner.run(engine);
     // engine.world.gravity.scale = 0.01;
     engine.world.gravity.scale = 0.002;
+    console.log(particlesCanvas);
 
     let mouse = Mouse.create(particlesCanvas);
     mouseConstraint = MouseConstraint.create(engine, {
@@ -675,23 +781,6 @@ function sketch(p) {
     });
 
     World.add(world, mouseConstraint);
-    // Add event listener for mouse clicks
-    // Events.on(mouseConstraint, "mousedown", function (event) {
-    //   const mousePosition = event.mouse.position;
-    //   const bodies = Composite.allBodies(penis);
-
-    //   const collidedBodies = Matter.Query.point(bodies, mousePosition);
-
-    //   if (collidedBodies.length > 0) {
-    //     setTimeout(() => {
-    //       isCumming = true;
-    //     }, 1000);
-    //   } else {
-    //     isCumming = false;
-    //   }
-    // });
-
-    // wrapping plugin
 
     // Initialize matter-wrap plugin
     if (typeof MatterWrap !== "undefined") {
