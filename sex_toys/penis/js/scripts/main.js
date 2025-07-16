@@ -19,9 +19,9 @@ let particles = [];
 let enclosures = [];
 let analBeads = [];
 let particleImage;
+let continueButton;
 let spermImage;
 let bum;
-
 let allBodies;
 let beads = [];
 let waitingForClick = true;
@@ -60,8 +60,8 @@ let clothOptions = {
 let GTAmericaFont;
 let boxes = [];
 let canvasSize = {
-  x: 350,
-  y: 650,
+  x: 550,
+  y: 800,
 };
 let cardNumber = 1;
 let cummingTimeout = null;
@@ -82,17 +82,6 @@ let grid = [];
 let buttonClickable = true;
 let infoCardDivOutline;
 let isDraggingBead = false;
-
-// const messages = [
-//   "Le gland contient une concentration de terminaisons nerveuses qui en fait LA zone de stimulation du pénis.",
-//   "Cependant, d’autres zones méritent notre attention: le frein (situé à la jonction du gland et de la verge), le périnée (entre les testicules et l’anus) et les testicules peuvent aussi être très sensibles.",
-//   "Ces zones peuvent susciter du plaisir si elles sont stimulées doucement, avec attention. Chaque personne peut avoir des sensibilités différentes, et explorer ces zones peut enrichir les expériences sexuelles.",
-//   "Le lubrifiant est un allié sous-estimé du pénis. Il favorise la glisse et réduit la friction, rendant la stimulation plus agréable, confortable et parfois plus intense selon les préférences.",
-//   "Un pénis peut perdre son érection pendant une relation sexuelle. Ce phénomène est commun et peut survenir pour plusieurs raisons sans remettre en cause l’attirance ou le plaisir.",
-//   "Cela peut créer des insécurités, même si cela arrive fréquemment: une stimulation est interrompue ou modifiée, on ressent du stress, de l’anxiété liée à la performance, ou simplement de la fatigue.",
-//   "Est-ce qu’un pénis peut être désensibilisé si on le stimule trop? Pas d’inquiétude: les séances de masturbation fréquentes ne posent généralement pas de problème pour la sensibilité du pénis.",
-//   "Cependant, une surstimulation intense peut causer une irritation ou une désensibilisation temporaire. La clé est de reconnaître ses limites et d’écouter son corps pendant la stimulation.",
-// ];
 
 const messages = [
   "These areas can create pleasure if gently stimulated with care. Every person may have different sensitivities, and exploring these zones can enhance sexual experiences.",
@@ -119,12 +108,12 @@ function sperm(s) {
   s.preload = function () {
     // GTAmericaFont = s.loadFont("/penis/css/GT-America-Regular.otf");
     blurShader = s.loadShader(
-      "/penis/js/scripts/shaders/blur.vert",
-      "/penis/js/scripts/shaders/blur.frag"
+      "js/scripts/shaders/blur.vert",
+      "js/scripts/shaders/blur.frag"
     );
     outputShader = s.loadShader(
-      "/penis/js/scripts/shaders/output.vert",
-      "/penis/js/scripts/shaders/output.frag"
+      "js/scripts/shaders/output.vert",
+      "js/scripts/shaders/output.frag"
     );
   };
 
@@ -254,43 +243,13 @@ function sperm(s) {
 }
 
 function sketch(p) {
-  p.preload = function () {
-    // peeSound = p.loadSound("assets/sounds/peeSound.mp3");
-    // blurShader = p.loadShader(
-    //   "/penis/js/scripts/shaders/blur.vert",
-    //   "/penis/js/scripts/shaders/blur.frag"
-    // );
-    // outputShader = p.loadShader(
-    //   "/penis/js/scripts/shaders/output.vert",
-    //   "/penis/js/scripts/shaders/output.frag"
-    // );
-  };
+  p.preload = function () {};
 
   p.setup = function () {
     canvasP = p.createCanvas(canvasSize.x, canvasSize.y);
 
     // Move the canvas within the HTML into the appropriate section
     canvasP.parent("p5js-canvas");
-    // pg = p.createGraphics(canvasSize.x, canvasSize.y, p.WEBGL);
-    // gooey buffers
-    // pgBlur = p.createGraphics(canvasSize.x, canvasSize.y, p.WEBGL);
-    // pgBlurV = p.createGraphics(canvasSize.x, canvasSize.y, p.WEBGL);
-    // pgFinal = p.createGraphics(canvasSize.x, canvasSize.y, p.WEBGL);
-
-    // Charger les shaders pour chaque contexte
-    // blurShaderH = pgBlurH.loadShader(
-    //   "/penis/js/scripts/shaders/blur.vert",
-    //   "/penis/js/scripts/shaders/blur.frag"
-    // );
-    // blurShaderV = pgBlurV.loadShader(
-    //   "/penis/js/scripts/shaders/blur.vert",
-    //   "/penis/js/scripts/shaders/blur.frag"
-    // );
-    // outputShaderFinal = pgFinal.loadShader(
-    //   "/penis/js/scripts/shaders/output.vert",
-    //   "/penis/js/scripts/shaders/output.frag"
-    // );
-    // // Paramètres du blur gaussien
 
     lastMousePressedTime = p.millis(); // Initialize it when game starts
     // particlesCanvas = document.querySelector("#particles-canvas");
@@ -299,6 +258,7 @@ function sketch(p) {
     infoCard = document.querySelector("#infoCardDiv");
     infoCardText = document.querySelector("#infoCard");
     nextGameContainer = document.querySelector("#nextGameContainer");
+    continueButton = document.querySelector("#continueButton");
     infoCardText.innerHTML = messages[messageItem];
     continueButton.onclick = () => {
       swapCard();
@@ -409,6 +369,7 @@ function sketch(p) {
 
   p.draw = function () {
     p.background(200); // Transparent background to keep the gooey effect
+    displayBackground();
     // p.translate(-p.width / 2, -p.height / 2);
     // release balls when dragged passed mid height
     if (isDraggingBead && p.mouseY <= p.height / 2) {
@@ -478,33 +439,12 @@ function sketch(p) {
       };
     }
 
-    // console.log(allBodies);
-    // push();
-    // strokeWeight(30);
-    // stroke(100, 100, 200);
-    // fill(0, 200, 0);
-    // ellipse(width / 2, 210, 200);
-    // pop();
-    //bum.display();
-
-    // push();
-    // ellipseMode(CENTER);
-    // ellipse();
-    // pop();
     emptyBalls();
 
+    // draw penis using a thick line
     for (let i = 0; i < penis.bodies.length; i++) {
       if (i > 0 && i <= 30) {
         p.push();
-        // p.strokeWeight(penisBeadsSize);
-        // strokeHsluv(0, 0, 13.2, p);
-        // p.line(
-        //   penis.bodies[i].position.x,
-        //   penis.bodies[i].position.y,
-        //   penis.bodies[i - 1].position.x,
-        //   penis.bodies[i - 1].position.y
-        // );
-
         p.strokeWeight(penisBeadsSize * 2);
         strokeHsluv(284.9, 100, 70.1, p);
         p.line(
@@ -513,37 +453,18 @@ function sketch(p) {
           penis.bodies[i - 1].position.x,
           penis.bodies[i - 1].position.y
         );
-
-        // p.noStroke();
-        // fillHsluv(334.9, 78.7, 78, p);
-        // p.ellipse(penis.bodies[i].position.x, penis.bodies[i].position.y, 200);
-
         p.pop();
       }
     }
-    // if (particles.length >= 350 && !hasShownInfoCard && allowInfoCardReveal) {
-    //   infoCard.classList.add("visible");
-    //   hasShownInfoCard = true;
-    // }
-    // console.log(enclosures);
-    for (let enclosure of enclosures) {
-      enclosure.display(200, p);
-      // console.log("color");
-    }
 
-    // console.log({
-    //   isDraggingPenis: isDraggingPenis,
-    //   mouseConstraintBody: mouseConstraint.body,
-    //   constraintBodyB: mouseConstraint.constraint.bodyB,
-    //   cumming: isCumming,
-    // });
-
+    // if user clicks, touch to start and club sexu title dissapears
     if (waitingForClick) {
       // Do nothing, wait for click
     } else if (startGame) {
       articleLink();
     }
 
+    // draw the particles for destktop version using gooey filter
     // p.push();
     // p.translate(-p.width / 2, -p.height / 2);
     // p.noStroke();
@@ -563,55 +484,7 @@ function sketch(p) {
     //   }
     // }
     // p.pop();
-
-    // NOUVEAU: Appliquer le blur
-    // applySimpleBlur();
-    // Test simple: juste afficher pg sans effet pour voir si ça marche
-    // p.image(pg, 0, 0);
   };
-
-  function applyGooeyEffect() {
-    const stepX = 1.0 / canvasSize.x;
-    const stepY = 1.0 / canvasSize.y;
-
-    // Étape 1: Blur horizontal
-    pgBlurH.shader(blurShaderH);
-    blurShaderH.setUniform("uTexture", pg);
-    blurShaderH.setUniform("uStep", [stepX, stepY]);
-    blurShaderH.setUniform("uDirection", [1.0, 0.0]);
-    blurShaderH.setUniform("uWeight", window.blurWeights);
-
-    pgBlurH.push();
-    pgBlurH.translate(-pgBlurH.width / 2, -pgBlurH.height / 2);
-    pgBlurH.noStroke();
-    pgBlurH.rect(0, 0, pgBlurH.width, pgBlurH.height);
-    pgBlurH.pop();
-
-    // Étape 2: Blur vertical
-    pgBlurV.shader(blurShaderV);
-    blurShaderV.setUniform("uTexture", pgBlurH);
-    blurShaderV.setUniform("uStep", [stepX, stepY]);
-    blurShaderV.setUniform("uDirection", [0.0, 1.0]);
-    blurShaderV.setUniform("uWeight", window.blurWeights);
-
-    pgBlurV.push();
-    pgBlurV.translate(-pgBlurV.width / 2, -pgBlurV.height / 2);
-    pgBlurV.noStroke();
-    pgBlurV.rect(0, 0, pgBlurV.width, pgBlurV.height);
-    pgBlurV.pop();
-
-    // Étape 3: Appliquer le contraste final
-    pgFinal.shader(outputShaderFinal);
-    outputShaderFinal.setUniform("uTexture", pgBlurV);
-    outputShaderFinal.setUniform("uContrast", 80.0);
-    outputShaderFinal.setUniform("uSubtract", 10.0);
-
-    pgFinal.push();
-    pgFinal.translate(-pgFinal.width / 2, -pgFinal.height / 2);
-    pgFinal.noStroke();
-    pgFinal.rect(0, 0, pgFinal.width, pgFinal.height);
-    pgFinal.pop();
-  }
 
   p.mousePressed = function () {
     if (waitingForClick) {
@@ -713,21 +586,12 @@ function sketch(p) {
     let dx = dynamicBodyPos.x - staticBodyPos.x;
     let dy = dynamicBodyPos.y - staticBodyPos.y;
     let angle = Math.atan2(dy, dx);
-    // let posLeftBall = analBeads[0].beads[1].body.position;
-    // let posRightBall = analBeads[1].beads[1].body.position;
-    // console.log(analBeads[0].beads[0].body.position.x);
-    // p.translate(0, 0);
-    // p.ellipseMode(p.CENTER);
-    // p.ellipse(275, 0, 300);
-    // p.ellipse(posRightBall.x - 275, posRightBall.y - 275, 115);
-    // p.ellipse(posLeftBall.x - 275, posLeftBall.y - 275, 115);
-    // p.strokeWeight(20);
+
     p.rectMode(p.CENTER);
     p.translate(staticBodyPos.x, staticBodyPos.y);
     p.rotate(angle + 0.223);
     // start sperm in balls at 150px
     let offset = 150;
-    // console.log(offset);
     p.rect(ejaculationLevel + offset, 0, 300, 370);
     p.pop();
   }
@@ -941,143 +805,6 @@ function sketch(p) {
     });
   }
 
-  function marchingSquares() {
-    if (particles.length > 0) {
-      for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-          let val = 0;
-          for (let k = 0; k < particles.length; k++) {
-            val +=
-              (particles[k].circleRadius * particles[k].circleRadius) /
-              ((i * size - particles[k].position.x) *
-                (i * size - particles[k].position.x) +
-                (j * size - particles[k].position.y) *
-                  (j * size - particles[k].position.y));
-          }
-
-          grid[i][j] = val; // Store the computed value in the grid
-
-          // p.noFill();
-          // s.stroke(200);
-          // s.rect(i * size, j * size, size, size);
-
-          // if (val >= 1) {
-          //   s.fill(0, 255, 0);
-          // } else {
-          //   s.fill(0);
-          // }
-          // s.text(s.round(val, 2), i * size, j * size);
-        }
-      }
-
-      for (let i = 0; i < cols - 1; i++) {
-        for (let j = 0; j < rows - 1; j++) {
-          let a = 0;
-          let b = 0;
-          let c = 0;
-          let d = 0;
-          let f_a = grid[i][j];
-          let f_b = grid[i + 1][j];
-          let f_c = grid[i + 1][j + 1];
-          let f_d = grid[i][j + 1];
-
-          if (f_a >= 1) a = 1;
-          else a = 0;
-          if (f_b >= 1) b = 1;
-          else b = 0;
-          if (f_c >= 1) c = 1;
-          else c = 0;
-          if (f_d >= 1) d = 1;
-          else d = 0;
-
-          let config = 8 * a + 4 * b + 2 * c + 1 * d;
-          // config += grid[i][j] >= 0.5; // Instead of 1
-
-          p.push();
-          p.strokeWeight(10);
-          p.stroke(255);
-
-          // let pt1 = p.createVector(i * size + size / 2, j * size);
-          // let pt2 = p.createVector(i * size + size, j * size + size / 2);
-          // let pt3 = p.createVector(i * size + size / 2, j * size + size);
-          // let pt4 = p.createVector(i * size, j * size + size / 2);
-
-          let pt1 = p.createVector();
-          let amt = (1 - f_a) / (f_b - f_a);
-          pt1.x = p.lerp(i * size, i * size + size, amt);
-          pt1.y = j * size;
-
-          let pt2 = p.createVector();
-          amt = (1 - f_b) / (f_c - f_b);
-          pt2.x = i * size + size;
-          pt2.y = p.lerp(j * size, j * size + size, amt);
-
-          let pt3 = p.createVector();
-          amt = (1 - f_d) / (f_c - f_d);
-          pt3.x = p.lerp(i * size, i * size + size, amt);
-          pt3.y = j * size + size;
-
-          let pt4 = p.createVector();
-          amt = (1 - f_a) / (f_d - f_a);
-          pt4.x = i * size;
-          pt4.y = p.lerp(j * size, j * size + size, amt);
-
-          switch (config) {
-            case 0:
-              break;
-            case 1:
-              p.line(pt3.x, pt3.y, pt4.x, pt4.y);
-              break;
-            case 2:
-              p.line(pt2.x, pt2.y, pt3.x, pt3.y);
-              break;
-            case 3:
-              p.line(pt2.x, pt2.y, pt4.x, pt4.y);
-              break;
-            case 4:
-              p.line(pt1.x, pt1.y, pt2.x, pt2.y);
-              break;
-            case 5:
-              p.line(pt1.x, pt1.y, pt4.x, pt4.y);
-              p.line(pt2.x, pt2.y, pt3.x, pt3.y);
-              break;
-            case 6:
-              p.line(pt1.x, pt1.y, pt3.x, pt3.y);
-              break;
-            case 7:
-              p.line(pt1.x, pt1.y, pt4.x, pt4.y);
-              break;
-            case 8:
-              p.line(pt1.x, pt1.y, pt4.x, pt4.y);
-              break;
-            case 9:
-              p.line(pt1.x, pt1.y, pt3.x, pt3.y);
-              break;
-            case 10:
-              p.line(pt1.x, pt1.y, pt2.x, pt2.y);
-              p.line(pt3.x, pt3.y, pt4.x, pt4.y);
-              break;
-            case 11:
-              p.line(pt1.x, pt1.y, pt2.x, pt2.y);
-              break;
-            case 12:
-              p.line(pt2.x, pt2.y, pt4.x, pt4.y);
-              break;
-            case 13:
-              p.line(pt2.x, pt2.y, pt3.x, pt3.y);
-              break;
-            case 14:
-              p.line(pt3.x, pt3.y, pt4.x, pt4.y);
-              break;
-            case 15:
-              break;
-          }
-        }
-        p.pop();
-      }
-    }
-  }
-
   function displayBackground() {
     p.push();
     p.rectMode(p.CORNER);
@@ -1122,191 +849,7 @@ function sketch(p) {
       world
     );
 
-    // let tunnelEnclosureLeft = new RectangleParticle(
-    //   container.x - 10,
-    //   container.y + 740,
-    //   20,
-    //   100,
-    //   true,
-    //   world
-    // );
-
-    // let tunnelEnclosureRight = new RectangleParticle(
-    //   container.x + p.width + 10,
-    //   container.y + 740,
-    //   20,
-    //   100,
-    //   true,
-    //   world
-    // );
-
-    // enclosures.push(tunnelEnclosureRight);
-    // enclosures.push(tunnelEnclosureLeft);
     enclosures.push(bottomEnclosure);
-  }
-
-  // function addBeads() {
-  //   // Create a composite to hold the beads and constraints
-  //   let beadComposite = Composite.create();
-  //   let x = 0;
-  //   let beadSize = 50;
-  //   let spaceBetweenBeads = 40;
-  //   // Create beads
-  //   for (let i = 0; i < numBeads; i++) {
-  //     let bead = new CircleParticle(
-  //       x + i * beadSize + spaceBetweenBeads,
-  //       100,
-  //       beadSize,
-  //       false,
-  //       beadComposite
-  //     );
-  //     beads.push(bead);
-  //   }
-
-  //   // Add constraints (links) between the beads
-  //   for (let i = 0; i < beads.length - 1; i++) {
-  //     let options = {
-  //       bodyA: beads[i].body,
-  //       bodyB: beads[i + 1].body,
-  //       length: 60, // Distance between centers of beads
-  //       stiffness: 0.039,
-  //     };
-  //     let constraint = Constraint.create(options);
-  //     Composite.add(beadComposite, constraint);
-  //   }
-
-  //   // Add the bead composite to the world
-  //   Composite.add(world, beadComposite);
-  // }
-
-  function addCloth() {
-    cloth = createCloth(
-      clothOptions.x,
-      clothOptions.y,
-      clothOptions.col,
-      clothOptions.row,
-      clothOptions.colGap,
-      clothOptions.rowGap,
-      clothOptions.crossBrace,
-      clothOptions.particleRad
-    );
-
-    // Make the first row of particles static to anchor the cloth
-    for (let i = 0; i < clothOptions.col; i++) {
-      cloth.bodies[i].isStatic = true;
-    }
-
-    Composite.add(world, cloth);
-  }
-
-  function createCloth(
-    xx,
-    yy,
-    columns,
-    rows,
-    columnGap,
-    rowGap,
-    crossBrace,
-    particleRadius,
-    particleOptions,
-    constraintOptions
-  ) {
-    let group = Body.nextGroup(true);
-    particleOptions = Matter.Common.extend(
-      {
-        inertia: Infinity,
-        friction: 0.00001,
-        restitution: 1,
-        collisionFilter: {
-          group: group,
-          mask: CATEGORY_MOUSE, // Collide with bridge and rectangle
-        },
-        render: { visible: false },
-      },
-      particleOptions
-    );
-
-    constraintOptions = Matter.Common.extend(
-      {
-        stiffness: 1.2,
-        // render: { type: "line", anchors: false },
-      },
-      constraintOptions
-    );
-
-    let cloth = Composites.stack(
-      xx,
-      yy,
-      columns,
-      rows,
-      columnGap,
-      rowGap,
-      function (x, y) {
-        return Bodies.circle(x, y, particleRadius, particleOptions);
-      }
-    );
-
-    Composites.mesh(cloth, columns, rows, crossBrace, constraintOptions);
-    cloth.label = "Cloth Body";
-
-    return cloth;
-  }
-
-  function renderCloth(cloth, columns, rows) {
-    // Draw each square in the cloth
-    push();
-    noStroke();
-    fill(200, 100, 100); // Choose your fill color here
-
-    for (let y = 0; y < rows - 1; y++) {
-      for (let x = 0; x < columns - 1; x++) {
-        let index = x + y * columns;
-        let nextIndex = index + 1;
-        let belowIndex = index + columns;
-        let belowNextIndex = belowIndex + 1;
-
-        beginShape();
-        vertex(cloth.bodies[index].position.x, cloth.bodies[index].position.y);
-        vertex(
-          cloth.bodies[nextIndex].position.x,
-          cloth.bodies[nextIndex].position.y
-        );
-        vertex(
-          cloth.bodies[belowNextIndex].position.x,
-          cloth.bodies[belowNextIndex].position.y
-        );
-        vertex(
-          cloth.bodies[belowIndex].position.x,
-          cloth.bodies[belowIndex].position.y
-        );
-        endShape(CLOSE);
-      }
-    }
-
-    pop();
-
-    // // Optional: Render particles (if you still want to show them)
-    // for (let body of cloth.bodies) {
-    //   // push();
-    //   // noStroke();
-    //   // fill(200);
-    //   // ellipse(body.position.x, body.position.y, body.circleRadius * 2);
-    //   // pop();
-    // }
-
-    // // Optional: Render constraints (if you still want to show them)
-    // for (let constraint of cloth.constraints) {
-    //   // push();
-    //   // stroke(255);
-    //   // strokeWeight(2);
-    //   // line(
-    //   //   constraint.bodyA.position.x + constraint.pointA.x,
-    //   //   constraint.bodyA.position.y + constraint.pointA.y,
-    //   //   constraint.bodyB.position.x + constraint.pointB.x,
-    //   //   constraint.bodyB.position.y + constraint.pointB.y
-    //   // );
-    //   // pop();
-    // }
   }
 }
 
@@ -1322,92 +865,3 @@ function strokeHsluv(h, s, l, sketch) {
 
 new p5(sketch);
 new p5(sperm);
-
-// let lastCircle = penis.bodies.length - 1;
-// GLAND;
-// p.push();
-// p.noStroke();
-// p.ellipseMode(p.CENTER);
-// p.fill(0, 100, 0);
-// p.ellipse(
-//   penis.bodies[lastCircle].position.x,
-//   penis.bodies[lastCircle].position.y + 15,
-//   40,
-//   0
-// );
-// p.pop();
-
-// noStroke();
-// fill(0, 200, 0);
-// ellipse(bridge.bodies[54].position.x, bridge.bodies[54].position.y, 130, 180);
-// push();
-// noStroke();
-// fill(0, 150, 0);
-// ellipse(
-//   bridge.bodies[54].position.x,
-//   bridge.bodies[54].position.y + 90,
-//   80,
-//   12
-// );
-// pop();
-//renderCloth(cloth, clothOptions.col, clothOptions.row);
-
-// for (let i = 0; i < particles.length; i++) {
-//   p.push();
-//   p.fill(255);
-//   p.noStroke();
-//   p.ellipseMode(p.CENTER);
-
-//   p.ellipse(
-//     particles[i].position.x,
-//     particles[i].position.y,
-//     particles[i].circleRadius * 2
-//   );
-//   p.pop();
-
-//   if (particles[i].position.y > 800) {
-//     World.remove(world, particles[i]);
-//     particles.splice(i, 1);
-//     // prevents the skipping of a box when removed from the array by backing up 1
-//     i--;
-//   }
-// }
-// marchingSquares();
-// console.log(particles);
-
-// for (let box of boxes) {
-//   box.display(p);
-//   for (wall of box.walls) {
-//     let color = 0;
-//     let p5Var = p;
-//     wall.display(color, p5Var);
-//   }
-// }
-// function gooeyEffect() {
-//   s.loadPixels();
-//   for (let i = 0; i < s.width; i++) {
-//     for (let j = 0; j < s.height; j++) {
-//       let index = (i + j * s.width) * 4; // Get pixel index
-//       let r = index;
-//       let g = index + 1;
-//       let b = index + 2;
-//       if (s.pixels[r] < 100) {
-//         // Blob (smoother core)
-//         s.pixels[r] = 135;
-//         s.pixels[g] = 199;
-//         s.pixels[b] = 191;
-//       } else if (s.pixels[r] < borderThreshold) {
-//         // Border (gooey edges)
-//         s.pixels[r] = 22;
-//         s.pixels[g] = 147;
-//         s.pixels[b] = 165;
-//       } else {
-//         // Background
-//         s.pixels[r] = 98;
-//         s.pixels[g] = 182;
-//         s.pixels[b] = 182;
-//       }
-//     }
-//   }
-//   s.updatePixels(); // Apply the pixel changes
-// }

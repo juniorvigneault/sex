@@ -13,9 +13,13 @@ let Mouse = Matter.Mouse;
 let Constraint = Matter.Constraint;
 let engine;
 let world;
+let canvas;
+let endGame = false;
+let continueButton;
 let mouseConstraint;
 let hasRestarted = false;
 let restartScheduled = false;
+let infoCard, infoCardText;
 let particles = [];
 let enclosures = [];
 let analBeads;
@@ -27,6 +31,7 @@ let swayForceAmplitude = 1; // how strong the sideways force is
 let waitingForClick = true;
 let bum;
 let mouse;
+let cardNumber = 1;
 let beads = [];
 let numBeads = 6;
 let showInfoBox = false;
@@ -36,6 +41,19 @@ let toyIsGone = false;
 let p5jsCanvas;
 let showCard = false;
 
+let messageItem = 7;
+const messages = [
+  "Give the toy a little help by applying lubricant, so that stimulation doesn’t cause too much friction or discomfort. Lubricant helps ensure smoother, more comfortable sensations during play.",
+  "Did you know that anal stimulation requires a good amount of lubricant? That’s because the anus does not naturally produce its own lubrication, making external lubrication essential for comfort and safety.",
+  "For example, using anal beads during vaginal penetration can dramatically enhance sensations. Combining different types of stimulation can create more intense, layered, and unique sexual experiences for many people.",
+  "Toys like anal beads can take center stage but can also be used to amplify sensations during other forms of stimulation, adding a playful or intensified dimension to sexual exploration.",
+  "The anus can be gently stimulated at its entrance with a finger, tongue, or mouth. Besides providing pleasure, this kind of stimulation helps relax the muscles, making penetration easier and more enjoyable.",
+  "It's worth taking your time to prepare the anus before inserting a toy. Patience and gradual stimulation not only increase comfort but can also lead to much more pleasurable sensations overall.",
+  "The main sensation comes from the contraction and relaxation of muscles during the slow insertion and withdrawal of the beads, creating waves of pleasure through rhythmic and controlled movements.",
+  "Anal beads are a sex toy made of spherical or oval beads aligned along a string. The size of the beads can sometimes gradually increases, allowing for progressive insertion and customizable levels of sensation.",
+];
+let hasShownInfoCard = false;
+let allowInfoCardReveal = true;
 // shrinking/growing bead animation variables
 
 let ellipseSize = 0; // Initial size of the ellipse
@@ -57,17 +75,10 @@ let currentBead = null; // Track the current bead being hovered
 
 let gameX = 0;
 let gameY = -50;
-let canvasDimensions = {
+let canvasSize = {
   x: 550,
   y: 800,
 };
-
-// let gameX = 200;
-// let gameY = 1400;
-// let canvasDimensions = {
-//   x: 1000,
-//   y: 1000,
-// };
 
 const CATEGORY_BRIDGE = 0x0001;
 const CATEGORY_CIRCLE_PARTICLE = 0x0002;
@@ -78,7 +89,7 @@ let endMessage;
 function setup() {
   // let canvas = createCanvas(1000, 1000);
   // DESKTOP CANVAS
-  let canvas = createCanvas(canvasDimensions.x, canvasDimensions.y);
+  canvas = createCanvas(canvasSize.x, canvasSize.y);
   // MOBILE CANVAS
   let mobileCanvasWidth = displayWidth;
 
@@ -98,6 +109,15 @@ function setup() {
   Runner.run(engine);
   // engine.world.gravity.scale = 0.00;
   endMessage = document.querySelector("#end-message");
+  infoCard = document.querySelector("#infoCardDiv");
+  infoCardText = document.querySelector("#infoCard");
+  continueButton = document.querySelector("#continueButton");
+  infoCardText.innerHTML = messages[messageItem];
+
+  continueButton.onclick = () => {
+    swapCard();
+  };
+
   nextGameContainer = document.querySelector("#nextGameContainer");
   (mouse = Mouse.create(document.querySelector("#p5js-canvas"))),
     (mouseConstraint = MouseConstraint.create(engine, {
@@ -115,11 +135,12 @@ function setup() {
   // getAudioContext().resume(); // Resume the audio context
 
   //bum = new Bum(width / 2, 300, 400);
-
+  moveInfoCardX();
+  moveInfoCardY();
   addEnclosures();
   addBridge(); // Add the bridge here
   //addBeads();
-  analBeads = new AnalBeads(gameX + canvasDimensions.x / 2, gameY - 2150, 115);
+  analBeads = new AnalBeads(gameX + canvasSize.x / 2, gameY - 2150, 115);
   let lastBead = analBeads.beads.length - 1;
   analBeads.beads[lastBead].popped = true;
   // Add event listener for mouse clicks
@@ -144,6 +165,8 @@ function setup() {
     window.location.href = "/penis/index.html"; // <-- replace with your file
   });
   // createInfoCard();
+
+  // console.log(mouseConstraint);
 }
 
 function draw() {
@@ -156,6 +179,11 @@ function draw() {
   push();
   stroke(255);
   pop();
+
+  if (endGame) {
+    restartGame();
+    endgame = false;
+  }
 
   analBeads.beads[10].inTunnel = false;
   analBeads.beads[10].body.collisionFilter.mask =
@@ -183,44 +211,31 @@ function draw() {
       if (!bead.popped) {
         soundMobile.playSound("pop");
         bead.popped = true;
-        bead.showCard = true;
+        // bead.showCard = true;
+
+        // open cards when bead is popped except the very last one
+        if (messageItem !== -1) {
+          infoCard.classList.add("visible");
+          setTimeout(() => {
+            infoCardText.classList.add("opacity"); // Add the opacity transition class
+          }, 200); // Delay in milliseconds
+          infoCardDiv.style.display = "flex";
+
+          hasShownInfoCard = true;
+        }
       }
     }
   }
 
   analBeads.display();
-  // mouseInfoBox();
 
-  //bum.display();
   for (let enclosure of enclosures) {
     enclosure.display({ r: 200, g: 200, b: 200, a: 0 });
   }
-  // push();
-  // ellipseMode(CENTER);
-  // ellipse();
-  // pop();
 
   let rightCheek = bridge.bodies[0];
   let leftCheek = bridge.bodies[1];
 
-  // push();
-  // strokeWeight(1);
-  // strokeHsluv(0, 0, 13.2);
-  // noStroke();
-  // ellipseMode(CENTER);
-  // fillHsluv(16.4, 98.4, 42.5);
-  // ellipse(rightCheek.position.x, rightCheek.position.y, 400);
-  // beginClip();
-  // // strokeWeight(0.4);
-  // // strokeHsluv(0, 0, 13.2);
-  // ellipseMode(CENTER);
-  // fillHsluv(126.6, 62.2, 66.8);
-  // ellipse(leftCheek.position.x, leftCheek.position.y, 400);
-  // endClip();
-
-  // pop();
-  // strokeWeight(0.4);
-  // strokeHsluv(0, 0, 13.2);
   let buttCheekSize = rightCheek.circleRadius * 2;
 
   ellipseMode(CENTER);
@@ -238,36 +253,42 @@ function draw() {
     toyIsGone = true;
   }
 
-  if (toyIsGone && !restartScheduled) {
+  // restart game if toy is gone at the end
+  if (toyIsGone && !restartScheduled && !hasShownInfoCard) {
     restartScheduled = true;
     setTimeout(() => {
       restartGame();
     }, 1500);
   }
 
-  if (millis() - lastMousePressedTime > 30000) {
-    let anyCardOpen = analBeads.beads.some((bead) => bead.showCard);
-
-    if (!anyCardOpen) {
-      restartGame();
-    }
+  // restart game if no clicks for 30 seconds and no card is open
+  if (millis() - lastMousePressedTime > 30000 && !hasShownInfoCard) {
+    restartGame();
   }
 
-  // createInfoCard();
-  // beadHover();
-  // moveInfoCardX();
-  // moveInfoCardY();
-
-  // if (showCard) {
-  //   // displayCard();
-  // }
-
-  // push();
-  // ellipseMode(CORNER);
-  // fill(0, 0, 0, 100);
-  // ellipse(gameX - 30, -120, 320);
-  // pop();
   swayHandle();
+}
+
+function swapCard() {
+  // World.add(world, mouseConstraint);
+  messageItem--;
+  // ejaculationLevel = 0;
+  infoCard.classList.remove("visible");
+  infoCardText.classList.remove("opacity"); // Add the opacity transition class
+  cardNumber++;
+  let cardNumberDiv = document.querySelector("#cardNumberText");
+  cardNumberDiv.innerHTML = cardNumber;
+  hasShownInfoCard = false;
+  allowInfoCardReveal = false; // prevent immediate re-show
+  // enclosures.forEach((enclosure) => removeFromWorld(enclosure.body));
+  // mouseConstraint.constraint.stiffness = 0.004;
+  setTimeout(() => {
+    infoCardText.innerHTML = messages[messageItem];
+    //   addEnclosures();
+    // buttonClickable = true;
+    //   // ✅ Re-enable reveal *after* fade is done and particles can build back up
+    allowInfoCardReveal = true;
+  }, 1000); // Match the CSS transition duration
 }
 
 function swayHandle() {
@@ -285,18 +306,6 @@ function swayHandle() {
   }
 }
 
-// function displayCard() {
-//   let infoCardDiv = document.querySelector("#infoCardDiv");
-//   let cardButton = document.querySelector("#cardButton");
-//   infoCardDiv.style.display = "flex";
-
-//   cardButton.onclick = function () {
-//     // showCard == false;
-//     // infoCardDiv.style.display = "none";
-//     // console.log("clicked");
-//   };
-// }
-
 function restartGame() {
   console.log("Restarting game...");
 
@@ -304,11 +313,10 @@ function restartGame() {
   if (analBeads) {
     for (let bead of analBeads.beads) {
       World.remove(world, bead.body);
-      bead.infoCardDiv.remove();
     }
   }
 
-  analBeads = new AnalBeads(gameX + canvasDimensions.x / 2, gameY - 2150, 115);
+  analBeads = new AnalBeads(gameX + canvasSize.x / 2, gameY - 2150, 115);
   let lastBead = analBeads.beads.length - 1;
   analBeads.beads[lastBead].popped = true;
 
@@ -324,16 +332,29 @@ function restartGame() {
   // Reset states
   toyIsGone = false; // 🔥 RESET
   restartScheduled = false; // 🔥 RESET
-  messageItem = 0;
+
+  endMessage.style.opacity = 1;
+  lastMousePressedTime = millis();
+
+  console.log("Restarting game...");
+
+  messageItem = 7;
+  infoCardText.innerHTML = messages[messageItem];
+
   cardNumber = 1;
   hasShownInfoCard = false;
   allowInfoCardReveal = true;
+
+  // Make sure the "Touch to start" is visible again
+  endMessage.style.opacity = 1;
+
+  // Restart waiting for click
   waitingForClick = true;
   startGame = false;
   endGame = false;
 
-  endMessage.style.opacity = 1;
-  lastMousePressedTime = millis();
+  let cardNumberDiv = document.querySelector("#cardNumberText");
+  cardNumberDiv.innerHTML = "1";
 }
 
 function positionNextGameContainer() {
@@ -349,12 +370,6 @@ function mousePressed() {
   }
   lastMousePressedTime = millis();
 }
-
-// function articleLink() {
-//   // setTimeout(() => {
-//   // endMessage.style.opacity = 0;
-//   // }, 1000);
-// }
 
 function addEnclosures() {
   let bottomEnclosure = new RectangleParticle(
@@ -388,49 +403,6 @@ function addEnclosures() {
   enclosures.push(tunnelEnclosureRight);
   enclosures.push(tunnelEnclosureLeft);
 }
-
-// function mousePressed() {
-//   mouseIsPressed = true;
-// }
-
-// function mouseReleased() {
-//   mouseIsPressed = false;
-// }
-
-// function addBeads() {
-//   // Create a composite to hold the beads and constraints
-//   let beadComposite = Composite.create();
-//   let x = 0;
-//   let beadSize = 1;
-//   let spaceBetweenBeads = 40;
-//   // Create beads
-//   for (let i = 0; i < numBeads; i++) {
-//     let bead = new CircleParticle(
-//       x + i * beadSize + spaceBetweenBeads,
-//       100,
-//       beadSize,
-//       true,
-//       beadComposite,
-//       "hello"
-//     );
-//     beads.push(bead);
-//   }
-
-//   // Add constraints (links) between the beads
-//   for (let i = 0; i < beads.length - 1; i++) {
-//     let options = {
-//       bodyA: beads[i].body,
-//       bodyB: beads[i + 1].body,
-//       length: 60, // Distance between centers of beads
-//       stiffness: 0.038,
-//     };
-//     let constraint = Constraint.create(options);
-//     Composite.add(beadComposite, constraint);
-//   }
-
-//   // Add the bead composite to the world
-//   Composite.add(world, beadComposite);
-// }
 
 function displayBackground() {
   push();
@@ -507,167 +479,28 @@ function addBridge() {
   ]);
 }
 
-// function beadHover() {
-//   const mousePosition = mouse.position;
-//   let foundBead = false;
-//   let beadsOnly = analBeads.beads.length - 1;
+// position info card in the middle of the canvas even if user resizes
+function moveInfoCardX() {
+  // Get the current position of the canvas in the viewport
+  let canvasRect = canvas.elt.getBoundingClientRect();
+  // let infoCard = document.querySelector("#infoCardDiv");
+  // card with is 220px (220+ 40 padding)
+  let infoCardWidth = 260 / 2;
+  let left = canvasRect.left + canvasSize.x / 2 - infoCardWidth + "px"; // Center by subtracting 125 (half of 250px)
+  // console.log(infoCardDivOutline.style);
+  // infoCardDivOutline.style.left = left;
+  infoCard.style.left = left;
+}
 
-//   for (let i = 0; i < beadsOnly; i++) {
-//     let bead = analBeads.beads[i];
+function moveInfoCardY() {
+  let canvasRect = canvas.elt.getBoundingClientRect();
+  // card height is 220px + 40 padd
+  infoCardHalfHeight = 320 / 2;
+  let top = canvasRect.top + canvasSize.y / 2 - infoCardHalfHeight; // Center by subtracting 125 (half of 250px)
 
-//     if (Matter.Query.point([bead.body], mousePosition).length > 0) {
-//       foundBead = true;
-
-//       if (!isHovering) {
-//         hoverStartTime = millis(); // Start the hover timer
-//         isHovering = true;
-//       }
-
-//       if (millis() - hoverStartTime >= hoverTime) {
-//         // Grow the bubble when hovered
-//         animateBubble(bead.infoBubble, true);
-//         currentBead = bead;
-//         bead.body.circleRadius = 250;
-//       }
-//       break;
-//     }
-//   }
-
-//   if (!foundBead) {
-//     if (currentBead) {
-//       // Shrink the bubble when the mouse leaves
-//       animateBubble(currentBead.infoBubble, false);
-//     }
-//     isHovering = false;
-//   }
-// }
-
-// function animateBubble(bubble, grow) {
-//   if (grow) {
-//     bubble.style.transform = "scale(1)"; // Grow to full size
-
-//     // Fade in the text with a slight delay
-//     setTimeout(() => {
-//       bubble.querySelector(".textInfoBubble").style.opacity = "1";
-//     }, 200);
-//   } else {
-//     bubble.style.transform = "scale(0)"; // Shrink to invisible
-//     bubble.querySelector(".textInfoBubble").style.opacity = "0";
-//   }
-// }
-
-// function beadHover() {
-//   const mousePosition = mouse.position; // Get current mouse position
-//   let foundBead = false; // Flag to track if a bead is hovered
-//   let beadsOnly = analBeads.beads.length - 1;
-//   for (let i = 0; i < beadsOnly; i++) {
-//     //     // if (!bead.inTunnel) {
-// //     // Check if the mouse is over this bead
-// //     if (Matter.Query.point([bead.body], mousePosition).length > 0) {
-// //       // if (!mouseIsPressed) {
-// //       foundBead = true;
-// //       if (!isHovering) {
-// //         // Start the hover timer if this is the first time we're hovering
-// //         hoverStartTime = millis();
-// //         isHovering = true;
-// //       }
-//   }
-// }
-// function mouseInfoBox() {
-//   const mousePosition = mouse.position; // Get current mouse position
-//   let foundBead = false; // Flag to track if a bead is hovered
-//   let beadsOnly = analBeads.beads.length - 1;
-
-//   for (let i = 0; i < beadsOnly; i++) {
-//     let bead = analBeads.beads[i];
-
-//     // if (!bead.inTunnel) {
-//     // Check if the mouse is over this bead
-//     if (Matter.Query.point([bead.body], mousePosition).length > 0) {
-//       // if (!mouseIsPressed) {
-//       foundBead = true;
-//       if (!isHovering) {
-//         // Start the hover timer if this is the first time we're hovering
-//         hoverStartTime = millis();
-//         isHovering = true;
-//       }
-
-//       // Check if we've hovered for the required delay time (1 second)
-//       if (millis() - hoverStartTime >= hoverTime) {
-//         shrinking = false; // Stop shrinking when hovering
-//         currentBead = bead; // Track the current bead being hovered
-//         // Animate the info box and image
-//         animateInfoBox(bead.body.position.x, bead.body.position.y, true);
-//       }
-//       break; // Exit the loop once we've found the hovered bead
-//       // }
-//     }
-//     // }
-//   }
-
-//   // Start shrinking if not hovering over any bead
-//   if (!foundBead) {
-//     shrinking = true;
-//     isHovering = false; // Reset hovering state when mouse leaves the bead
-//   }
-
-//   // Animate shrinking if not hovering, using the current bead's position
-//   if (shrinking && currentBead) {
-//     animateInfoBox(
-//       currentBead.body.position.x,
-//       currentBead.body.position.y,
-//       false
-//     );
-//   }
-// }
-
-// function animateInfoBox(x, y, grow) {
-//   if (grow) {
-//     // Apply easing to increase the size smoothly and slow down near the target size
-//     let sizeDifference = targetSize - ellipseSize;
-//     ellipseSize += sizeDifference * easeFactors.grow; // Easing effect for growth
-
-//     // Gradually fade in the image as the ellipse grows
-//     if (ellipseSize >= targetSize * 0.9) {
-//       fadeAmount += (255 - fadeAmount) * easeFactors.fadeIn; // Ease in the image
-//     }
-//   } else {
-//     // Apply easing to shrink the ellipse smoothly
-//     ellipseSize += (0 - ellipseSize) * easeFactors.shrink; // Easing effect for shrinking
-
-//     // Gradually fade out the image as the ellipse shrinks
-//     fadeAmount += (0 - fadeAmount) * easeFactors.fadeOut; // Ease out the image
-//   }
-
-//   // Ensure the ellipse size and fade amount remain within valid bounds
-//   ellipseSize = constrain(ellipseSize, 0, targetSize);
-//   fadeAmount = constrain(fadeAmount, 0, 255);
-
-//   // Display the ellipse and image
-//   if (ellipseSize > 0) {
-//     infoBox(x, y);
-//   }
-
-//   if (fadeAmount > 0) {
-//     displayImage(x, y);
-//   }
-// }
-
-// function infoBox(x, y) {
-//   push();
-//   ellipseMode(CENTER);
-//   fillHsluv(0, 0, 13.2); // Your chosen color
-//   ellipse(x, y, ellipseSize); // Use the growing/shrinking ellipse size
-//   pop();
-// }
-
-// function displayImage(x, y) {
-//   push();
-//   tint(255, fadeAmount); // Apply transparency based on fadeAmount
-//   imageMode(CENTER);
-//   image(textIMG, x, y + 5); // Display the image at the center of the bead
-//   pop();
-// }
+  infoCard.style.top = top - 1 + "px";
+  // infoCardDivOutline.style.top = top - 20 + "px";
+}
 
 function fillHsluv(h, s, l, alpha = 255) {
   const rgb = hsluv.hsluvToRgb([h, s, l]);
@@ -679,14 +512,10 @@ function strokeHsluv(h, s, l) {
   stroke(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
 }
 
-// function articleLink() {
-//   setTimeout(() => {
-//     endMessage.classList.add("opacity");
-//   }, 500);
-// }
-
 window.addEventListener("resize", () => {
   centerEndMessage();
   positionNextGameContainer();
+  moveInfoCardX();
+  moveInfoCardY();
 });
 // position info card in the middle of the canvas even if user resizes
